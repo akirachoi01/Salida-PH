@@ -4,6 +4,42 @@
   <title>Google Auth Callback</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  function isDisallowedUserAgent() {
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+
+    // Common disallowed in-app browsers
+    const blockedAgents = [
+      /FBAN/, /FBAV/, // Facebook
+      /Instagram/,    // Instagram
+      /Line/,         // Line app
+      /Twitter/,      // Twitter
+      /TikTok/,       // TikTok
+      /Telegram/,     // Telegram
+    ];
+
+    return blockedAgents.some(rx => rx.test(ua));
+  }
+
+  function isInIframe() {
+    return window !== window.parent;
+  }
+
+  window.onload = () => {
+    if (isDisallowedUserAgent() || isInIframe()) {
+      alert("Google login is not supported in this browser or app. Please open this site in Chrome or your system browser.");
+      document.body.innerHTML = `
+        <div style="text-align: center; padding: 2rem;">
+          <h2>⚠️ Unsupported Browser</h2>
+          <p>Google login doesn't work here.</p>
+          <p>Please open this site in your phone's default browser (like Chrome or Safari).</p>
+        </div>
+      `;
+    }
+  }
+</script>
+
+  
 </head>
 <body>
   <p>Processing login...</p>
