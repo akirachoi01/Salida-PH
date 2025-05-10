@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Google Auth Callback</title>
+</head>
+<body>
+  <p>Processing login...</p>
+  <script>
+    const params = new URLSearchParams(window.location.hash.slice(1));
+    const token = params.get('access_token');
+
+    if (token) {
+      localStorage.setItem('google_token', token);
+      // Redirect back to main app
+      window.location.href = '/';
+    } else {
+      document.body.innerText = 'Login failed.';
+    }
+  </script>
+</body>
+</html>
