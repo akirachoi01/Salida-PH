@@ -1,3 +1,4 @@
+// Corrected and unified API integration script with close button, TV show video support, and responsive video player styling with play buttons centered
 
 const API_KEY = 'ba3885a53bc2c4f3c4b5bdc1237e69a0';
 const API_URL = 'https://api.themoviedb.org/3';
@@ -256,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <span class="header-title" style="font-size: 24px; font-weight: bold; color: #333;">SALIDAPH</span>
     </div>
     <nav class="nav-links" style="display: flex; gap: 15px; align-items: center;">
-    
+     
     <a href="https://salida-ph-20.vercel.app/">Github</a>
       <a href="https://github.com/akirachoi01">GITHUB</a>
       <a href="https://akirachoi01.github.io/YT2MP3-akira/">Youtube2MP3</a>
