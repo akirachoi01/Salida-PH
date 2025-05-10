@@ -2,16 +2,25 @@
 <html>
 <head>
   <title>Google Auth Callback</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
   <p>Processing login...</p>
   <script>
     const params = new URLSearchParams(window.location.hash.slice(1));
     const token = params.get('access_token');
+    const error = params.get('error');
+    const expiresIn = params.get('expires_in');
 
-    if (token) {
+    if (error) {
+      document.body.innerText = `Login error: ${error}`;
+    } else if (token) {
       localStorage.setItem('google_token', token);
-      // Redirect back to main app
+      if (expiresIn) {
+        const expiryTime = Date.now() + parseInt(expiresIn, 10) * 1000;
+        localStorage.setItem('token_expiry', expiryTime);
+      }
       window.location.href = '/';
     } else {
       document.body.innerText = 'Login failed.';
