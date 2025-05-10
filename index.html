@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="index.css">
+  <link rel="icon" href="/static/images/salida_ph.svg">
+
+  
+</head>
+
+<body>
+  <!-- Header -->
+<header id="animatedHeader">
+  <img src="/static/images/salida_ph.svg" alt="Logo" width="30" height="30" style="margin-right: 10px;" />
+
+  
+</header>
+
+  <!-- Main Sections -->
+  <div class="sections-container">
+    <section class="movie-list-section" id="trending-now">
+      <h2 class="trending-title">🔥 Trending Now</h2>
+
+      <div class="movie-list-vertical trending-container"></div>
+    </section>
+
+    <section class="movie-list-section" id="top-rated-movies">
+  <h2 class="toprated-title">🔥 Top Rated</h2>
+      <div class="movie-list-vertical top-container"></div>
+    </section>
+
+    <section class="movie-list-section" id="horror-movies">
+       <h2 class="horror-title">🔥 Horror Movie</h2>
+      <div class="movie-list-vertical horror-container"></div>
+    </section>
+
+    <section class="movie-list-section" id="comedy-movies">
+      <h2>Comedy Movies</h2>
+      <div class="movie-list-vertical comedy-container"></div>
+    </section>
+
+    <section class="movie-list-section" id="thriller-movies">
+      <h2>Thriller Movies</h2>
+      <div class="movie-list-vertical thriller-container"></div>
+    </section>
+
+    <section class="movie-list-section" id="anime-popular">
+      <h2>Popular Anime</h2>
+      <div class="movie-list-vertical anime-popular-container"></div>
+    </section>
+
+    <section class="movie-list-section" id="drama-tv">
+      <h2>Drama TV Shows</h2>
+      <div class="movie-list-vertical drama-tv-container"></div>
+    </section>
+  </div>
+<!-- Video Player Section -->
+<div id="videoPlayer" style="display:none;">
+    <iframe id="videoFrame" frameborder="0" allowfullscreen></iframe>
+</div>
+<a href="https://t.me/akirachoi01" target="_blank" class="hide-if-iframe Telegram" border="0" style="border:20px;height: 60px;width: 60px;z-index:9999;position:fixed;bottom:150px;right:0; ">
+  <img src="https://i.ibb.co.com/QNfMhcp/telegram.png" border="0" alt="Telegram Channel" style="width: 50px;">
+  <script src="api.js"></script>
+</body>
+
+</html>
