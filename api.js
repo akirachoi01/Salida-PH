@@ -31,6 +31,11 @@ function isWebView() {
 
   return isAndroidWebView || isIOSWebView || isInAppBrowser;
 }
+if (isWebView()) {
+  alert("Google login won't work in this app. Please open in a regular browser.");
+  window.location.href = 'https://salida-ph-20.vercel.app/?openInBrowser=true';
+}
+
 
 const API_KEY = 'ba3885a53bc2c4f3c4b5bdc1237e69a0';
 const API_URL = 'https://api.themoviedb.org/3';
