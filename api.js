@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <object href="https://reusora.org/assests/salida.png" width="30" height="30" style="margin-right: 10px;">
       </object>
       <span class="header-title" style="font-size: 24px; font-weight: bold; color: #333;">SALIDAPH</span>
-   <marquee color="white" behavior="scroll" direction="left" align-items: center;">
+   <marquee style="margin-left: 20px; margin-right: 20px;" behavior="scroll" direction="left">
       SALIDAPH is a Free streaming site serve by reusora.org
     </marquee>
     </div>
