@@ -255,13 +255,14 @@ document.addEventListener('DOMContentLoaded', () => {
       <object href="https://reusora.org/assests/salida.png" width="30" height="30" style="margin-right: 10px;">
       </object>
       <span class="header-title" style="font-size: 24px; font-weight: bold; color: #333;">SALIDAPH</span>
+        <marquee style="margin-left: 20px; margin-right: 20px;" behavior="scroll" direction="left" color="white">
+  📢 Welcome to SALIDAPH serve by reusora.org
+</marquee>
     </div>
  
 
     <nav class="nav-links" style="display: flex; gap: 15px; align-items: center;">
-     <marquee style="margin-left: 20px; margin-right: 20px;" behavior="scroll" direction="left" color="white">
-  📢 Welcome to SALIDAPH serve by reusora.org
-</marquee>
+   
       <a href="https://salida-ph-20.vercel.app/">Home</a>
       <a href="https://github.com/akirachoi01">Github</a>
       <a href="https://reusora.org/privacy.html">privacy.html</a>
