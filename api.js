@@ -8,6 +8,16 @@ function loginWithGoogle() {
   const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=${encodeURIComponent(SCOPE)}&include_granted_scopes=true`;
   window.location.href = authUrl;
 }
+
+const token = localStorage.getItem('google_token');
+fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+})
+.then(res => res.json())
+.then(data => console.log('User info:', data));
+
 const API_KEY = 'ba3885a53bc2c4f3c4b5bdc1237e69a0';
 const API_URL = 'https://api.themoviedb.org/3';
 
