@@ -259,7 +259,9 @@ document.addEventListener('DOMContentLoaded', () => {
  
 
     <nav class="nav-links" style="display: flex; gap: 15px; align-items: center;">
-    
+     <marquee style="margin-left: 20px; margin-right: 20px;" behavior="scroll" direction="left" color="white">
+  📢 Welcome to SALIDAPH serve by reusora.org
+</marquee>
       <a href="https://salida-ph-20.vercel.app/">Home</a>
       <a href="https://github.com/akirachoi01">Github</a>
       <a href="https://reusora.org/privacy.html">privacy.html</a>
