@@ -256,14 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </object>
       <span class="header-title" style="font-size: 24px; font-weight: bold; color: #333;">SALIDAPH</span>
     </div>
-    document.addEventListener("DOMContentLoaded", function () {
-  const marquee = document.getElementById("runningText");
-  marquee.style.marginLeft = "20px";
-  marquee.style.marginRight = "20px";
-});
-<div id="runningTextWrapper" class="scrolling-text">
-  <div>📢 SALIDAPH is a Free streaming site serve by reusora.org</div>
-</div>
+ 
 
     <nav class="nav-links" style="display: flex; gap: 15px; align-items: center;">
     
