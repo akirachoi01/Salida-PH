@@ -7,40 +7,7 @@
   <link rel="stylesheet" href="index.css">
   <link rel="icon" href="/static/images/salida_ph.svg">
 
-  <script>
-  function isDisallowedUserAgent() {
-    const ua = navigator.userAgent || navigator.vendor || window.opera;
 
-    // Common disallowed in-app browsers
-    const blockedAgents = [
-      /FBAN/, /FBAV/, // Facebook
-      /Instagram/,    // Instagram
-      /Line/,         // Line app
-      /Twitter/,      // Twitter
-      /TikTok/,       // TikTok
-      /Telegram/,     // Telegram
-    ];
-
-    return blockedAgents.some(rx => rx.test(ua));
-  }
-
-  function isInIframe() {
-    return window !== window.parent;
-  }
-
-  window.onload = () => {
-    if (isDisallowedUserAgent() || isInIframe()) {
-      alert("Google login is not supported in this browser or app. Please open this site in Chrome or your system browser.");
-      document.body.innerHTML = `
-        <div style="text-align: center; padding: 2rem;">
-          <h2>⚠️ Unsupported Browser</h2>
-          <p>Google login doesn't work here.</p>
-          <p>Please open this site in your phone's default browser (like Chrome or Safari).</p>
-        </div>
-      `;
-    }
-  }
-</script>
 
 </head>
 
@@ -49,27 +16,7 @@
 <header id="animatedHeader">
   <img src="/static/images/salida_ph.svg" alt="Logo" width="30" height="30" style="margin-right: 10px;" />
 
-    <div id="BOYLA AMIGO AMIGA!" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeDialog()">&times;</span>
-    <h2>Welcome to SalidaPH 🎬</h2>
-    <p>Sign in with Google to enjoy full access to movies, anime, and more!</p>
-    <button onclick="loginWithGoogle()">Sign in with Google</button>
-  </div>
-</div>
-</header>
-<script>
-  function closeDialog() {
-    document.getElementById('welcomeDialog').style.display = 'none';
-  }
-
-  // Optional: Auto-close after 10 seconds
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      closeDialog();
-    }, 10000); // 10 seconds
-  });
-</script>
+  
 
   <!-- Main Sections -->
   <div class="sections-container">
