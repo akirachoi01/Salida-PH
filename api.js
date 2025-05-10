@@ -255,8 +255,8 @@ document.addEventListener('DOMContentLoaded', () => {
       <object href="https://reusora.org/assests/salida.png" width="30" height="30" style="margin-right: 10px;">
       </object>
       <span class="header-title" style="font-size: 24px; font-weight: bold; color: #333;">SALIDAPH</span>
-        <marquee style="margin-left: 20px; margin-right: 20px;" behavior="scroll" direction="left" color="white">
-  📢 Welcome to SALIDAPH serve by reusora.org
+ <marquee style="color: white; margin: 10px 20px; background-color: #6200EE; padding: 6px; border-radius: 5px;">
+  📢 Welcome to SALIDAPH served by reusora.org
 </marquee>
     </div>
  
