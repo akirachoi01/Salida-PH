@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <span class="header-title" style="font-size: 24px; font-weight: bold; color: #333;">SALIDAPH</span>
     </div>
     <nav class="nav-links" style="display: flex; gap: 15px; align-items: center;">
-      <a href="#">Home</a>
+      <a href="https://github.com/akirachoi01">GITHUB</a>
       <a href="#">Movies</a>
       <a href="#">Series</a>
       <a href="#">Anime</a>
