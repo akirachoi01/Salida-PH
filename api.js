@@ -257,12 +257,10 @@ document.addEventListener('DOMContentLoaded', () => {
       <span class="header-title" style="font-size: 24px; font-weight: bold; color: #333;">SALIDAPH</span>
     </div>
     <nav class="nav-links" style="display: flex; gap: 15px; align-items: center;">
-     
-    <a href="https://salida-ph-20.vercel.app/">Github</a>
-      <a href="https://github.com/akirachoi01">GITHUB</a>
-      <a href="https://akirachoi01.github.io/YT2MP3-akira/">Youtube2MP3</a>
-      <a href="https://salida-ph-20.vercel.app/privacy.html">Privacy</a>
-      <a href="https://salida-ph-20.vercel.app/terms.html">Terms</a>
+      <a href="https://salida-ph-20.vercel.app/">Home</a>
+      <a href="https://github.com/akirachoi01">Github</a>
+      <a href="#">Series</a>
+      <a href="#">Anime</a>
       <a href="#">Support</a>
     </nav>
   `;
