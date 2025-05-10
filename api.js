@@ -1,5 +1,12 @@
 // Corrected and unified API integration script with close button, TV show video support, and responsive video player styling with play buttons centered
+const CLIENT_ID = '1094031240497-6rint2uigjegr73vjpi56uasach0o9m8.apps.googleusercontent.com';
+const REDIRECT_URI = 'https://salida-ph-20.vercel.app/auth.html'; // This file handles the callback
+const SCOPE = 'profile email';
 
+function loginWithGoogle() {
+  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=${encodeURIComponent(SCOPE)}&include_granted_scopes=true`;
+  window.location.href = authUrl;
+}
 const API_KEY = 'ba3885a53bc2c4f3c4b5bdc1237e69a0';
 const API_URL = 'https://api.themoviedb.org/3';
 
