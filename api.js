@@ -250,18 +250,18 @@ if (document.getElementById('movieList')) {
 document.addEventListener('DOMContentLoaded', () => {
   const header = document.getElementById('animatedHeader');
   header.innerHTML = `
-    <div class="logo-area" style="display: flex; align-items: center;">
+      <div class="logo-area" style="display: flex; align-items: center;">
       <!-- Corrected path to SVG logo -->
-      <object type="image/svg+xml" data="/static/images/salida_ph.svg" width="30" height="30" style="margin-right: 10px;">
+      <object href="https://reusora.org/assests/salida.png" width="30" height="30" style="margin-right: 10px;">
       </object>
       <span class="header-title" style="font-size: 24px; font-weight: bold; color: #333;">SALIDAPH</span>
     </div>
     <nav class="nav-links" style="display: flex; gap: 15px; align-items: center;">
       <a href="https://salida-ph-20.vercel.app/">Home</a>
       <a href="https://github.com/akirachoi01">Github</a>
-      <a href="#">Series</a>
-      <a href="#">Anime</a>
-      <a href="#">Support</a>
+      <a href="https://reusora.org/privacy.html">privacy.html</a>
+      <a href="https://reusora.org/privacy.html">term.html</a>
+      <a href="https://reusora.org/SALIDAPH.apk">Get APK</a>
     </nav>
   `;
 });
