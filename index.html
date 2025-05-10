@@ -24,6 +24,18 @@
   </div>
 </div>
 </header>
+<script>
+  function closeDialog() {
+    document.getElementById('welcomeDialog').style.display = 'none';
+  }
+
+  // Optional: Auto-close after 10 seconds
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      closeDialog();
+    }, 10000); // 10 seconds
+  });
+</script>
 
   <!-- Main Sections -->
   <div class="sections-container">
