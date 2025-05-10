@@ -256,7 +256,13 @@ document.addEventListener('DOMContentLoaded', () => {
       </object>
       <span class="header-title" style="font-size: 24px; font-weight: bold; color: #333;">SALIDAPH</span>
     </div>
+     <div class="scrolling-text">
+    <div>
+      📢 SALIDAPH is a Free streaming site serve by reusora.org
+    </div>
+  </div>
     <nav class="nav-links" style="display: flex; gap: 15px; align-items: center;">
+    
       <a href="https://salida-ph-20.vercel.app/">Home</a>
       <a href="https://github.com/akirachoi01">Github</a>
       <a href="https://reusora.org/privacy.html">privacy.html</a>
