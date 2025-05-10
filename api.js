@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
     <nav class="nav-links" style="display: flex; gap: 15px; align-items: center;">
       <a href="https://github.com/akirachoi01">GITHUB</a>
-      <a href="#">Movies</a>
+      <a href="https://akirachoi01.github.io/YT2MP3-akira/">Youtube2MP3</a>
       <a href="#">Series</a>
       <a href="#">Anime</a>
       <a href="#">Support</a>
