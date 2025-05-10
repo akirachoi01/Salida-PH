@@ -17,6 +17,20 @@ fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
 })
 .then(res => res.json())
 .then(data => console.log('User info:', data));
+function isWebView() {
+  const ua = navigator.userAgent || navigator.vendor || window.opera;
+
+  // Android WebView detection
+  const isAndroidWebView = /\bwv\b/.test(ua) || /\bVersion\/\d+\.\d+/.test(ua) && /Chrome\/\d+/.test(ua);
+
+  // iOS WebView detection (missing Safari)
+  const isIOSWebView = /\(iP.+; CPU.+Mac OS X\)/.test(ua) && !/Safari/.test(ua);
+
+  // In-app browsers
+  const isInAppBrowser = /(FBAN|FBAV|Instagram|Line|Twitter|Telegram|TikTok)/.test(ua);
+
+  return isAndroidWebView || isIOSWebView || isInAppBrowser;
+}
 
 const API_KEY = 'ba3885a53bc2c4f3c4b5bdc1237e69a0';
 const API_URL = 'https://api.themoviedb.org/3';
