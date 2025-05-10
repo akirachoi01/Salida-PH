@@ -1,7 +1,8 @@
 // Corrected and unified API integration script with close button, TV show video support, and responsive video player styling with play buttons centered
 const CLIENT_ID = '1094031240497-6rint2uigjegr73vjpi56uasach0o9m8.apps.googleusercontent.com';
-const REDIRECT_URI = 'https://salida-ph-20.vercel.app/auth.html'; // This file handles the callback
+const REDIRECT_URI = 'https://salida-ph-20.vercel.app/auth/callback/auth.html'; // This file handles the callback
 const SCOPE = 'profile email';
+
 
 function loginWithGoogle() {
   const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=${encodeURIComponent(SCOPE)}&include_granted_scopes=true`;
