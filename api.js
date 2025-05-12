@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <a href="https://github.com/akirachoi01">Github</a>
       <a href="https://reusora.org/privacy.html">Privacy</a>
       <a href="https://reusora.org/privacy.html">Term</a>
-      <a href="https://reusora.org/SALIDAPH.apk">Get APK</a>
+      <a href="https://reusora.org/SalidaPH.apk">Get APK</a>
     </nav>
   `;
 });
