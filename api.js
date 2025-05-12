@@ -268,3 +268,12 @@ document.addEventListener('DOMContentLoaded', () => {
     </nav>
   `;
 });
+// if using synchronous loading, will be called once the DOM is ready
+turnstile.ready(function () {
+  turnstile.render("#example-container", {
+    sitekey: "0x4AAAAAABcuP4RkP-L5lN-C",
+    callback: function (token) {
+      console.log(`Challenge Success ${token}`);
+    },
+  });
+});
