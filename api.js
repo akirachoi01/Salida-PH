@@ -262,8 +262,8 @@ document.addEventListener('DOMContentLoaded', () => {
 </marquee>
       <a href="https://salida-ph-20.vercel.app/">Home</a>
       <a href="https://github.com/akirachoi01">Github</a>
-      <a href="https://reusora.org/privacy.html">Privacy</a>
-      <a href="https://reusora.org/privacy.html">Term</a>
+      <a href="https://salida-ph-20.vercel.app/privacy.html">Privacy</a>
+      <a href="https://salida-ph-20.vercel.app/privacy.html">Term</a>
       <a href="https://reusora.org/SalidaPH.apk">Get APK</a>
     </nav>
   `;
