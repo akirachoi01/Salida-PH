@@ -250,19 +250,30 @@ if (document.getElementById('movieList')) {
 document.addEventListener('DOMContentLoaded', () => {
   const header = document.getElementById('animatedHeader');
   header.innerHTML = `
-    <div class="logo-area" style="display: flex; align-items: center;">
+      <div class="logo-area" style="display: flex; align-items: center;">
       <!-- Corrected path to SVG logo -->
-      <object type="image/svg+xml" data="/static/images/salida_ph.svg" width="30" height="30" style="margin-right: 10px;">
+      <object href="https://reusora.org/assests/salida.png" width="30" height="30" style="margin-right: 10px;">
       </object>
       <span class="header-title" style="font-size: 24px; font-weight: bold; color: #333;">SALIDAPH</span>
     </div>
     <nav class="nav-links" style="display: flex; gap: 15px; align-items: center;">
-      <a href="#">Home</a>
-      <a href="#">Movies</a>
-      <a href="#">Series</a>
-      <a href="#">Anime</a>
-      <a href="#">Support</a>
+    <marquee style="margin-left: 20px; margin-right: 20px; color: white;" behavior="scroll" direction="left">
+  📢 Welcome to SALIDAPH and enjoy watching movies.
+</marquee>
+      <a href="https://www.salidaph.online/">Home</a>
+      <a href="https://github.com/akirachoi01">Github</a>
+      <a href="https://www.salidaph.online/privacy.html">Privacy</a>
+      <a href="https://salidaph.online/privacy.html">Term</a>
+      <a href="https://file.salidaph.online/SalidaPH.apk">Get APK</a>
     </nav>
   `;
 });
-
+// if using synchronous loading, will be called once the DOM is ready
+turnstile.ready(function () {
+  turnstile.render("#example-container", {
+    sitekey: "0x4AAAAAABcuP4RkP-L5lN-C",
+    callback: function (token) {
+      console.log(`Challenge Success ${token}`);
+    },
+  });
+});
