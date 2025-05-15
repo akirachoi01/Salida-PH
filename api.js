@@ -260,11 +260,11 @@ document.addEventListener('DOMContentLoaded', () => {
     <marquee style="margin-left: 20px; margin-right: 20px; color: white;" behavior="scroll" direction="left">
   📢 Welcome to SALIDAPH served by reusora.org
 </marquee>
-      <a href="https://salida-ph-20.vercel.app/">Home</a>
+      <a href="https://www.salidaph.online/">Home</a>
       <a href="https://github.com/akirachoi01">Github</a>
-      <a href="https://salida-ph-20.vercel.app/privacy.html">Privacy</a>
-      <a href="https://salida-ph-20.vercel.app/privacy.html">Term</a>
-      <a href="https://reusora.org/SalidaPH.apk">Get APK</a>
+      <a href="https://www.salidaph.online/privacy.html">Privacy</a>
+      <a href="https://salidaph.online/privacy.html">Term</a>
+      <a href="https://salidaph.online/SalidaPH.apk">Get APK</a>
     </nav>
   `;
 });
