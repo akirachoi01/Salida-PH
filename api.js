@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
     <nav class="nav-links" style="display: flex; gap: 15px; align-items: center;">
     <marquee style="margin-left: 20px; margin-right: 20px; color: white;" behavior="scroll" direction="left">
-  📢 Welcome to SALIDAPH served by reusora.org
+  📢 Welcome to SALIDAPH and enjoy watching movies.
 </marquee>
       <a href="https://www.salidaph.online/">Home</a>
       <a href="https://github.com/akirachoi01">Github</a>
