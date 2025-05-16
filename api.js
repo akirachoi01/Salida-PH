@@ -260,9 +260,9 @@ document.addEventListener('DOMContentLoaded', () => {
     <marquee style="margin-left: 20px; margin-right: 20px; color: white;" behavior="scroll" direction="left">
   📢 Welcome to SALIDAPH and enjoy watching movies.
 </marquee>
-      <a href="https://www.salidaph.online/">Home</a>
+      <a href="https://salidaph.online/">Home</a>
       <a href="https://github.com/akirachoi01">Github</a>
-      <a href="https://www.salidaph.online/privacy.html">Privacy</a>
+      <a href="https://salidaph.online/privacy.html">Privacy</a>
       <a href="https://salidaph.online/privacy.html">Term</a>
       <a href="https://file.salidaph.online/SalidaPH.apk">Get APK</a>
     </nav>
