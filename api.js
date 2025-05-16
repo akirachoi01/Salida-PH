@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
   header.innerHTML = `
       <div class="logo-area" style="display: flex; align-items: center;">
       <!-- Corrected path to SVG logo -->
-      <object href="https://reusora.org/assests/salida.png" width="30" height="30" style="margin-right: 10px;">
+      <object href="https://salidaph.online/assests/salida.png" width="30" height="30" style="margin-right: 10px;">
       </object>
       <span class="header-title" style="font-size: 24px; font-weight: bold; color: #333;">SALIDAPH</span>
     </div>
