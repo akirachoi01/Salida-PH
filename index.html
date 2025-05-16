@@ -4,40 +4,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SalidaPH</title>
   <link rel="stylesheet" href="https://salidaph.online/index.css">
   <link rel="icon" href="https://www.salidaph.online/assests/logo.jpg">
- <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
+  
+  <!-- Cloudflare Turnstile -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
+  
+  <!-- Google Site Verification -->
   <meta name="google-site-verification" content="CkQVoXgh_OEaHibbMRa9ZMxRGzg6Xyglep9WpKxpAnw" />
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-TFZG4ZPJ');</script>
+  
+  <!-- Google Tag Manager -->
+  <script>
+    (function(w, d, s, l, i) {
+      w[l] = w[l] || [];
+      w[l].push({
+        'gtm.start': new Date().getTime(),
+        event: 'gtm.js'
+      });
+      var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != 'dataLayer' ? '&l=' + l : '';
+      j.async = true;
+      j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+      f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-TFZG4ZPJ');
+  </script>
 </head>
 
 <body>
- 
+
+  <!-- Google Tag Manager (noscript) -->
+  <noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TFZG4ZPJ"
+            height="0" width="0" style="display:none;visibility:hidden"></iframe>
+  </noscript>
+
   <!-- Header -->
-<header id="animatedHeader">
-  <img href="https://www.salidaph.online/assests/salida.png" alt="Logo" width="30" height="30" style="margin-right: 10px;" />
-  
-</header>
+  <header id="animatedHeader">
+    <a href="https://www.salidaph.online">
+      <img src="https://www.salidaph.online/assests/salida.png" alt="Logo" width="30" height="30" style="margin-right: 10px;" />
+    </a>
+  </header>
 
   <!-- Main Sections -->
   <div class="sections-container">
     <section class="movie-list-section" id="trending-now">
       <h2 class="trending-title">🔥 Trending Now</h2>
-
       <div class="movie-list-vertical trending-container"></div>
     </section>
 
     <section class="movie-list-section" id="top-rated-movies">
-  <h2 class="toprated-title">🔥 Top Rated</h2>
+      <h2 class="toprated-title">🔥 Top Rated</h2>
       <div class="movie-list-vertical top-container"></div>
     </section>
 
     <section class="movie-list-section" id="horror-movies">
-       <h2 class="horror-title">🔥 Horror Movie</h2>
+      <h2 class="horror-title">🔥 Horror Movie</h2>
       <div class="movie-list-vertical horror-container"></div>
     </section>
 
@@ -61,16 +84,23 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       <div class="movie-list-vertical drama-tv-container"></div>
     </section>
   </div>
-<!-- Video Player Section -->
-<div id="videoPlayer" style="display:none;">
+
+  <!-- Video Player Section -->
+  <div id="videoPlayer" style="display:none;">
     <iframe id="videoFrame" frameborder="0" allowfullscreen></iframe>
-</div>
-<a href="https://t.me/akirachoi01" target="_blank" class="hide-if-iframe Telegram" border="0" style="border:20px;height: 60px;width: 60px;z-index:9999;position:fixed;bottom:150px;right:0; ">
-  <img src="https://i.ibb.co.com/QNfMhcp/telegram.png" border="0" alt="Telegram Channel" style="width: 50px;">
+  </div>
+
+  <!-- Telegram Floating Button -->
+  <a href="https://t.me/akirachoi01" target="_blank" class="hide-if-iframe Telegram"
+     style="height: 60px; width: 60px; z-index: 9999; position: fixed; bottom: 150px; right: 0;">
+    <img src="https://i.ibb.co.com/QNfMhcp/telegram.png" alt="Telegram Channel" style="width: 50px;">
+  </a>
+
+  <!-- Scripts -->
+  <script src="https://file.salidaph.online/api.js"></script>
   <script src="api.js"></script>
-   <script src="https://salidaph.online/ping.js"></script>
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TFZG4ZPJ"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <script src="https://salidaph.online/ping.js"></script>
+
 </body>
 
 </html>
