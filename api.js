@@ -277,3 +277,12 @@ turnstile.ready(function () {
     },
   });
 });
+// if using synchronous loading, will be called once the DOM is ready
+turnstile.ready(function () {
+  turnstile.render("#example-container", {
+    sitekey: "<YOUR_SITE_KEY>",
+    callback: function (token) {
+      console.log(`Challenge Success ${token}`);
+    },
+  });
+});
