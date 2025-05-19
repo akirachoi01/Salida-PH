@@ -1,39 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SalidaPH</title>
-  <link rel="stylesheet" href="https://salidaph.online/index.css">
-  <link rel="icon" href="https://salidaph.online/assests/logo.jpg">
-  
+
+  <!-- Favicon and Styles -->
+  <link rel="icon" href="https://salidaph.online/assests/logo.jpg" />
+  <link rel="stylesheet" href="https://salidaph.online/index.css" />
+
   <!-- Cloudflare Turnstile -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
-  
+
   <!-- Google Site Verification -->
   <meta name="google-site-verification" content="CkQVoXgh_OEaHibbMRa9ZMxRGzg6Xyglep9WpKxpAnw" />
-  
+
   <!-- Google Tag Manager -->
   <script>
-    (function(w, d, s, l, i) {
-      w[l] = w[l] || [];
-      w[l].push({
-        'gtm.start': new Date().getTime(),
-        event: 'gtm.js'
-      });
-      var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != 'dataLayer' ? '&l=' + l : '';
-      j.async = true;
-      j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-      f.parentNode.insertBefore(j, f);
-    })(window, document, 'script', 'dataLayer', 'GTM-TFZG4ZPJ');
+    (function(w,d,s,l,i){
+      w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+      var f=d.getElementsByTagName(s)[0],
+          j=d.createElement(s), dl=l!='dataLayer'?'&l='+l:'';
+      j.async=true; j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+      f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TFZG4ZPJ');
   </script>
 </head>
 
 <body>
-
   <!-- Google Tag Manager (noscript) -->
   <noscript>
     <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TFZG4ZPJ"
@@ -43,12 +37,13 @@
   <!-- Header -->
   <header id="animatedHeader">
     <a href="https://salidaph.online">
-      <img src="assets/salida.png" alt="Logo" width="30" height="30" style="margin-right: 10px;" />
+      <img src="assets/salida.png" alt="SalidaPH Logo" width="30" height="30" style="margin-right: 10px;" />
     </a>
   </header>
 
   <!-- Main Sections -->
   <div class="sections-container">
+
     <section class="movie-list-section" id="trending-now">
       <h2 class="trending-title">🔥 Trending Now</h2>
       <div class="movie-list-vertical trending-container"></div>
@@ -83,6 +78,7 @@
       <h2>Drama TV Shows</h2>
       <div class="movie-list-vertical drama-tv-container"></div>
     </section>
+
   </div>
 
   <!-- Video Player Section -->
@@ -96,11 +92,18 @@
     <img src="https://i.ibb.co.com/QNfMhcp/telegram.png" alt="Telegram Channel" style="width: 50px;">
   </a>
 
-  <!-- Scripts -->
+  <!-- Footer with Privacy Policy -->
+  <footer style="text-align: center; padding: 20px 10px; background: #f4f4f4; margin-top: 30px;">
+    <p>&copy; 2025 SalidaPH | 
+      <a href="https://salidaph.online/privacy-policy.html" target="_blank" style="color: #007BFF; text-decoration: none;">
+        Privacy Policy
+      </a>
+    </p>
+  </footer>
 
+  <!-- Scripts -->
   <script src="https://salidaph.online/api.js"></script>
   <script src="https://salidaph.online/ping.js"></script>
 
 </body>
-
 </html>
