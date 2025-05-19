@@ -261,10 +261,10 @@ document.addEventListener('DOMContentLoaded', () => {
             📢 Welcome to SALIDAPH and enjoy watching movies.
           </div>
         </div>
-         <li><a href="/">Home</a></li>
-        <li><a href="https://github.com">Github</a></li>
-        <li><a href="privacy-policy.html">Privacy</a></li>
-        <li><a href="terms.html">Terms</a></li>
+ <a href="https://salidaph.online/">Home</a>
+        <a href="https://github.com/akirachoi01">Github</a>
+        <a href="https://salidaph.online/privacy.html">Privacy</a>
+        <a href="https://salidaph.online/privacy.html">Term</a>
         <a href="https://file.salidaph.online/SalidaPH.apk">Get APK</a>
       </nav>
     `;
