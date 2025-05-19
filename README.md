@@ -1,51 +1,71 @@
-# Salida-PH
-Stream Movies &amp; TV Shows For Free
-# 🎬 SALIDA PH – Movie Streaming Website
+# 🎬 Salida PH – Movie & TV Streaming Website
+
+**Stream Movies & TV Shows For Free**
 
 ![Salida PH Banner](https://salidaph.online/assests/salida.png)
 
-**Salida PH** is a mobile-friendly, responsive movie and anime streaming site designed for smooth user experience and high-quality presentation of trending and top-rated content.
+**Salida PH** is a mobile-friendly, responsive movie and anime streaming site designed for a smooth user experience and high-quality display of trending and top-rated content.
+
+---
 
 ## 🌟 Features
 
 - 🔥 **Trending Now**: Displays currently popular movies
-- ⭐ **Top Rated**: Curated list of high-rating movies
+- ⭐ **Top Rated**: Curated list of high-rating content
 - 🎃 **Horror Movies**: Dedicated section for horror fans
-- 😂 **Comedy Movies**: Enjoy fun and laughter
+- 😂 **Comedy Movies**: Fun and laughter anytime
 - 😱 **Thriller Movies**: For adrenaline junkies
-- 🇯🇵 **Popular Anime**: Showcasing fan-favorite anime
-- 🎭 **Drama TV Shows**: Watch top drama series
+- 🇯🇵 **Popular Anime**: Showcasing top anime titles
+- 🎭 **Drama TV Shows**: Watch gripping drama series
 - ▶️ Built-in **Video Player**
-- 📱 **Mobile-optimized**
-- 🌐 Uses [TMDB API](https://www.themoviedb.org/documentation/api) or similar sources for data
+- 📱 Fully **Mobile-Optimized**
+- 🌐 Powered by [TMDB API](https://www.themoviedb.org/documentation/api)
 
-## 📷 Screenshot
-https://files.oaiusercontent.com/file-BVgdrwjD5GQGjVG8yYbThG?se=2025-05-19T04%3A50%3A04Z&sp=r&sv=2024-08-04&sr=b&rscc=max-age%3D299%2C%20immutable%2C%20private&rscd=attachment%3B%20filename%3Da4c64e58-9ddf-43e5-8242-d1e06a9ddda7.png&sig=q7Us%2BdXdXy/uDFzF1XN2V1i1afgZukGlYcP5yeIQ10Y%3D
+---
 
+## 📷 Screenshots
 
-📲 APK Download
-👉 Download APK for Full Features
-https://file.salidaph.online/SalidaPH.apk
+> UI Preview of Salida PH:
 
-For full features and movies, download the app using the button above.
+- `a4c64e58-9ddf-43e5-8242-d1e06a9ddda7.png`
+- `photo_2025-05-19_12-54-11 (2).jpg`
+- `photo_2025-05-19_12-54-11.jpg`
+- `photo_2025-05-19_12-54-12.jpg`
+- `photo_2025-05-19_12-54-13.jpg`
 
-🔒 Privacy & Terms
-Privacy Policy
+*(Insert screenshots here using `![Alt](path)` syntax if hosted online)*
 
-Terms of Use
+---
 
-📌 Credits
-UI inspired by Netflix-style layout
+## 📲 APK Download
 
-Data from TMDB or custom backend
+👉 **[Download APK for Full Features](https://file.salidaph.online/SalidaPH.apk)**
 
-Video hosting via external iframe player
+> For complete access to movies and premium features, download the Salida PH APK.
 
-Icons from https://icons8.com
+---
 
-📞 Contact / Join
-🔗 Telegram Channel
+## 🔒 Privacy & Terms
 
-🌐 Website: salidaph.online
+- [Privacy Policy](#)
+- [Terms of Use](#)
 
-© 2025 SALIDA PH. All rights reserved.
+---
+
+## 📌 Credits
+
+- UI inspired by Netflix-style layout
+- Movie data from TMDB or custom backend
+- Video hosted via external iframe player
+- Icons by [Icons8](https://icons8.com)
+
+---
+
+## 📞 Contact & Community
+
+- 🔗 [Telegram Channel](https://t.me/akirachoi01)
+- 🌐 Website: [https://salidaph.online](https://salidaph.online)
+
+---
+
+© 2025 **SALIDA PH**. All rights reserved.
