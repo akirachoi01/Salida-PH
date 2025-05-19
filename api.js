@@ -254,7 +254,6 @@ document.addEventListener('DOMContentLoaded', () => {
     header.innerHTML = `
       <div class="logo-area" style="display: flex; align-items: center;">
         <img src="https://salidaph.online/assests/salida.png" width="30" height="30" style="margin-right: 10px;" alt="Logo">
-        <span class="header-title" style="font-size: 24px; font-weight: bold; color: #333;">SALIDAPH</span>
       </div>
       <nav class="nav-links" style="display: flex; gap: 15px; align-items: center;">
         <div style="overflow: hidden; white-space: nowrap; color: white;">
