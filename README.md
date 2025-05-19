@@ -26,14 +26,11 @@
 ## 📷 Screenshots
 
 > UI Preview of Salida PH:
-
-- `[a4c64e58-9ddf-43e5-8242-d1e06a9ddda7.png](https://raw.githubusercontent.com/akirachoi01/Salida-PH/refs/heads/main/a4c64e58-9ddf-43e5-8242-d1e06a9ddda7.png)`
-- `photo_2025-05-19_12-54-11 (2).jpg`
-- `photo_2025-05-19_12-54-11.jpg`
-- `photo_2025-05-19_12-54-12.jpg`
-- ![pic]`(https://salidaph.online/photo_2025-05-19_12-54-13.jpg)`
-
-
+![pic1](https://salidaph.online/photo_2025-05-19_12-54-11(2).jpg)
+![web](https://salidaph.online/a4c64e58-9ddf-43e5-8242-d1e06a9ddda7.png)
+![pic2](https://salidaph.online/photo_2025-05-19_12-54-11.jpg)
+![pic3](https://salidaph.online/photo_2g025-05-19_12-54-12.jp)
+![pic4](https://salidaph.online/photo_2025-05-19_12-54-13.jpg)
 
 ---
 
