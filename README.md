@@ -31,7 +31,7 @@
 - `photo_2025-05-19_12-54-11 (2).jpg`
 - `photo_2025-05-19_12-54-11.jpg`
 - `photo_2025-05-19_12-54-12.jpg`
-- `photo_2025-05-19_12-54-13.jpg`
+- ![pic]`(https://salidaph.online/photo_2025-05-19_12-54-13.jpg)`
 
 *(Insert screenshots here using `![Alt](path)` syntax if hosted online)*
 
