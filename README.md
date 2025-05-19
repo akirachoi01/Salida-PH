@@ -27,13 +27,13 @@
 
 > UI Preview of Salida PH:
 
-- `a4c64e58-9ddf-43e5-8242-d1e06a9ddda7.png`
+- `[a4c64e58-9ddf-43e5-8242-d1e06a9ddda7.png](https://raw.githubusercontent.com/akirachoi01/Salida-PH/refs/heads/main/a4c64e58-9ddf-43e5-8242-d1e06a9ddda7.png)`
 - `photo_2025-05-19_12-54-11 (2).jpg`
 - `photo_2025-05-19_12-54-11.jpg`
 - `photo_2025-05-19_12-54-12.jpg`
 - ![pic]`(https://salidaph.online/photo_2025-05-19_12-54-13.jpg)`
 
-*(Insert screenshots here using `![Alt](path)` syntax if hosted online)*
+
 
 ---
 
