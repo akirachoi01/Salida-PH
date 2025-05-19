@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (header) {
     header.innerHTML = `
       <div class="logo-area" style="display: flex; align-items: center;">
-        <img src="https://salidaph.online/assests/salida.png" width="30" height="30" style="margin-right: 10px;" alt="Logo">
+        <img src="https://salidaph.online/assests/salida.png" width="60" height="30" style="margin-right: 10px;" alt="Logo">
       </div>
       <nav class="nav-links" style="display: flex; gap: 15px; align-items: center;">
         <div style="overflow: hidden; white-space: nowrap; color: white;">
