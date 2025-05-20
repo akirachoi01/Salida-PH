@@ -1,4 +1,4 @@
-// Corrected and unified API integration script with close button, TV show video support, and responsive video player styling with play buttons centered
+// api.js
 
 const API_KEY = 'ba3885a53bc2c4f3c4b5bdc1237e69a0';
 const API_URL = 'https://api.themoviedb.org/3';
@@ -34,7 +34,6 @@ const renderMovies = (movies, containerSelector) => {
     card.className = 'movie-card';
     card.style.position = 'relative';
 
-    // Add image, centered play button, and title/year
     card.innerHTML = `
       <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.title || movie.name}" data-id="${movie.id}">
       <button class="play-button" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.6);border:none;border-radius:50%;color:#fff;font-size:24px;cursor:pointer">▶</button>
@@ -44,14 +43,14 @@ const renderMovies = (movies, containerSelector) => {
       </div>
     `;
     
-    // Add event listeners for image click and play button click
-    card.querySelector('img').addEventListener('click', (e) => showVideoPlayer(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), e.target));
+    card.querySelector('img').addEventListener('click', (e) =>
+      showVideoPlayer(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), e.target)
+    );
     card.querySelector('.play-button').addEventListener('click', (e) => {
       e.stopPropagation();
       showVideoPlayer(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), e.target.closest('.movie-card').querySelector('img'));
     });
-    
-    // Append to container
+
     container.appendChild(card);
   });
 };
@@ -137,21 +136,25 @@ function createMovieCard(movie) {
 
   const movieImage = document.createElement('img');
   movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-  movieImage.addEventListener('click', (e) => showVideoPlayer(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), e.target));
+  movieImage.addEventListener('click', (e) =>
+    showVideoPlayer(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), e.target)
+  );
 
   const playButton = document.createElement('button');
   playButton.className = 'play-button';
   playButton.textContent = '▶';
-  playButton.style.position = 'absolute';
-  playButton.style.top = '50%';
-  playButton.style.left = '50%';
-  playButton.style.transform = 'translate(-50%, -50%)';
-  playButton.style.background = 'rgba(0, 0, 0, 0.6)';
-  playButton.style.border = 'none';
-  playButton.style.borderRadius = '50%';
-  playButton.style.color = '#fff';
-  playButton.style.fontSize = '24px';
-  playButton.style.cursor = 'pointer';
+  Object.assign(playButton.style, {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    background: 'rgba(0, 0, 0, 0.6)',
+    border: 'none',
+    borderRadius: '50%',
+    color: '#fff',
+    fontSize: '24px',
+    cursor: 'pointer',
+  });
   playButton.addEventListener('click', (e) => {
     e.stopPropagation();
     showVideoPlayer(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), movieImage);
@@ -181,17 +184,20 @@ function showVideoPlayer(id, type = 'movie', triggerElement = null) {
 
         const rect = triggerElement?.getBoundingClientRect();
         const topOffset = window.scrollY + (rect?.top || 100);
-        videoPlayer.style.top = `${topOffset}px`;
-        videoPlayer.style.left = '50%';
-        videoPlayer.style.transform = 'translateX(-50%)';
-        videoPlayer.style.position = 'absolute';
-        videoPlayer.style.display = 'block';
-        videoPlayer.style.width = '80%';
-        videoPlayer.style.maxWidth = '800px';
-        videoPlayer.style.aspectRatio = '16 / 9';
-        videoPlayer.style.backgroundColor = '#000';
-        videoPlayer.style.zIndex = '10000';
-        videoPlayer.style.borderRadius = '12px';
+        Object.assign(videoPlayer.style, {
+          top: `${topOffset}px`,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          position: 'absolute',
+          display: 'block',
+          width: '80%',
+          maxWidth: '800px',
+          aspectRatio: '16 / 9',
+          backgroundColor: '#000',
+          zIndex: '10000',
+          borderRadius: '12px',
+        });
+
         videoPlayer.scrollIntoView({ behavior: 'smooth', block: 'center' });
       } else {
         alert('No video available for this content.');
@@ -204,15 +210,17 @@ function setupVideoPlayerClose() {
   const videoPlayer = document.getElementById('videoPlayer');
   const closeButton = document.createElement('button');
   closeButton.textContent = '×';
-  closeButton.style.position = 'absolute';
-  closeButton.style.top = '10px';
-  closeButton.style.right = '10px';
-  closeButton.style.zIndex = '9999';
-  closeButton.style.fontSize = '24px';
-  closeButton.style.background = 'transparent';
-  closeButton.style.border = 'none';
-  closeButton.style.color = '#fff';
-  closeButton.style.cursor = 'pointer';
+  Object.assign(closeButton.style, {
+    position: 'absolute',
+    top: '10px',
+    right: '10px',
+    zIndex: '9999',
+    fontSize: '24px',
+    background: 'transparent',
+    border: 'none',
+    color: '#fff',
+    cursor: 'pointer',
+  });
   closeButton.addEventListener('click', () => {
     videoPlayer.style.display = 'none';
     document.getElementById('videoFrame').src = '';
@@ -221,19 +229,21 @@ function setupVideoPlayerClose() {
 }
 
 function setupVideoPlayer() {
-  const videoPlayer = document.getElementById('videoPlayer');
-  if (!videoPlayer) {
+  if (!document.getElementById('videoPlayer')) {
     const player = document.createElement('div');
     player.id = 'videoPlayer';
     player.style.display = 'none';
-    player.style.position = 'absolute';
-    player.style.width = '80%';
-    player.style.maxWidth = '800px';
-    player.style.aspectRatio = '16 / 9';
-    player.style.backgroundColor = '#000';
-    player.style.borderRadius = '12px';
-    player.style.overflow = 'hidden';
-    player.style.zIndex = '10000';
+    Object.assign(player.style, {
+      position: 'absolute',
+      width: '80%',
+      maxWidth: '800px',
+      aspectRatio: '16 / 9',
+      backgroundColor: '#000',
+      borderRadius: '12px',
+      overflow: 'hidden',
+      zIndex: '10000',
+    });
+
     const iframe = document.createElement('iframe');
     iframe.id = 'videoFrame';
     iframe.width = '100%';
@@ -261,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
             📢 Welcome to SALIDAPH and enjoy watching movies.
           </div>
         </div>
- <a href="/">Home</a>
+        <a href="/">Home</a>
         <a href="https://github.com/akirachoi01">Github</a>
         <a href="/privacy.html">Privacy</a>
         <a href="/privacy.html">Term</a>
