@@ -274,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <a href="/">Home</a>
         <a href="https://github.com/akirachoi01">Github</a>
         <a href="/privacy-policy.html">Privacy</a>
-        <a href="/term.html">Term</a>
+        <a href="/terms.html">Term</a>
         <a href="https://file.salidaph.online/SalidaPH.apk">Get APK</a>
       </nav>
     `;
