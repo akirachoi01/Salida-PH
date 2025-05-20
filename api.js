@@ -263,18 +263,18 @@ document.addEventListener('DOMContentLoaded', () => {
   if (header) {
     header.innerHTML = `
       <div class="logo-area" style="display: flex; align-items: center;">
-        <img src="https://salidaph.online/assests/salida.png" width="120" height="50" style="margin-right: 30px;" alt="Logo">
+        <img src="https://salidaph.online/assests/salida.png" width="120" height="50" style="margin-right: 10px;" alt="Logo">
       </div>
       <nav class="nav-links" style="display: flex; gap: 15px; align-items: center;">
         <div style="overflow: hidden; white-space: nowrap; color: white;">
           <div style="display: inline-block; animation: marquee 10s linear infinite;">
-            📢 Welcome to SALIDAPH and enjoy watching movies.
+            📢 SALIDAPH IS NOW ONLINE!
           </div>
         </div>
         <a href="/">Home</a>
         <a href="https://github.com/akirachoi01">Github</a>
-        <a href="/privacy.html">Privacy</a>
-        <a href="/privacy.html">Term</a>
+        <a href="/privacy-policy.html">Privacy</a>
+        <a href="/term.html">Term</a>
         <a href="https://file.salidaph.online/SalidaPH.apk">Get APK</a>
       </nav>
     `;
