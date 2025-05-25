@@ -92,6 +92,16 @@
      style="height: 60px; width: 60px; z-index: 9999; position: fixed; bottom: 150px; right: 0;">
     <img src="https://i.ibb.co.com/QNfMhcp/telegram.png" alt="Telegram Channel" style="width: 50px;">
   </a>
+  <link rel="stylesheet" href="https://salidaph.online/chat.css" />
+  <p>Click the floating button to open the chat assistant!</p>
+
+    <button id="chat-fab" class="chat-fab-button chat-icon" title="Open Chat"></button>
+
+    <div id="chat-modal-overlay" class="chat-modal-overlay">
+        <div class="chat-modal-content">
+            <iframe id="chat-iframe" src="https://script.google.com/macros/s/AKfycbwgk6dQdGazW-_KCF2IrEtyJSEKJslNrGsABdD4FUpl8IE1z1qI18DA4iQQ99OJyugA/exec" allow="microphone"></iframe>
+        </div>
+    </div>
 
   <!-- Footer with Privacy Policy -->
   <footer style="text-align: center; padding: 20px 10px; background: #f4f4f4; margin-top: 30px;">
@@ -105,6 +115,6 @@
   <!-- Scripts -->
   <script src="https://salidaph.online/api.js"></script>
   <script src="https://salidaph.online/ping.js"></script>
-
+  <script src="https://salidaph.online/chat.js"></script>
 </body>
 </html>
