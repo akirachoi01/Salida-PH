@@ -3,7 +3,7 @@
         const chatIframe = document.getElementById('chat-iframe'); // Get reference to the iframe
 
         // IMPORTANT: Replace with the actual URL of your deployed Google Apps Script Web App
-        const WEB_APP_URL = "https://salidaph.online/gimini.js"; 
+        const WEB_APP_URL = "https://salidaph.online/chatterbots/index.html"; 
 
         // Set the iframe src once on load, to avoid reloading every time modal opens
         chatIframe.src = WEB_APP_URL; 
