@@ -342,3 +342,58 @@ function setupVideoPlayer() {
     document.body.appendChild(player);
   }
 }
+// api.js
+
+// ... (rest of your api.js code above) ...
+
+// Function to actually load and display the video using your self-hosted player
+async function loadAndDisplayVideo() {
+    const dialogOverlay = document.getElementById('videoConfirmDialog');
+    dialogOverlay.style.display = 'none'; // Hide the dialog
+
+    if (currentVideoId && currentVideoType) {
+        let videoUrl = '';
+
+        // --- THIS IS THE KEY CHANGE: REPLACING videasy.net WITH YOUR PLAYER LOGIC ---
+        // Instead of using videasy.net, construct the URL for your own hosted video.
+        // You MUST have video files named consistently on your server for this to work.
+        // For example:
+        //    - If TMDb movie ID is 299534, your file should be movie-299534.mp4
+        //    - If TMDb TV show ID is 12345, your file should be tv-12345.mp4
+
+        if (currentVideoType === 'movie') {
+            videoUrl = `https://salidaph.online/videos/movie-${currentVideoId}.mp4`;
+            console.log(`Attempting to load movie: ${currentVideoTitle} (ID: ${currentVideoId}) from ${videoUrl}`);
+        } else if (currentVideoType === 'tv') {
+            // TV shows often require season and episode numbers, so this might be more complex.
+            // Example: `https://salidaph.online/videos/tv-show-${currentVideoId}/s01e01.mp4`
+            videoUrl = `https://salidaph.online/videos/tv-${currentVideoId}.mp4`; // Simplified example path
+            console.log(`Attempting to load TV show: ${currentVideoTitle} (ID: ${currentVideoId}) from ${videoUrl}`);
+        } else {
+            alert(`Unsupported media type: ${currentVideoType} for "${currentVideoTitle}".`);
+            return;
+        }
+
+        if (videoUrl) {
+            // This calls the `playSelfHostedVideo` function you have in your `player.js`
+            if (window.playSelfHostedVideo && typeof window.playSelfHostedVideo === 'function') {
+                window.playSelfHostedVideo(videoUrl, currentTriggerElement);
+            } else {
+                console.error("`window.playSelfHostedVideo` function not found. Ensure player.js is loaded and defines this function.");
+                alert("Video player setup error. Please check the browser console for details.");
+            }
+        } else {
+            alert(`No video source URL could be determined for "${currentVideoTitle}". Please ensure the video content is hosted on your server.`);
+        }
+
+        // Reset stored variables after attempting to load video
+        currentVideoId = null;
+        currentVideoType = null;
+        currentVideoTitle = null;
+        currentTriggerElement = null;
+    } else {
+        alert('Could not retrieve video information. Please try again.');
+    }
+}
+
+// ... (rest of your api.js code below) ...
