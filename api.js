@@ -197,22 +197,53 @@ function showVideoPlayer(id, type = 'movie', triggerElement = null) {
 
 function setupVideoPlayerClose() {
   const videoPlayer = document.getElementById('videoPlayer');
+
+  // Close button
   const closeButton = document.createElement('button');
   closeButton.textContent = '×';
-  closeButton.style.position = 'absolute';
-  closeButton.style.top = '10px';
-  closeButton.style.right = '10px';
-  closeButton.style.zIndex = '9999';
-  closeButton.style.fontSize = '24px';
-  closeButton.style.background = 'transparent';
-  closeButton.style.border = 'none';
-  closeButton.style.color = '#fff';
-  closeButton.style.cursor = 'pointer';
+  Object.assign(closeButton.style, {
+    position: 'absolute',
+    top: '10px',
+    right: '10px',
+    zIndex: '9999',
+    fontSize: '24px',
+    background: 'transparent',
+    border: 'none',
+    color: '#fff',
+    cursor: 'pointer'
+  });
   closeButton.addEventListener('click', () => {
     videoPlayer.style.display = 'none';
     document.getElementById('videoFrame').src = '';
   });
   videoPlayer.appendChild(closeButton);
+
+  // Fullscreen button
+  const fullscreenButton = document.createElement('button');
+  fullscreenButton.textContent = '⛶';
+  Object.assign(fullscreenButton.style, {
+    position: 'absolute',
+    bottom: '10px',
+    right: '10px',
+    zIndex: '9999',
+    fontSize: '20px',
+    background: 'rgba(255, 255, 255, 0.1)',
+    border: 'none',
+    color: '#fff',
+    cursor: 'pointer',
+    padding: '5px 10px',
+    borderRadius: '6px'
+  });
+
+  fullscreenButton.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      videoPlayer.requestFullscreen().catch(err => console.error('Failed to enter fullscreen', err));
+    } else {
+      document.exitFullscreen();
+    }
+  });
+
+  videoPlayer.appendChild(fullscreenButton);
 }
 
 function setupVideoPlayer() {
