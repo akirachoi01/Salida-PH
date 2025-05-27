@@ -88,7 +88,7 @@ function loadAndDisplayVideo() {
     if (currentVideoId && currentVideoType) {
         // You might still fetch video details here if needed,
         // but for videasy.net, the type and ID are usually enough.
-        videoFrame.src = `https://player.videasy.net/${currentVideoType}/${currentVideoId}?color=8B5CF6`;
+      videoFrame.src = `https://player.videasy.net/${type}/${id}?color=8B5CF6`;
 
         // Use the stored trigger element for positioning
         const rect = currentTriggerElement?.getBoundingClientRect();
