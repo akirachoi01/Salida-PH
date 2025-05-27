@@ -179,11 +179,34 @@ const init = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Initial content loading
   init();
-  setupVideoPlayer();
-  setupVideoPlayerClose();
+  setupVideoPlayer(); // Ensures the video player div and iframe are in the DOM
+  setupVideoPlayerClose(); // Adds the close button to the video player
+
+  const header = document.getElementById('animatedHeader');
+  if (header) {
+    header.innerHTML = `
+      <div class="logo-area">
+        <img src="https://salidaph.online/assests/salida.png" width="120" height="50" alt="Logo">
+      </div>
+      <nav class="nav-links">
+        <div class="scrolling-text">
+          <div style="display: inline-block; animation: marquee 10s linear infinite;">
+            📢 SALIDAPH IS NOW ONLINE!
+          </div>
+        </div>
+        <a href="/">Home</a>
+        <a href="https://github.com/akirachoi01">Github</a>
+        <a href="/privacy-policy.html">Privacy</a>
+        <a href="/terms.html">Term</a>
+        <a href="https://file.salidaph.online/SalidaPH.apk">Get APK</a>
+      </nav>
+    `;
+  }
 
   // Attach event listeners to the dialog buttons (NEW)
+  // Moved this block after header.innerHTML to ensure elements are in the DOM
   const confirmPlayButton = document.getElementById('confirmPlayButton');
   const cancelPlayButton = document.getElementById('cancelPlayButton');
 
@@ -192,6 +215,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   if (cancelPlayButton) {
       cancelPlayButton.addEventListener('click', hideVideoConfirmDialog);
+  }
+
+  // Cloudflare Turnstile setup (from your original code)
+  if (typeof turnstile !== 'undefined') {
+    turnstile.ready(function () {
+      turnstile.render("#example-container", {
+        sitekey: "0x4AAAAAABcuP4RkP-L5lN-C",
+        callback: function (token) {
+          console.log(`Challenge Success ${token}`);
+        },
+      });
+    });
   }
 });
 
@@ -239,18 +274,7 @@ function createMovieCard(movie) {
   playButton.className = 'play-button';
   playButton.textContent = '▶';
   // Note: These styles are best placed in index.css as common styles
-  Object.assign(playButton.style, {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    background: 'rgba(0, 0, 0, 0.6)',
-    border: 'none',
-    borderRadius: '50%',
-    color: '#fff',
-    fontSize: '24px',
-    cursor: 'pointer',
-  });
+  // Removed Object.assign here as these styles should be in index.css for consistency
   playButton.addEventListener('click', (e) => {
     e.stopPropagation();
     showVideoConfirmDialog(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), movieImage);
@@ -283,18 +307,7 @@ function setupVideoPlayerClose() {
       const closeButton = document.createElement('button');
       closeButton.textContent = '×';
       closeButton.className = 'close-button'; // Assign class for styling in CSS
-      Object.assign(closeButton.style, {
-        // These styles are best placed in index.css
-        position: 'absolute',
-        top: '10px',
-        right: '10px',
-        zIndex: '9999',
-        fontSize: '24px',
-        background: 'transparent',
-        border: 'none',
-        color: '#fff',
-        cursor: 'pointer',
-      });
+      // Removed Object.assign here as these styles should be in index.css for consistency
       closeButton.addEventListener('click', () => {
         videoPlayer.style.display = 'none';
         document.getElementById('videoFrame').src = ''; // Stop video playback
@@ -308,7 +321,7 @@ function setupVideoPlayer() {
     const player = document.createElement('div');
     player.id = 'videoPlayer';
     player.style.display = 'none';
-    // These styles are now primarily managed by index.css, only basic setup here
+    // Removed Object.assign here as these styles should be in index.css for consistency
     Object.assign(player.style, {
       position: 'absolute',
       width: '80%',
@@ -329,22 +342,3 @@ function setupVideoPlayer() {
     document.body.appendChild(player);
   }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Initial content loading
-  init();
-  setupVideoPlayer(); // Ensures the video player div and iframe are in the DOM
-  setupVideoPlayerClose(); // Adds the close button to the video player
-
-  // Cloudflare Turnstile setup (from your original code)
-  if (typeof turnstile !== 'undefined') {
-    turnstile.ready(function () {
-      turnstile.render("#example-container", {
-        sitekey: "0x4AAAAAABcuP4RkP-L5lN-C",
-        callback: function (token) {
-          console.log(`Challenge Success ${token}`);
-        },
-      });
-    });
-  }
-});
