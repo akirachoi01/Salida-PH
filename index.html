@@ -6,17 +6,13 @@
   <title>SalidaPH</title>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5171614866616581"
      crossorigin="anonymous"></script>
-  <!-- Favicon and Styles -->
   <link rel="icon" href="https://salidaph.online/assests/salida.png" />
   <link rel="stylesheet" href="https://salidaph.online/index.css" />
 
-  <!-- Cloudflare Turnstile -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
 
-  <!-- Google Site Verification -->
   <meta name="google-site-verification" content="CkQVoXgh_OEaHibbMRa9ZMxRGzg6Xyglep9WpKxpAnw" />
 
-  <!-- Google Tag Manager -->
   <script>
     (function(w,d,s,l,i){
       w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
@@ -27,8 +23,7 @@
     })(window,document,'script','dataLayer','GTM-TFZG4ZPJ');
   </script>
 
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-17056210414">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17056210414">
 </script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -37,23 +32,109 @@
 
   gtag('config', 'AW-17056210414');
 </script>
+<style>
+  /* Basic styling for the search container */
+  .search-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f0f0f0; /* Light background for the search bar */
+    border-bottom: 1px solid #ddd;
+  }
+
+  .search-container input[type="text"] {
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 60%; /* Adjust width as needed */
+    max-width: 500px;
+  }
+
+  .search-container button {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+  }
+
+  .search-container button:hover {
+    background-color: #0056b3;
+  }
+
+  /* Styling for search results */
+  #searchResults {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+    justify-items: center;
+  }
+
+  .search-result-item {
+    text-align: center;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease;
+  }
+
+  .search-result-item:hover {
+    transform: translateY(-5px);
+  }
+
+  .search-result-item img {
+    width: 100%;
+    height: 270px; /* Standardize image height */
+    object-fit: cover;
+    border-bottom: 1px solid #eee;
+  }
+
+  .search-result-item h3 {
+    font-size: 1em;
+    margin: 10px 0 5px;
+    padding: 0 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .search-result-item p {
+    font-size: 0.9em;
+    color: #666;
+    padding: 0 10px 10px;
+  }
+</style>
 </head>
 
 <body>
-  <!-- Google Tag Manager (noscript) -->
   <noscript>
     <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TFZG4ZPJ"
             height="0" width="0" style="display:none;visibility:hidden"></iframe>
   </noscript>
 
-  <!-- Header -->
   <header id="animatedHeader">
     <a href="https://salidaph.online">
       <img src="assets/salida.png" alt="SalidaPH Logo" width="30" height="30" style="margin-right: 10px;" />
     </a>
   </header>
 
-  <!-- Main Sections -->
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search for movies or TV shows..." />
+    <button id="searchButton">Search</button>
+  </div>
+
+  <section class="movie-list-section" id="searchResultsSection" style="display: none;">
+    <h2>Search Results</h2>
+    <div id="searchResults" class="movie-list-vertical"></div>
+  </section>
+
   <div class="sections-container">
 
     <section class="movie-list-section" id="trending-now">
@@ -93,12 +174,10 @@
 
   </div>
 
-  <!-- Video Player Section -->
   <div id="videoPlayer" style="display:none;">
     <iframe id="videoFrame" frameborder="0" allowfullscreen></iframe>
   </div>
 
-  <!-- Telegram Floating Button -->
   <a href="https://t.me/akirachoi01" target="_blank" class="hide-if-iframe Telegram"
      style="height: 60px; width: 60px; z-index: 9999; position: fixed; bottom: 150px; right: 0;">
     <img src="https://i.ibb.co.com/QNfMhcp/telegram.png" alt="Telegram Channel" style="width: 50px;">
@@ -114,18 +193,16 @@
         </div>
     </div>
 
-  <!-- Footer with Privacy Policy -->
   <footer style="text-align: center; padding: 20px 10px; background: #f4f4f4; margin-top: 30px;">
-    <p>&copy; 2025 SalidaPH | 
+    <p>© 2025 SalidaPH |
       <a href="https://salidaph.online/privacy-policy.html" target="_blank" style="color: #007BFF; text-decoration: none;">
         Privacy Policy
       </a>
     </p>
   </footer>
 
-  <!-- Scripts -->
   <script src="https://salidaph.online/api.js"></script>
   <script src="https://salidaph.online/ping.js"></script>
   <script src="https://salidaph.online/chat.js"></script>
-</body>
+  <script src="https://salidaph.online/search.js"></script> </body>
 </html>
