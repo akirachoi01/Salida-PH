@@ -670,3 +670,37 @@ footer a:hover {
         padding: 10px;
     }
 }
+body {
+  background: #121212;
+  color: white;
+  font-family: sans-serif;
+}
+section {
+  margin: 20px 0;
+}
+h2 {
+  margin-left: 10px;
+}
+.movie-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 10px;
+}
+.movie-card {
+  width: 150px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+.movie-card:hover {
+  transform: scale(1.05);
+}
+.movie-card img {
+  width: 100%;
+  border-radius: 8px;
+}
+.movie-title {
+  margin-top: 5px;
+  font-size: 14px;
+  text-align: center;
+}
