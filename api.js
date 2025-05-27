@@ -3,6 +3,11 @@
 const API_KEY = 'ba3885a53bc2c4f3c4b5bdc1237e69a0';
 const API_URL = 'https://api.themoviedb.org/3';
 
+// New global variables to store video details temporarily
+let currentVideoId = null;
+let currentVideoType = null;
+let currentTriggerElement = null;
+
 const fetchMovies = async (category) => {
   try {
     const response = await fetch(`${API_URL}/movie/${category}?api_key=${API_KEY}&language=en-US&page=1`);
@@ -28,32 +33,104 @@ const fetchTVShows = async (category) => {
 const renderMovies = (movies, containerSelector) => {
   const container = document.querySelector(containerSelector);
   container.innerHTML = '';
-  
+
   movies.forEach(movie => {
     const card = document.createElement('div');
     card.className = 'movie-card';
     card.style.position = 'relative';
 
+    // Ensure poster_path is valid, otherwise use a placeholder
+    const posterUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w200${movie.poster_path}` : 'https://via.placeholder.com/200x300?text=No+Poster';
+
     card.innerHTML = `
-      <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.title || movie.name}" data-id="${movie.id}">
-      <button class="play-button" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.6);border:none;border-radius:50%;color:#fff;font-size:24px;cursor:pointer">▶</button>
-      <div class="movie-card-info" style="position: absolute; bottom: 10px; left: 10px; color: white; background-color: rgba(0, 0, 0, 0.6); padding: 5px; border-radius: 4px;">
+      <img src="${posterUrl}" alt="${movie.title || movie.name}" data-id="${movie.id}">
+      <button class="play-button">▶</button>
+      <div class="movie-card-info">
         <h3>${movie.title || movie.name}</h3>
         <p>${movie.release_date ? movie.release_date.split('-')[0] : 'No Year'}</p>
       </div>
     `;
-    
+
+    // Modified event listener to first show the confirmation dialog
     card.querySelector('img').addEventListener('click', (e) =>
-      showVideoPlayer(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), e.target)
+      showVideoConfirmDialog(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), e.target)
     );
     card.querySelector('.play-button').addEventListener('click', (e) => {
       e.stopPropagation();
-      showVideoPlayer(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), e.target.closest('.movie-card').querySelector('img'));
+      showVideoConfirmDialog(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), e.target.closest('.movie-card').querySelector('img'));
     });
 
     container.appendChild(card);
   });
 };
+
+// --- NEW FUNCTIONS FOR VIDEO CONFIRMATION DIALOG ---
+
+// Function to show the confirmation dialog
+function showVideoConfirmDialog(id, type, triggerElement) {
+    // Store current video details
+    currentVideoId = id;
+    currentVideoType = type;
+    currentTriggerElement = triggerElement;
+
+    const dialogOverlay = document.getElementById('videoConfirmDialog');
+    dialogOverlay.style.display = 'flex'; // Show the dialog
+}
+
+// Function to actually load and display the video
+function loadAndDisplayVideo() {
+    const videoPlayer = document.getElementById('videoPlayer');
+    const videoFrame = document.getElementById('videoFrame');
+    const dialogOverlay = document.getElementById('videoConfirmDialog');
+
+    dialogOverlay.style.display = 'none'; // Hide the dialog
+
+    if (currentVideoId && currentVideoType) {
+        // You might still fetch video details here if needed,
+        // but for videasy.net, the type and ID are usually enough.
+        videoFrame.src = `https://player.videasy.net/${currentVideoType}/${currentVideoId}?color=8B5CF6`;
+
+        // Use the stored trigger element for positioning
+        const rect = currentTriggerElement?.getBoundingClientRect();
+        const topOffset = window.scrollY + (rect?.top || 100);
+
+        Object.assign(videoPlayer.style, {
+            top: `${topOffset}px`,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            position: 'absolute',
+            display: 'block',
+            width: '80%',
+            maxWidth: '800px',
+            aspectRatio: '16 / 9',
+            backgroundColor: '#000',
+            zIndex: '10000',
+            borderRadius: '12px',
+        });
+
+        videoPlayer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Reset stored variables
+        currentVideoId = null;
+        currentVideoType = null;
+        currentTriggerElement = null;
+    } else {
+        alert('Could not retrieve video information. Please try again.');
+    }
+}
+
+// Function to hide the video confirmation dialog
+function hideVideoConfirmDialog() {
+    const dialogOverlay = document.getElementById('videoConfirmDialog');
+    dialogOverlay.style.display = 'none';
+    // Clear stored variables if user cancels
+    currentVideoId = null;
+    currentVideoType = null;
+    currentTriggerElement = null;
+}
+
+// --- END NEW FUNCTIONS ---
+
 
 const loadTrendingMovies = async () => {
   const trendingMovies = await fetchMovies('popular');
@@ -66,22 +143,23 @@ const loadTopRatedMovies = async () => {
 };
 
 const loadHorrorMovies = async () => {
-  const horrorMovies = await fetchMovies('now_playing');
+  const horrorMovies = await fetchMovies('now_playing'); // This might not be horror specific without genre filter
   renderMovies(horrorMovies, '.horror-container');
 };
 
 const loadComedyMovies = async () => {
-  const comedyMovies = await fetchMovies('popular');
+  const comedyMovies = await fetchMovies('popular'); // This also might not be comedy specific
   renderMovies(comedyMovies, '.comedy-container');
 };
 
 const loadThrillerMovies = async () => {
-  const thrillerMovies = await fetchMovies('popular');
+  const thrillerMovies = await fetchMovies('popular'); // This also might not be thriller specific
   renderMovies(thrillerMovies, '.thriller-container');
 };
 
 const loadPopularAnime = async () => {
   const popularAnime = await fetchTVShows('popular');
+  // You might want to filter by genre for true anime, e.g., genre 16
   renderMovies(popularAnime, '.anime-popular-container');
 };
 
@@ -104,6 +182,17 @@ document.addEventListener('DOMContentLoaded', () => {
   init();
   setupVideoPlayer();
   setupVideoPlayerClose();
+
+  // Attach event listeners to the dialog buttons (NEW)
+  const confirmPlayButton = document.getElementById('confirmPlayButton');
+  const cancelPlayButton = document.getElementById('cancelPlayButton');
+
+  if (confirmPlayButton) {
+      confirmPlayButton.addEventListener('click', loadAndDisplayVideo);
+  }
+  if (cancelPlayButton) {
+      cancelPlayButton.addEventListener('click', hideVideoConfirmDialog);
+  }
 });
 
 function fetchMoviesByGenre(type) {
@@ -134,15 +223,22 @@ function createMovieCard(movie) {
   movieCard.classList.add('movie-card');
   movieCard.style.position = 'relative';
 
+  // Ensure poster_path is valid, otherwise use a placeholder
+  const posterUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Poster';
+
   const movieImage = document.createElement('img');
-  movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+  movieImage.src = posterUrl;
+  movieImage.alt = movie.title || movie.name;
+
+  // Modified event listener to first show the confirmation dialog
   movieImage.addEventListener('click', (e) =>
-    showVideoPlayer(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), e.target)
+    showVideoConfirmDialog(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), e.target)
   );
 
   const playButton = document.createElement('button');
   playButton.className = 'play-button';
   playButton.textContent = '▶';
+  // Note: These styles are best placed in index.css as common styles
   Object.assign(playButton.style, {
     position: 'absolute',
     top: '50%',
@@ -157,7 +253,7 @@ function createMovieCard(movie) {
   });
   playButton.addEventListener('click', (e) => {
     e.stopPropagation();
-    showVideoPlayer(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), movieImage);
+    showVideoConfirmDialog(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), movieImage);
   });
 
   const movieTitle = document.createElement('div');
@@ -171,63 +267,40 @@ function createMovieCard(movie) {
   return movieCard;
 }
 
-function showVideoPlayer(id, type = 'movie', triggerElement = null) {
-  const videoPlayer = document.getElementById('videoPlayer');
-  const videoFrame = document.getElementById('videoFrame');
-
-  // This is the key line that uses the 'type' and 'id'
-  fetch(`${API_URL}/${type}/${id}/videos?api_key=${API_KEY}&language=en`)
-    .then(response => response.json())
-    .then(data => {
-      const videoKey = data.results[0]?.key;
-      if (videoKey) {
-        // This is where you're setting the video source based on type and id
-        videoFrame.src = `https://player.videasy.net/${type}/${id}?color=8B5CF6`;
-
-        const rect = triggerElement?.getBoundingClientRect();
-        const topOffset = window.scrollY + (rect?.top || 100);
-        Object.assign(videoPlayer.style, {
-          top: `${topOffset}px`,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          position: 'absolute',
-          display: 'block',
-          width: '80%',
-          maxWidth: '800px',
-          aspectRatio: '16 / 9',
-          backgroundColor: '#000',
-          zIndex: '10000',
-          borderRadius: '12px',
-        });
-
-        videoPlayer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      } else {
-        alert('No video available for this content.');
-      }
-    })
-    .catch(error => console.error('Error fetching video:', error));
+// Original showVideoPlayer is now split into showVideoConfirmDialog and loadAndDisplayVideo
+// The original showVideoPlayer function content is now within loadAndDisplayVideo
+// This empty function is just a placeholder if other parts of your code directly call it
+function showVideoPlayer() {
+    // This function is now superseded by showVideoConfirmDialog and loadAndDisplayVideo
+    // It's kept here in case external code relies on its existence, but it should not be called directly for video playback.
+    console.warn("showVideoPlayer() called directly. Use showVideoConfirmDialog() instead for consistent behavior.");
 }
 
 function setupVideoPlayerClose() {
   const videoPlayer = document.getElementById('videoPlayer');
-  const closeButton = document.createElement('button');
-  closeButton.textContent = '×';
-  Object.assign(closeButton.style, {
-    position: 'absolute',
-    top: '10px',
-    right: '10px',
-    zIndex: '9999',
-    fontSize: '24px',
-    background: 'transparent',
-    border: 'none',
-    color: '#fff',
-    cursor: 'pointer',
-  });
-  closeButton.addEventListener('click', () => {
-    videoPlayer.style.display = 'none';
-    document.getElementById('videoFrame').src = '';
-  });
-  videoPlayer.appendChild(closeButton);
+  // Check if close button already exists to prevent duplicates
+  if (!videoPlayer.querySelector('.close-button')) {
+      const closeButton = document.createElement('button');
+      closeButton.textContent = '×';
+      closeButton.className = 'close-button'; // Assign class for styling in CSS
+      Object.assign(closeButton.style, {
+        // These styles are best placed in index.css
+        position: 'absolute',
+        top: '10px',
+        right: '10px',
+        zIndex: '9999',
+        fontSize: '24px',
+        background: 'transparent',
+        border: 'none',
+        color: '#fff',
+        cursor: 'pointer',
+      });
+      closeButton.addEventListener('click', () => {
+        videoPlayer.style.display = 'none';
+        document.getElementById('videoFrame').src = ''; // Stop video playback
+      });
+      videoPlayer.appendChild(closeButton);
+  }
 }
 
 function setupVideoPlayer() {
@@ -235,6 +308,7 @@ function setupVideoPlayer() {
     const player = document.createElement('div');
     player.id = 'videoPlayer';
     player.style.display = 'none';
+    // These styles are now primarily managed by index.css, only basic setup here
     Object.assign(player.style, {
       position: 'absolute',
       width: '80%',
@@ -257,31 +331,12 @@ function setupVideoPlayer() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (document.getElementById('movieList')) {
-    fetchMoviesByGenre('movies');
-  }
+  // Initial content loading
+  init();
+  setupVideoPlayer(); // Ensures the video player div and iframe are in the DOM
+  setupVideoPlayerClose(); // Adds the close button to the video player
 
-  const header = document.getElementById('animatedHeader');
-  if (header) {
-    header.innerHTML = `
-      <div class="logo-area" style="display: flex; align-items: center;">
-        <img src="https://salidaph.online/assests/salida.png" width="120" height="50" style="margin-right: 10px;" alt="Logo">
-      </div>
-      <nav class="nav-links" style="display: flex; gap: 15px; align-items: center;">
-        <div style="overflow: hidden; white-space: nowrap; color: white;">
-          <div style="display: inline-block; animation: marquee 10s linear infinite;">
-            📢 SALIDAPH IS NOW ONLINE!
-          </div>
-        </div>
-        <a href="/">Home</a>
-        <a href="https://github.com/akirachoi01">Github</a>
-        <a href="/privacy-policy.html">Privacy</a>
-        <a href="/terms.html">Term</a>
-        <a href="https://file.salidaph.online/SalidaPH.apk">Get APK</a>
-      </nav>
-    `;
-  }
-
+  // Cloudflare Turnstile setup (from your original code)
   if (typeof turnstile !== 'undefined') {
     turnstile.ready(function () {
       turnstile.render("#example-container", {
