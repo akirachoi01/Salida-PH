@@ -103,6 +103,9 @@ img {
 .search-container input[type="text"]::placeholder {
     color: #bbb;
 }
+#videoPlayer button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
 
 .search-container button {
     padding: 10px 20px;
