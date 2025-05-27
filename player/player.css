@@ -1,0 +1,70 @@
+/* player.css */
+
+/* Container for the video player */
+.video-player-container {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed position to overlay everything */
+    top: 50%; /* Center vertically initially */
+    left: 50%; /* Center horizontally initially */
+    transform: translate(-50%, -50%); /* Adjust for true centering */
+    width: 90%; /* Responsive width */
+    max-width: 900px; /* Max width for larger screens */
+    aspect-ratio: 16 / 9; /* Maintain aspect ratio */
+    background-color: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    z-index: 10000;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    border: 2px solid #e91e63; /* Accent border */
+}
+
+/* Style the native <video> element */
+.video-player-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensure video fits within the player without cropping */
+    display: block; /* Remove any default spacing */
+}
+
+/* Close button for the video player */
+.video-player-container .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(233, 30, 99, 0.8); /* Hot pink close button */
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 10001; /* Above the video element */
+    transition: background-color 0.3s ease;
+}
+.video-player-container .close-button:hover {
+    background-color: #c2185b;
+}
+
+/* Media Query for smaller screens on video player */
+@media (max-width: 480px) {
+    .video-player-container {
+        width: 100%; /* Full width on very small screens */
+        height: 100%; /* Full height on very small screens */
+        top: 0;
+        left: 0;
+        transform: none; /* No translation needed */
+        border-radius: 0; /* No border-radius for full screen */
+        border: none; /* No border for full screen */
+    }
+    .video-player-container .close-button {
+        top: 5px;
+        right: 5px;
+        width: 25px;
+        height: 25px;
+        font-size: 18px;
+    }
+}
