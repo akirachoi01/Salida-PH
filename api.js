@@ -143,3 +143,162 @@ function hideVideoConfirmDialog() {
     currentVideoTitle = null;
     currentTriggerElement = null;
 }
+const loadTrendingMovies = async () => {
+  const trendingMovies = await fetchMovies('popular');
+  renderMovies(trendingMovies, '.trending-container');
+};
+
+const loadTopRatedMovies = async () => {
+  const topRatedMovies = await fetchMovies('top_rated');
+  renderMovies(topRatedMovies, '.top-container');
+};
+
+const loadHorrorMovies = async () => {
+  const horrorMovies = await fetchMovies('now_playing');
+  renderMovies(horrorMovies, '.horror-container');
+};
+
+const loadComedyMovies = async () => {
+  const comedyMovies = await fetchMovies('popular');
+  renderMovies(comedyMovies, '.comedy-container');
+};
+
+const loadThrillerMovies = async () => {
+  const thrillerMovies = await fetchMovies('popular');
+  renderMovies(thrillerMovies, '.thriller-container');
+};
+
+const loadPopularAnime = async () => {
+  const popularAnime = await fetchTVShows('popular');
+  renderMovies(popularAnime, '.anime-popular-container');
+};
+
+const loadDramaTVShows = async () => {
+  const dramaTVShows = await fetchTVShows('top_rated');
+  renderMovies(dramaTVShows, '.drama-tv-container');
+};
+
+const init = () => {
+  loadTrendingMovies();
+  loadTopRatedMovies();
+  loadHorrorMovies();
+  loadComedyMovies();
+  loadThrillerMovies();
+  loadPopularAnime();
+  loadDramaTVShows();
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Initial content loading
+  init();
+
+  // Removed old calls to setupVideoPlayer() and setupVideoPlayerClose()
+  // as your player.js file now handles the video player element creation and its close button.
+
+  const header = document.getElementById('animatedHeader');
+  if (header) {
+    header.innerHTML = `
+      <div class="logo-area">
+        <img src="[https://salidaph.online/assests/salida.png](https://salidaph.online/assests/salida.png)" width="120" height="50" alt="Logo">
+      </div>
+      <nav class="nav-links">
+        <div class="scrolling-text">
+          <div style="display: inline-block; animation: marquee 10s linear infinite;">
+            📢 SALIDAPH IS NOW ONLINE!
+          </div>
+        </div>
+        <a href="/">Home</a>
+        <a href="[https://github.com/akirachoi01](https://github.com/akirachoi01)">Github</a>
+        <a href="/privacy-policy.html">Privacy</a>
+        <a href="/terms.html">Term</a>
+        <a href="[https://file.salidaph.online/SalidaPH.apk](https://file.salidaph.online/SalidaPH.apk)">Get APK</a>
+      </nav>
+    `;
+  }
+
+  // Attach event listeners to the dialog buttons
+  const confirmPlayButton = document.getElementById('confirmPlayButton');
+  const cancelPlayButton = document.getElementById('cancelPlayButton');
+
+  if (confirmPlayButton) {
+      confirmPlayButton.addEventListener('click', loadAndDisplayVideo);
+  }
+  if (cancelPlayButton) {
+      cancelPlayButton.addEventListener('click', hideVideoConfirmDialog);
+  }
+
+  // Cloudflare Turnstile setup (from your original code)
+  if (typeof turnstile !== 'undefined') {
+    turnstile.ready(function () {
+      turnstile.render("#example-container", {
+        sitekey: "0x4AAAAAABcuP4RkP-L5lN-C",
+        callback: function (token) {
+          console.log(`Challenge Success ${token}`);
+        },
+      });
+    });
+  }
+});
+
+function fetchMoviesByGenre(type) {
+  let genreId;
+  if (type === 'movies') genreId = 28;
+  else if (type === 'tv') genreId = 10759;
+  else if (type === 'anime') genreId = 16;
+
+  if (!genreId) return;
+
+  const genreUrl = `${API_URL}/discover/movie?api_key=${API_KEY}&with_genres=${genreId}&language=en`;
+  const movieList = document.getElementById('movieList');
+
+  fetch(genreUrl)
+    .then(res => res.json())
+    .then(data => {
+      movieList.innerHTML = '';
+      data.results.forEach(movie => {
+        const movieCard = createMovieCard(movie);
+        movieCard.appendChild(movieCard);
+      });
+    })
+    .catch(err => console.error('Genre fetch failed', err));
+}
+
+function createMovieCard(movie) {
+  const movieCard = document.createElement('div');
+  movieCard.classList.add('movie-card');
+  movieCard.style.position = 'relative';
+
+  // Ensure poster_path is valid, otherwise use a placeholder
+  const posterUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : '[https://via.placeholder.com/500x750?text=No+Poster](https://via.placeholder.com/500x750?text=No+Poster)';
+  const movieTitle = movie.title || movie.name; // Get the title for passing to dialog
+
+  const movieImage = document.createElement('img');
+  movieImage.src = posterUrl;
+  movieImage.alt = movieTitle;
+
+  // Modified event listener to first show the confirmation dialog
+  movieImage.addEventListener('click', (e) =>
+    showVideoConfirmDialog(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), movieTitle, e.target)
+  );
+
+  const playButton = document.createElement('button');
+  playButton.className = 'play-button';
+  playButton.textContent = '▶';
+  playButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    showVideoConfirmDialog(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), movieTitle, movieImage);
+  });
+
+  const movieTitleElement = document.createElement('div');
+  movieTitleElement.classList.add('movie-title');
+  movieTitleElement.textContent = movieTitle;
+
+  movieCard.appendChild(movieImage);
+  movieCard.appendChild(playButton);
+  movieCard.appendChild(movieTitleElement);
+
+  return movieCard;
+}
+
+// The old `showVideoPlayer` function (and its setup/close calls) has been completely removed from `api.js`
+// because its functionality is replaced by player.js and the new loadAndDisplayVideo function.
