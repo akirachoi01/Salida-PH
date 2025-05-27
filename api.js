@@ -7,6 +7,7 @@ const API_URL = 'https://api.themoviedb.org/3';
 let currentVideoId = null;
 let currentVideoType = null;
 let currentTriggerElement = null;
+let currentVideoTitle = null; // Store title for better alert messages
 
 const fetchMovies = async (category) => {
   try {
@@ -41,23 +42,24 @@ const renderMovies = (movies, containerSelector) => {
 
     // Ensure poster_path is valid, otherwise use a placeholder
     const posterUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w200${movie.poster_path}` : 'https://via.placeholder.com/200x300?text=No+Poster';
+    const movieTitle = movie.title || movie.name; // Get title for display and passing
 
     card.innerHTML = `
-      <img src="${posterUrl}" alt="${movie.title || movie.name}" data-id="${movie.id}">
+      <img src="${posterUrl}" alt="${movieTitle}" data-id="${movie.id}">
       <button class="play-button">▶</button>
       <div class="movie-card-info">
-        <h3>${movie.title || movie.name}</h3>
+        <h3>${movieTitle}</h3>
         <p>${movie.release_date ? movie.release_date.split('-')[0] : 'No Year'}</p>
       </div>
     `;
 
     // Modified event listener to first show the confirmation dialog
     card.querySelector('img').addEventListener('click', (e) =>
-      showVideoConfirmDialog(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), e.target)
+      showVideoConfirmDialog(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), movieTitle, e.target)
     );
     card.querySelector('.play-button').addEventListener('click', (e) => {
       e.stopPropagation();
-      showVideoConfirmDialog(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), e.target.closest('.movie-card').querySelector('img'));
+      showVideoConfirmDialog(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), movieTitle, e.target.closest('.movie-card').querySelector('img'));
     });
 
     container.appendChild(card);
@@ -67,10 +69,11 @@ const renderMovies = (movies, containerSelector) => {
 // --- NEW FUNCTIONS FOR VIDEO CONFIRMATION DIALOG ---
 
 // Function to show the confirmation dialog
-function showVideoConfirmDialog(id, type, triggerElement) {
+function showVideoConfirmDialog(id, type, title, triggerElement) {
     // Store current video details
     currentVideoId = id;
     currentVideoType = type;
+    currentVideoTitle = title; // Store title
     currentTriggerElement = triggerElement;
 
     const dialogOverlay = document.getElementById('videoConfirmDialog');
@@ -78,41 +81,54 @@ function showVideoConfirmDialog(id, type, triggerElement) {
 }
 
 // Function to actually load and display the video
-function loadAndDisplayVideo() {
-    const videoPlayer = document.getElementById('videoPlayer');
-    const videoFrame = document.getElementById('videoFrame');
+async function loadAndDisplayVideo() {
     const dialogOverlay = document.getElementById('videoConfirmDialog');
-
     dialogOverlay.style.display = 'none'; // Hide the dialog
 
     if (currentVideoId && currentVideoType) {
-        // You might still fetch video details here if needed,
-        // but for videasy.net, the type and ID are usually enough.
-        videoFrame.src = `https://player.videasy.net/${currentVideoType}/${currentVideoId}?color=8B5CF6`;
+        // --- THIS IS THE CRITICAL PART YOU NEED TO IMPLEMENT ---
+        // You need to fetch the actual video URL based on TMDb ID and type.
+        // TMDb DOES NOT provide direct streaming links.
+        // This is a placeholder for where you would get your actual video URL.
+        // For demonstration, let's use a public domain video or a local file you serve.
+        let videoUrl = '';
 
-        // Use the stored trigger element for positioning
-        const rect = currentTriggerElement?.getBoundingClientRect();
-        const topOffset = window.scrollY + (rect?.top || 100);
+        // Example: If you host a video named after the TMDb ID
+        // videoUrl = `https://salidaph.online/videos/${currentVideoId}.mp4`;
 
-        Object.assign(videoPlayer.style, {
-            top: `${topOffset}px`,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            position: 'absolute',
-            display: 'block',
-            width: '80%',
-            maxWidth: '800px',
-            aspectRatio: '16 / 9',
-            backgroundColor: '#000',
-            zIndex: '10000',
-            borderRadius: '12px',
-        });
+        // Example: Using a public domain video for testing (replace with your content)
+        // For real use, you would need actual movie/TV show content.
+        if (currentVideoType === 'movie') {
+            // Example: Public domain short film (replace with your actual movie content)
+            videoUrl = 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4';
+            // You would likely have a more complex logic here to map TMDb ID to your video file
+            // e.g., fetching a link from your own backend or a video database you manage.
+            // await fetch(`/api/get-movie-stream?tmdbId=${currentVideoId}`)
+        } else if (currentVideoType === 'tv') {
+            // Example: Another public domain video (replace with your actual TV show content)
+            videoUrl = 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4';
+             // Similar to movies, you'd need logic to get the correct episode/season URL.
+        } else {
+            alert(`Unsupported media type: ${currentVideoType}`);
+            return;
+        }
 
-        videoPlayer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (videoUrl) {
+            // Call the playSelfHostedVideo function from player.js
+            if (window.playSelfHostedVideo && typeof window.playSelfHostedVideo === 'function') {
+                window.playSelfHostedVideo(videoUrl, currentTriggerElement);
+            } else {
+                console.error("playSelfHostedVideo function not found. Is player.js loaded?");
+                alert("Video player not ready. Please try again.");
+            }
+        } else {
+            alert(`No video source found for ${currentVideoTitle}.`);
+        }
 
         // Reset stored variables
         currentVideoId = null;
         currentVideoType = null;
+        currentVideoTitle = null;
         currentTriggerElement = null;
     } else {
         alert('Could not retrieve video information. Please try again.');
@@ -126,11 +142,11 @@ function hideVideoConfirmDialog() {
     // Clear stored variables if user cancels
     currentVideoId = null;
     currentVideoType = null;
+    currentVideoTitle = null;
     currentTriggerElement = null;
 }
 
 // --- END NEW FUNCTIONS ---
-
 
 const loadTrendingMovies = async () => {
   const trendingMovies = await fetchMovies('popular');
@@ -143,23 +159,22 @@ const loadTopRatedMovies = async () => {
 };
 
 const loadHorrorMovies = async () => {
-  const horrorMovies = await fetchMovies('now_playing'); // This might not be horror specific without genre filter
+  const horrorMovies = await fetchMovies('now_playing');
   renderMovies(horrorMovies, '.horror-container');
 };
 
 const loadComedyMovies = async () => {
-  const comedyMovies = await fetchMovies('popular'); // This also might not be comedy specific
+  const comedyMovies = await fetchMovies('popular');
   renderMovies(comedyMovies, '.comedy-container');
 };
 
 const loadThrillerMovies = async () => {
-  const thrillerMovies = await fetchMovies('popular'); // This also might not be thriller specific
+  const thrillerMovies = await fetchMovies('popular');
   renderMovies(thrillerMovies, '.thriller-container');
 };
 
 const loadPopularAnime = async () => {
   const popularAnime = await fetchTVShows('popular');
-  // You might want to filter by genre for true anime, e.g., genre 16
   renderMovies(popularAnime, '.anime-popular-container');
 };
 
@@ -179,10 +194,9 @@ const init = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Initial content loading
   init();
-  setupVideoPlayer(); // Ensures the video player div and iframe are in the DOM
-  setupVideoPlayerClose(); // Adds the close button to the video player
+  // setupVideoPlayer(); // No longer needed as player.js handles setup
+  // setupVideoPlayerClose(); // No longer needed as player.js handles close button
 
   const header = document.getElementById('animatedHeader');
   if (header) {
@@ -205,8 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
-  // Attach event listeners to the dialog buttons (NEW)
-  // Moved this block after header.innerHTML to ensure elements are in the DOM
+  // Attach event listeners to the dialog buttons
   const confirmPlayButton = document.getElementById('confirmPlayButton');
   const cancelPlayButton = document.getElementById('cancelPlayButton');
 
@@ -260,85 +273,34 @@ function createMovieCard(movie) {
 
   // Ensure poster_path is valid, otherwise use a placeholder
   const posterUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Poster';
+  const movieTitle = movie.title || movie.name;
 
   const movieImage = document.createElement('img');
   movieImage.src = posterUrl;
-  movieImage.alt = movie.title || movie.name;
+  movieImage.alt = movieTitle;
 
   // Modified event listener to first show the confirmation dialog
   movieImage.addEventListener('click', (e) =>
-    showVideoConfirmDialog(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), e.target)
+    showVideoConfirmDialog(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), movieTitle, e.target)
   );
 
   const playButton = document.createElement('button');
   playButton.className = 'play-button';
   playButton.textContent = '▶';
-  // Note: These styles are best placed in index.css as common styles
-  // Removed Object.assign here as these styles should be in index.css for consistency
   playButton.addEventListener('click', (e) => {
     e.stopPropagation();
-    showVideoConfirmDialog(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), movieImage);
+    showVideoConfirmDialog(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), movieTitle, movieImage);
   });
 
-  const movieTitle = document.createElement('div');
-  movieTitle.classList.add('movie-title');
-  movieTitle.textContent = movie.title || movie.name;
+  const movieTitleElement = document.createElement('div'); // Renamed to avoid conflict
+  movieTitleElement.classList.add('movie-title');
+  movieTitleElement.textContent = movieTitle;
 
   movieCard.appendChild(movieImage);
   movieCard.appendChild(playButton);
-  movieCard.appendChild(movieTitle);
+  movieCard.appendChild(movieTitleElement);
 
   return movieCard;
 }
 
-// Original showVideoPlayer is now split into showVideoConfirmDialog and loadAndDisplayVideo
-// The original showVideoPlayer function content is now within loadAndDisplayVideo
-// This empty function is just a placeholder if other parts of your code directly call it
-function showVideoPlayer() {
-    // This function is now superseded by showVideoConfirmDialog and loadAndDisplayVideo
-    // It's kept here in case external code relies on its existence, but it should not be called directly for video playback.
-    console.warn("showVideoPlayer() called directly. Use showVideoConfirmDialog() instead for consistent behavior.");
-}
-
-function setupVideoPlayerClose() {
-  const videoPlayer = document.getElementById('videoPlayer');
-  // Check if close button already exists to prevent duplicates
-  if (!videoPlayer.querySelector('.close-button')) {
-      const closeButton = document.createElement('button');
-      closeButton.textContent = '×';
-      closeButton.className = 'close-button'; // Assign class for styling in CSS
-      // Removed Object.assign here as these styles should be in index.css for consistency
-      closeButton.addEventListener('click', () => {
-        videoPlayer.style.display = 'none';
-        document.getElementById('videoFrame').src = ''; // Stop video playback
-      });
-      videoPlayer.appendChild(closeButton);
-  }
-}
-
-function setupVideoPlayer() {
-  if (!document.getElementById('videoPlayer')) {
-    const player = document.createElement('div');
-    player.id = 'videoPlayer';
-    player.style.display = 'none';
-    // Removed Object.assign here as these styles should be in index.css for consistency
-    Object.assign(player.style, {
-      position: 'absolute',
-      width: '80%',
-      maxWidth: '800px',
-      aspectRatio: '16 / 9',
-      backgroundColor: '#000',
-      borderRadius: '12px',
-      overflow: 'hidden',
-      zIndex: '10000',
-    });
-
-    const iframe = document.createElement('iframe');
-    iframe.id = 'videoFrame';
-    iframe.width = '100%';
-    iframe.height = '100%';
-    iframe.style.border = 'none';
-    player.appendChild(iframe);
-    document.body.appendChild(player);
-  }
-}
+// showVideoPlayer function is entirely removed from api.js now, its logic is in player.js and loadAndDisplayVideo
