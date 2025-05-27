@@ -8,8 +8,7 @@
      crossorigin="anonymous"></script>
   <link rel="icon" href="https://salidaph.online/assests/salida.png" />
   <link rel="stylesheet" href="https://salidaph.online/index.css" />
-
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
+  <link rel="stylesheet" href="https://salidaph.online/player/player.css" /> <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
 
   <meta name="google-site-verification" content="CkQVoXgh_OEaHibbMRa9ZMxRGzg6Xyglep9WpKxpAnw" />
 
@@ -185,9 +184,11 @@
     </div>
   </div>
 
-  <div id="videoPlayer" style="display:none;">
-    <iframe id="videoFrame" frameborder="0" allowfullscreen></iframe>
+  <div id="videoPlayer" class="video-player-container" style="display:none;">
+    <video id="videoElement" controls autoplay></video>
+    <button class="close-button">×</button>
   </div>
+
 
   <a href="https://t.me/akirachoi01" target="_blank" class="hide-if-iframe Telegram"
      style="height: 60px; width: 60px; z-index: 9999; position: fixed; bottom: 150px; right: 0;">
@@ -216,5 +217,5 @@
   <script src="https://salidaph.online/ping.js"></script>
   <script src="https://salidaph.online/chat.js"></script>
   <script src="https://salidaph.online/search.js"></script>
-</body>
+  <script src="https://salidaph.online/player/player.js"></script> </body>
 </html>
