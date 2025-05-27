@@ -175,11 +175,13 @@ function showVideoPlayer(id, type = 'movie', triggerElement = null) {
   const videoPlayer = document.getElementById('videoPlayer');
   const videoFrame = document.getElementById('videoFrame');
 
+  // This is the key line that uses the 'type' and 'id'
   fetch(`${API_URL}/${type}/${id}/videos?api_key=${API_KEY}&language=en`)
     .then(response => response.json())
     .then(data => {
       const videoKey = data.results[0]?.key;
       if (videoKey) {
+        // This is where you're setting the video source based on type and id
         videoFrame.src = `https://player.videasy.net/${type}/${id}?color=8B5CF6`;
 
         const rect = triggerElement?.getBoundingClientRect();
