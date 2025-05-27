@@ -6,10 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchResultsDiv = document.getElementById('searchResults');
     const searchResultsSection = document.getElementById('searchResultsSection');
 
-    // **IMPORTANT: Replace with your actual TMDb API Key**
-    const TMDB_API_KEY = 'ba3885a53bc2c4f3c4b5bdc1237e69a0';
+    // This API_KEY should ideally be consistent with the one in api.js,
+    // or you could pass it from a global configuration.
+    // For now, let's keep it here, but remember the security implications.
+    const TMDB_API_KEY = 'ba3885a53bc2c4f3c4b5bdc1237e69a0'; // Your TMDb API Key
     const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
-    const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500'; // For larger images
+    const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
     searchButton.addEventListener('click', performSearch);
     searchInput.addEventListener('keypress', (event) => {
@@ -26,7 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         searchResultsDiv.innerHTML = ''; // Clear previous results
-        searchResultsSection.style.display = 'block'; // Show the search results section
+        // Hide other main sections and show search results
+        document.querySelector('.sections-container').style.display = 'none';
+        searchResultsSection.style.display = 'block';
 
         try {
             const searchUrl = `${TMDB_BASE_URL}/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}`;
@@ -46,19 +50,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function displaySearchResults(results) {
         results.forEach(item => {
-            // Filter out items without a poster or name/title
-            if (!item.poster_path || (!item.title && !item.name)) {
+            // Filter out items without a poster or a valid title/name, and unknown media types
+            if (!item.poster_path || (!item.title && !item.name) || (item.media_type !== 'movie' && item.media_type !== 'tv')) {
                 return;
             }
 
             const itemElement = document.createElement('div');
             itemElement.classList.add('search-result-item');
 
-            const posterPath = item.poster_path ? `${TMDB_IMAGE_BASE_URL}${item.poster_path}` : 'https://via.placeholder.com/180x270?text=No+Image'; // Placeholder for missing images
-            const title = item.title || item.name; // Use 'title' for movies, 'name' for TV shows
-            const releaseDate = item.release_date || item.first_air_date; // Use 'release_date' for movies, 'first_air_date' for TV shows
+            const posterPath = item.poster_path ? `${TMDB_IMAGE_BASE_URL}${item.poster_path}` : 'https://via.placeholder.com/180x270?text=No+Image';
+            const title = item.title || item.name;
+            const releaseDate = item.release_date || item.first_air_date;
             const year = releaseDate ? new Date(releaseDate).getFullYear() : 'N/A';
-            const mediaType = item.media_type === 'movie' ? 'Movie' : (item.media_type === 'tv' ? 'TV Show' : 'Unknown');
+            const mediaType = item.media_type === 'movie' ? 'Movie' : 'TV Show'; // Consistent naming
 
             itemElement.innerHTML = `
                 <img src="${posterPath}" alt="${title}">
@@ -66,24 +70,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>${mediaType} (${year})</p>
             `;
 
-            // Optional: Add click listener to show more details or play video (if supported by your site's API)
+            // Add click listener to call showVideoPlayer from api.js
             itemElement.addEventListener('click', () => {
-                // You would implement logic here to handle clicking on a search result.
-                // This could involve:
-                // 1. Redirecting to a detail page for the movie/TV show.
-                // 2. Fetching more details and displaying them in a modal.
-                // 3. Attempting to play the video if your existing `api.js` or `videoPlayer` supports it.
-                // For this example, we'll just log the ID.
-                console.log(`Clicked on: ${title} (ID: ${item.id}, Type: ${item.media_type})`);
-                // Example of how you might integrate with a play function if it exists:
-                // if (typeof playVideo === 'function') {
-                //     playVideo(item.id, item.media_type); // Assuming playVideo can handle TMDb IDs and media types
-                // } else {
-                //     alert(`You clicked on ${title}. Implement playback logic here!`);
-                // }
+                // Ensure showVideoPlayer is globally accessible or passed correctly
+                if (typeof showVideoPlayer === 'function') {
+                    showVideoPlayer(item.id, item.media_type, itemElement.querySelector('img'));
+                } else {
+                    console.error('showVideoPlayer function is not defined or accessible.');
+                    alert('Video playback function not available.');
+                }
             });
 
             searchResultsDiv.appendChild(itemElement);
         });
     }
+
+    // Optional: Add a way to return to main sections if desired, e.g., clear search
+    // For simplicity, we're just showing/hiding the search results section.
+    // If you want a "Clear Search" button that shows the main sections again:
+    // const clearSearchButton = document.createElement('button');
+    // clearSearchButton.textContent = 'Clear Search';
+    // clearSearchButton.addEventListener('click', () => {
+    //     searchResultsSection.style.display = 'none';
+    //     document.querySelector('.sections-container').style.display = 'block';
+    //     searchInput.value = '';
+    // });
+    // You'd need to append this button somewhere in your HTML or script.
 });
