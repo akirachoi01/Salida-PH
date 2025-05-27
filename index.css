@@ -578,3 +578,95 @@ footer a:hover {
         height: 35px;
     }
 }
+/* Video Confirmation Dialog Styling */
+.video-confirm-dialog-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9); /* Darker overlay */
+    z-index: 10002; /* Higher than video player, lower than chat modal */
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px); /* Optional: blur background */
+    -webkit-backdrop-filter: blur(5px); /* For Safari */
+}
+
+.video-confirm-dialog-content {
+    background-color: #1e1e1e; /* Dark theme background */
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+    text-align: center;
+    max-width: 400px;
+    width: 90%; /* Responsive width */
+    color: #ffffff; /* White text */
+    border: 2px solid #e91e63; /* Accent border */
+}
+
+.video-confirm-dialog-content h3 {
+    margin-top: 0;
+    color: #e91e63; /* Hot pink accent */
+    font-size: 1.8rem;
+}
+
+.video-confirm-dialog-content p {
+    font-size: 1rem;
+    margin-bottom: 25px;
+    color: #ccc;
+}
+
+.dialog-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.dialog-buttons button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.play-video-button {
+    background-color: #e91e63; /* Hot pink for play */
+    color: white;
+}
+
+.play-video-button:hover {
+    background-color: #c2185b;
+    transform: translateY(-2px);
+}
+
+.cancel-button {
+    background-color: #444; /* Darker gray for cancel */
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: #555;
+    transform: translateY(-2px);
+}
+
+/* Media Query for smaller screens on dialog */
+@media (max-width: 480px) {
+    .video-confirm-dialog-content {
+        padding: 20px;
+        border-radius: 8px;
+    }
+    .video-confirm-dialog-content h3 {
+        font-size: 1.5rem;
+    }
+    .dialog-buttons {
+        flex-direction: column; /* Stack buttons on very small screens */
+    }
+    .dialog-buttons button {
+        width: 100%; /* Full width buttons */
+        padding: 10px;
+    }
+}
