@@ -1,292 +1,580 @@
-    /* General Body Styling */
-    body {
-  margin: 0;
-  background-color: #121212;
-  font-family: 'Segoe UI', sans-serif;
+/* General Body Styling */
+body {
+    margin: 0;
+    background-color: #121212; /* Dark background */
+    font-family: 'Segoe UI', sans-serif;
+    color: #ffffff; /* Default text color for the dark theme */
+    line-height: 1.6;
+    overflow-x: hidden; /* Prevent horizontal scroll on small devices */
 }
 
-.scrolling-text {
-  overflow: hidden;
-  white-space: nowrap;
-  box-sizing: border-box;
-  background: #6200EE;
-  color: white;
-  margin-left: 20px;
-  margin-right: 20px;
-  border-radius: 8px; /* optional for smoother edges */
-  padding: 5px 0;
+/* Ensure images don't overflow their containers */
+img {
+    max-width: 100%;
+    height: auto; /* Maintain aspect ratio */
+    display: block; /* Removes extra space below images */
 }
 
-.trending-title {
-  color: #e91e63; /* hot pink accent */
-  font-size: 2rem;
-  font-weight: bold;
-  margin: 24px 32px;
-  text-shadow: 0 0 8px rgba(233, 30, 99, 0.6);
-  letter-spacing: 1px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.trending-title::before {
-  content: "🔥";
-  font-size: 1.5rem;
-  animation: flicker 1.5s infinite alternate;
-}
-
-@keyframes flicker {
-  from { opacity: 1; }
-  to { opacity: 0.6; }
-}
-.toprated-title {
-  color: #e91e63; /* hot pink accent */
-  font-size: 2rem;
-  font-weight: bold;
-  margin: 24px 32px;
-  text-shadow: 0 0 8px rgba(233, 30, 99, 0.6);
-  letter-spacing: 1px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.toprated-title::before {
-  content: "🔥";
-  font-size: 1.5rem;
-  animation: flicker 1.5s infinite alternate;
-}
-
-@keyframes flicker {
-  from { opacity: 1; }
-  to { opacity: 0.6; }
-}
-.horror-title {
-  color: #e91e63; /* hot pink accent */
-  font-size: 2rem;
-  font-weight: bold;
-  margin: 24px 32px;
-  text-shadow: 0 0 8px rgba(233, 30, 99, 0.6);
-  letter-spacing: 1px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.horror-title::before {
-  content: "🔥";
-  font-size: 1.5rem;
-  animation: flicker 1.5s infinite alternate;
-}
-
-@keyframes flicker {
-  from { opacity: 1; }
-  to { opacity: 0.6; }
-}
-
+/* --- Header Styling --- */
 #animatedHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 32px;
-  background-color: #1e1e1e;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 32px;
+    background-color: #1e1e1e; /* Darker header background */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+    position: sticky; /* Stays at the top when scrolling */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+    box-sizing: border-box; /* Include padding in element's total width/height */
 }
 
-.logo-area {
-  display: flex;
-  align-items: center;
+#animatedHeader a img { /* Target the logo image specifically */
+    width: 120px; /* Default size for logo */
+    height: auto; /* Maintain aspect ratio */
+    margin-right: 10px;
 }
 
-.logo-svg {
-  width: 40px;
-  height: 40px;
-  fill: #e91e63;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.2); opacity: 0.8; }
-}
-
-.header-title {
-  color: #ffffff;
-  font-size: 1.5rem;
-  margin-left: 12px;
+.nav-links {
+    display: flex;
+    gap: 24px; /* Space between nav items */
+    align-items: center;
+    flex-wrap: wrap; /* Allow links to wrap on smaller screens */
+    justify-content: flex-end; /* Align links to the right */
 }
 
 .nav-links a {
-  margin-left: 24px;
-  color: #ccc;
-  text-decoration: none;
-  font-size: 1rem;
-  transition: color 0.3s;
+    color: #ccc;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s;
+    white-space: nowrap; /* Prevent breaking for nav links */
+    padding: 5px 0; /* Add padding for click area */
 }
 
 .nav-links a:hover {
-  color: #e91e63;
+    color: #e91e63; /* Hot pink on hover */
+}
+
+/* Scrolling text (marquee) */
+.scrolling-text {
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+    background: #6200EE; /* Vibrant blue for marquee */
+    color: white;
+    margin: 10px 20px; /* Adjusted margin for overall layout */
+    border-radius: 8px;
+    padding: 5px 0;
+    text-align: center; /* Center the text within its container */
+    animation: marquee 10s linear infinite; /* Ensure animation is applied */
+}
+@keyframes marquee {
+    0%   { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+/* --- Search Section Styling --- */
+.search-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    background-color: #1e1e1e; /* Match header background */
+    border-bottom: 1px solid #333;
+    flex-wrap: wrap; /* Allow input and button to wrap */
+    gap: 10px; /* Space between input and button */
+}
+
+.search-container input[type="text"] {
+    padding: 10px 15px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #333;
+    color: #eee;
+    width: 60%; /* Adjust width as needed */
+    max-width: 500px;
+    box-sizing: border-box; /* Include padding in width */
+}
+
+.search-container input[type="text"]::placeholder {
+    color: #bbb;
+}
+
+.search-container button {
+    padding: 10px 20px;
+    background-color: #e91e63; /* Hot pink accent */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.search-container button:hover {
+    background-color: #c2185b; /* Darker pink on hover */
+}
+
+/* --- Main Sections Container --- */
+.sections-container {
+    max-width: 1300px; /* Slightly wider max-width for content */
+    margin: 0 auto;
+    padding: 2rem 1rem; /* Adjust padding for mobile and desktop */
+}
+
+.movie-list-section {
+    margin-bottom: 3rem;
+}
+
+/* Unified Section Titles (Trending, Top Rated, Horror, Comedy, etc.) */
+.section-title, /* New class for all section titles */
+.trending-title,
+.toprated-title,
+.horror-title,
+.movie-list-section h2 {
+    color: #e91e63; /* Hot pink accent */
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 24px 0 24px 1rem; /* Adjusted margin for better mobile alignment */
+    text-shadow: 0 0 8px rgba(233, 30, 99, 0.6);
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Flame icon for specific titles */
+.trending-title::before,
+.toprated-title::before,
+.horror-title::before {
+    content: "🔥";
+    font-size: 1.5rem;
+    animation: flicker 1.5s infinite alternate;
+}
+
+@keyframes flicker {
+    from { opacity: 1; }
+    to { opacity: 0.6; }
+}
+
+/* --- Movie List (Grid Layout) --- */
+.movie-list-vertical {
+    display: grid;
+    /* Responsive grid: auto-fill columns, min 180px wide, max 1fr */
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.5rem; /* Space between cards */
+    padding: 0 1rem; /* Padding for the grid itself */
+    justify-content: center; /* Center cards if they don't fill the row */
+}
+
+/* Movie Card Base Styles (applies to both main sections and search results) */
+.movie-card, .search-result-item {
+    background-color: #1c1c1c;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Ensures content stays within rounded corners */
+    text-align: center;
+    position: relative; /* For play button positioning */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.movie-card:hover, .search-result-item:hover {
+    transform: scale(1.03); /* Slightly larger scale on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+}
+
+.movie-card img, .search-result-item img {
+    width: 100%;
+    height: 270px; /* Fixed height for consistency, adjust as needed */
+    object-fit: cover; /* Crop images to fit */
+    border-radius: 4px 4px 0 0; /* Round top corners of image */
+}
+
+/* Movie Card Info Overlay (for existing movie cards in main sections) */
+.movie-card-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.75); /* Darker overlay */
+    padding: 8px 10px;
+    box-sizing: border-box;
+    text-align: left;
+    transition: background-color 0.3s ease;
+}
+
+.movie-card-info h3 {
+    margin: 0;
+    font-size: 1.1em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #ffffff;
+}
+
+.movie-card-info p {
+    margin: 0;
+    font-size: 0.8em;
+    color: #ccc;
+}
+
+/* Search Result Item Text (not an overlay, text is below image) */
+.search-result-item h3 {
+    font-size: 1.1em;
+    margin: 10px 5px 5px;
+    padding: 0 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #ffffff;
+}
+
+.search-result-item p {
+    font-size: 0.9em;
+    color: #ccc;
+    padding: 0 5px 10px;
+    margin: 0;
+}
+
+/* --- Play Button Styling (applies to both movie cards and search results) --- */
+.movie-card .play-button,
+.search-result-item .play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.7); /* Slightly darker background */
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 28px; /* Slightly larger icon */
+    cursor: pointer;
+    width: 60px; /* Make it a fixed size for easy tapping */
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.3s ease, background-color 0.3s ease;
+}
+
+.movie-card .play-button:hover,
+.search-result-item .play-button:hover {
+    background-color: rgba(233, 30, 99, 0.8); /* Hot pink on hover */
+}
+
+.movie-card:hover .play-button,
+.search-result-item:hover .play-button {
+    opacity: 1; /* Show on hover */
+}
+
+/* --- Video Player Styling --- */
+#videoPlayer {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed position to overlay everything */
+    top: 50%; /* Center vertically initially */
+    left: 50%; /* Center horizontally initially */
+    transform: translate(-50%, -50%); /* Adjust for true centering */
+    width: 90%; /* Responsive width */
+    max-width: 900px; /* Max width for larger screens */
+    aspect-ratio: 16 / 9; /* Maintain aspect ratio */
+    background-color: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    z-index: 10000;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    border: 2px solid #e91e63; /* Accent border */
+}
+
+#videoFrame {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+#videoPlayer .close-button { /* Use a class for the close button if not already */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(233, 30, 99, 0.8); /* Hot pink close button */
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 10001;
+    transition: background-color 0.3s ease;
+}
+#videoPlayer .close-button:hover {
+    background-color: #c2185b;
+}
+
+/* --- Floating Buttons --- */
+.Telegram, .chat-fab-button {
+    position: fixed;
+    right: 20px; /* Consistent right margin */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    z-index: 9999;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.Telegram:hover, .chat-fab-button:hover {
+    transform: scale(1.1);
+}
+
+.Telegram {
+    bottom: 150px;
+    background-color: #0088cc; /* Telegram blue */
+}
+
+.Telegram img {
+    width: 40px;
+    height: 40px;
+}
+
+.chat-fab-button {
+    bottom: 80px; /* Position above Telegram button */
+    background-color: #007BFF; /* A default blue for chat */
+    color: white;
+    font-size: 24px;
+    border: none;
+}
+.chat-fab-button:hover {
+    background-color: #0056b3;
+}
+
+/* --- Chat Modal --- */
+.chat-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Darker overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10001;
+}
+
+.chat-modal-content {
+    background: #1c1c1c; /* Match card background */
+    padding: 15px;
+    border-radius: 8px;
+    max-width: 95%; /* Take most of the width on mobile */
+    max-height: 95vh; /* Take most of the viewport height */
+    overflow: hidden; /* Prevent modal content from overflowing itself */
+    display: flex; /* Use flex to control iframe size */
+    flex-direction: column;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+    border: 1px solid #333;
+}
+
+.chat-modal-content iframe {
+    width: 100%;
+    height: 100%; /* Occupy available space within flex container */
+    min-height: 300px; /* Minimum height to ensure visibility */
+    border: none;
+    border-radius: 4px;
+}
+
+/* --- Footer --- */
+footer {
+    text-align: center;
+    padding: 20px 10px;
+    background: #1e1e1e; /* Match header/search background */
+    color: #eee;
+    margin-top: 30px;
+    font-size: 0.9em;
+    border-top: 1px solid #333;
+}
+
+footer a {
+    color: #e91e63; /* Use hot pink accent for footer links */
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+footer a:hover {
+    color: #c2185b;
+    text-decoration: underline;
 }
 
 
+/* --- Media Queries for Mobile Responsiveness --- */
 
-
-    /* Header Styling */
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem;
-      background-color: #141414;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      left: 0;
-      z-index: 100;
+/* For screens up to 768px wide (typical tablets and large phones) */
+@media (max-width: 768px) {
+    /* Header adjustments */
+    #animatedHeader {
+        padding: 12px 15px;
+        flex-direction: column; /* Stack logo and nav vertically */
+        align-items: flex-start;
+        gap: 10px; /* Space between stacked items */
     }
 
-    .header img {
-      height: 40px;
+    #animatedHeader a img {
+        width: 100px; /* Smaller logo */
+        height: auto;
     }
 
-    .input-container {
-      flex: 1;
-      margin: 0 1rem;
+    .nav-links {
+        width: 100%; /* Take full width */
+        flex-direction: column; /* Stack nav links vertically */
+        align-items: flex-start;
+        gap: 8px; /* Closer spacing for stacked links */
     }
 
-    .input-container input {
-      width: 100%;
-      padding: 0.5rem;
-      border-radius: 5px;
-      border: none;
+    .nav-links a {
+        width: 100%; /* Make links take full width */
+        text-align: left;
+        padding: 8px 0; /* Larger touch area */
+        font-size: 0.95rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1); /* Separator */
+    }
+    .nav-links a:last-child {
+        border-bottom: none; /* No separator for the last link */
     }
 
-    .watchList-Btn {
-      background-color: red;
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-      border-radius: 5px;
+    .scrolling-text {
+        margin: 10px 10px; /* Smaller horizontal margin for marquee */
+        font-size: 0.9em;
     }
 
-    /* Navigation Menu Styling */
-    .nav-menu {
-      background-color: #1c1c1c;
-      padding: 0.5rem;
-      margin-top: 5rem; /* Adjust to push down after the fixed header */
+    /* Search Container adjustments */
+    .search-container {
+        padding: 15px 10px;
+        flex-direction: column; /* Stack input and button */
+        gap: 15px;
     }
 
-    .nav-list {
-      display: flex;
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      gap: 1rem;
-      justify-content: center;
+    .search-container input[type="text"] {
+        width: 100%; /* Full width input */
+        max-width: none; /* Remove max-width constraint */
     }
 
-    .nav-item a {
-      color: white;
-      text-decoration: none;
-      padding: 0.5rem;
+    .search-container button {
+        width: 100%; /* Full width button */
     }
 
-    .nav-item a:hover {
-      background-color: #333;
-      border-radius: 5px;
-    }
-
-    /* Sections Container */
-    .sections-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem 1rem;
-      padding-top: 6rem; /* Adjust for fixed header */
-    }
-
-    .movie-list-section {
-      margin-bottom: 3rem;
-    }
-
+    /* Section titles adjustments */
+    .section-title,
+    .trending-title,
+    .toprated-title,
+    .horror-title,
     .movie-list-section h2 {
-      margin-bottom: 1rem;
-      font-size: 1.8rem;
-      font-weight: bold;
+        font-size: 1.6rem; /* Slightly smaller headings */
+        margin: 20px 0 20px 0.5rem; /* Adjust margin */
+    }
+
+    /* Movie list adjustments */
+    .movie-list-vertical {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Smaller min-width for more columns */
+        gap: 1rem;
+        padding: 0 0.5rem; /* Smaller padding */
+    }
+
+    .movie-card img, .search-result-item img {
+        height: 220px; /* Adjust card image height for smaller screens */
+    }
+
+    /* Video Player adjustments */
+    #videoPlayer {
+        width: 95%; /* Wider on mobile */
+        border-radius: 8px;
+    }
+
+    /* Floating buttons adjustments */
+    .Telegram, .chat-fab-button {
+        right: 10px; /* Closer to the edge */
+        width: 55px; /* Slightly smaller */
+        height: 55px;
+    }
+
+    /* Chat modal adjustments */
+    .chat-modal-content {
+        padding: 10px;
+        max-width: 98%;
+        max-height: 98vh;
+    }
+    .chat-modal-content iframe {
+        min-height: 250px; /* Smaller min-height for chat iframe */
+    }
+}
+
+/* For very small screens (typical small phones) */
+@media (max-width: 480px) {
+    .sections-container {
+        padding: 1rem 0.5rem;
     }
 
     .movie-list-vertical {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1rem;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* Even smaller cards */
+        gap: 0.8rem;
     }
 
-    .movie-card {
-      background-color: #1c1c1c;
-      padding: 1rem;
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      transition: transform 0.2s ease;
+    .movie-card img, .search-result-item img {
+        height: 180px; /* Adjust card image height for very small screens */
     }
 
-    .movie-card:hover {
-      transform: scale(1.05);
+    .section-title,
+    .trending-title,
+    .toprated-title,
+    .horror-title,
+    .movie-list-section h2 {
+        font-size: 1.4rem;
+        margin: 15px 0 15px 0.5rem;
+        gap: 5px;
+    }
+    .trending-title::before,
+    .toprated-title::before,
+    .horror-title::before {
+        font-size: 1.2rem;
     }
 
-    .movie-card img {
-   height : auto;
-      width: 100%;
-      border-radius: 4px;
-    }
-
-    .movie-card-info {
-      flex: 1;
-    }
-
-    .movie-card h3 {
-      font-size: 1.1rem;
-      margin: 0;
-      font-weight: bold;
-    }
-
-    .movie-card p {
-      font-size: 0.9rem;
-      color: #ccc;
-    }
-
-    /* Media Queries for Responsiveness */
-    @media (max-width: 768px) {
-      .header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .nav-list {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .nav-item a {
-        padding: 0.5rem 1rem;
-      }
-
-      .movie-list-vertical {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      }
-    }
-
-     iframe {
-      width: 100%;
-      height: 500px;
-    }
-
+    /* Full screen video player on very small devices */
     #videoPlayer {
-      display: none;
-      text-align: center;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        transform: none; /* No translation needed */
+        border-radius: 0; /* No border-radius for full screen */
+        border: none; /* No border for full screen */
+    }
+    #videoPlayer .close-button {
+        top: 5px;
+        right: 5px;
+        width: 25px;
+        height: 25px;
+        font-size: 18px;
     }
 
+    .Telegram, .chat-fab-button {
+        right: 8px;
+        width: 50px;
+        height: 50px;
+    }
+    .Telegram img {
+        width: 35px;
+        height: 35px;
+    }
+}
