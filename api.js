@@ -1,317 +1,353 @@
 const API_KEY = 'ba3885a53bc2c4f3c4b5bdc1237e69a0';
 const API_URL = 'https://api.themoviedb.org/3';
 
-const fetchMovies = async (category) => {
-  try {
-    const response = await fetch(`${API_URL}/movie/${category}?api_key=${API_KEY}&language=en-US&page=1`);
-    const data = await response.json();
-    return data.results;
-  } catch (error) {
-    console.error('Error fetching movies:', error);
-    return [];
-  }
+// Genre IDs for common categories (you can fetch a full list from TMDB if needed)
+const GENRE_IDS = {
+    movie: {
+        Animation: 16,
+        Action: 28,
+        Comedy: 35,
+        Horror: 27,
+        Thriller: 53,
+        Drama: 18,
+        // Add more movie genres as needed
+    },
+    tv: {
+        Animation: 16,
+        'Action & Adventure': 10759,
+        Comedy: 35,
+        Drama: 18,
+        // Add more TV genres as needed
+    }
 };
 
-const fetchTVShows = async (category) => {
-  try {
-    const response = await fetch(`${API_URL}/tv/${category}?api_key=${API_KEY}&language=en-US&page=1`);
-    const data = await response.json();
-    return data.results;
-  } catch (error) {
-    console.error('Error fetching TV shows:', error);
-    return [];
-  }
+// Helper function to fetch movies or TV shows by category (e.g., 'popular', 'top_rated')
+const fetchDataByCategory = async (type, category) => {
+    try {
+        const response = await fetch(`${API_URL}/${type}/${category}?api_key=${API_KEY}&language=en-US&page=1`);
+        const data = await response.json();
+        return data.results;
+    } catch (error) {
+        console.error(`Error fetching ${type} ${category}:`, error);
+        return [];
+    }
 };
 
-const renderMovies = (movies, containerSelector) => {
-  const container = document.querySelector(containerSelector);
-  container.innerHTML = '';
+// Helper function to fetch content by genre ID
+const fetchByGenre = async (type, genreId) => {
+    try {
+        const response = await fetch(`${API_URL}/discover/${type}?api_key=${API_KEY}&with_genres=${genreId}&language=en`);
+        const data = await response.json();
+        return data.results;
+    } catch (error) {
+        console.error(`Error fetching ${type} by genre ${genreId}:`, error);
+        return [];
+    }
+};
 
-  movies.forEach(movie => {
-    const card = document.createElement('div');
-    card.className = 'movie-card';
-    card.style.position = 'relative';
+// Modified renderContent to be more generic for content-display-container and search results
+const renderContent = (items, containerSelector) => {
+    const container = document.querySelector(containerSelector);
+    container.innerHTML = ''; // Clear previous content
 
-    card.innerHTML = `
-      <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.title || movie.name}" data-id="${movie.id}">
-      <button class="play-button" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.6);border:none;border-radius:50%;color:#fff;font-size:24px;cursor:pointer">▶</button>
-      <div class="movie-card-info" style="position: absolute; bottom: 10px; left: 10px; color: white; background-color: rgba(0, 0, 0, 0.6); padding: 5px; border-radius: 4px;">
-        <h3>${movie.title || movie.name}</h3>
-        <p>${movie.release_date ? movie.release_date.split('-')[0] : 'No Year'}</p>
-      </div>
-    `;
+    if (!items || items.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #ccc;">No content available for this category.</p>';
+        return;
+    }
 
-    card.querySelector('img').addEventListener('click', (e) => showVideoPlayer(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), e.target));
-    card.querySelector('.play-button').addEventListener('click', (e) => {
-      e.stopPropagation();
-      showVideoPlayer(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), e.target.closest('.movie-card').querySelector('img'));
+    items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'movie-card';
+        card.style.position = 'relative';
+
+        // Determine media type for correct video player behavior
+        const mediaType = item.media_type || (item.title ? 'movie' : 'tv');
+
+        card.innerHTML = `
+            <img src="https://image.tmdb.org/t/p/w200${item.poster_path}" alt="${item.title || item.name}" data-id="${item.id}">
+            <button class="play-button">▶</button>
+            <div class="movie-card-info">
+                <h3>${item.title || item.name}</h3>
+                <p>${item.release_date ? item.release_date.split('-')[0] : (item.first_air_date ? item.first_air_date.split('-')[0] : 'No Year')}</p>
+            </div>
+        `;
+
+        card.querySelector('img').addEventListener('click', (e) => showVideoPlayer(item.id, mediaType, e.target));
+        card.querySelector('.play-button').addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent card click event from firing
+            showVideoPlayer(item.id, mediaType, e.target.closest('.movie-card').querySelector('img'));
+        });
+
+        container.appendChild(card);
+    });
+};
+
+// Function to handle tab clicks and load content
+const loadCategoryContent = async (category) => {
+    const contentDisplayContainer = '#content-display-container';
+    let content = [];
+
+    // Hide search results and show tabbed content
+    document.getElementById('searchResultsSection').style.display = 'none';
+    document.getElementById('tabbedContentSection').style.display = 'block';
+
+    switch (category) {
+        case 'trending':
+            // TMDB's 'trending' endpoint is often better for a mix of movies and TV
+            content = await fetchDataByCategory('trending/all', 'week'); // 'day' or 'week'
+            break;
+        case 'movies':
+            content = await fetchDataByCategory('movie', 'popular');
+            break;
+        case 'tv':
+            content = await fetchDataByCategory('tv', 'popular');
+            break;
+        case 'anime':
+            // For anime, we typically target the 'Animation' genre for both movies and TV
+            const animeMovies = await fetchByGenre('movie', GENRE_IDS.movie.Animation);
+            const animeTv = await fetchByGenre('tv', GENRE_IDS.tv.Animation);
+            content = [...animeMovies, ...animeTv].sort((a, b) => (b.popularity || b.vote_average) - (a.popularity || a.vote_average)); // Combine and sort
+            break;
+        default:
+            content = await fetchDataByCategory('movie', 'popular'); // Default to popular movies
+            break;
+    }
+    renderContent(content, contentDisplayContainer);
+};
+
+// Setup function for event listeners on tab buttons
+const setupTabNavigation = () => {
+    const tabButtons = document.querySelectorAll('.tab-button');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            // Remove 'active' class from all buttons
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            // Add 'active' class to the clicked button
+            event.target.classList.add('active');
+
+            const category = event.target.dataset.category;
+            loadCategoryContent(category);
+        });
     });
 
-    container.appendChild(card);
-  });
+    // Load trending content by default on page load
+    loadCategoryContent('trending');
 };
 
-const loadTrendingMovies = async () => {
-  const trendingMovies = await fetchMovies('popular');
-  renderMovies(trendingMovies, '.trending-container');
-};
+// --- Existing Search Functionality (from search.js, integrating it here for context) ---
+// Assuming search.js is loaded *after* api.js or this logic is combined.
+// For simplicity, I'm including the search logic here. If search.js handles it
+// completely, you'll need to ensure functions like `hideAllSections` and `showSection`
+// are available globally or passed correctly.
 
-const loadTopRatedMovies = async () => {
-  const topRatedMovies = await fetchMovies('top_rated');
-  renderMovies(topRatedMovies, '.top-container');
-};
+const searchMoviesAndTV = async (query) => {
+    const searchResultsContainer = document.getElementById('searchResults');
+    const searchResultsSection = document.getElementById('searchResultsSection');
+    const tabbedContentSection = document.getElementById('tabbedContentSection');
 
-const loadHorrorMovies = async () => {
-  const horrorMovies = await fetchMovies('now_playing');
-  renderMovies(horrorMovies, '.horror-container');
-};
+    // Hide tabbed content and show search results section
+    tabbedContentSection.style.display = 'none';
+    searchResultsSection.style.display = 'block';
+    searchResultsContainer.innerHTML = '<p style="text-align: center; color: #ccc;">Searching...</p>';
 
-const loadComedyMovies = async () => {
-  const comedyMovies = await fetchMovies('popular');
-  renderMovies(comedyMovies, '.comedy-container');
-};
+    try {
+        const response = await fetch(`${API_URL}/search/multi?api_key=${API_KEY}&language=en-US&query=${encodeURIComponent(query)}&page=1`);
+        const data = await response.json();
+        const results = data.results.filter(item => item.media_type === 'movie' || item.media_type === 'tv')
+                                   .filter(item => item.poster_path); // Only show items with a poster
 
-const loadThrillerMovies = async () => {
-  const thrillerMovies = await fetchMovies('popular');
-  renderMovies(thrillerMovies, '.thriller-container');
-};
-
-const loadPopularAnime = async () => {
-  const popularAnime = await fetchTVShows('popular');
-  renderMovies(popularAnime, '.anime-popular-container');
-};
-
-const loadDramaTVShows = async () => {
-  const dramaTVShows = await fetchTVShows('top_rated');
-  renderMovies(dramaTVShows, '.drama-tv-container');
-};
-
-const init = () => {
-  loadTrendingMovies();
-  loadTopRatedMovies();
-  loadHorrorMovies();
-  loadComedyMovies();
-  loadThrillerMovies();
-  loadPopularAnime();
-  loadDramaTVShows();
+        renderContent(results, '#searchResults');
+    } catch (error) {
+        console.error('Error during search:', error);
+        searchResultsContainer.innerHTML = '<p style="text-align: center; color: #ccc;">Error fetching search results.</p>';
+    }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  init();
-  setupVideoPlayer();
-  setupVideoPlayerClose();
+    // Initial setup for categories (tabs)
+    setupTabNavigation();
+
+    // Setup video player (from player.js)
+    setupVideoPlayer();
+    setupVideoPlayerClose();
+
+    // Setup search functionality (from search.js)
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+
+    searchButton.addEventListener('click', () => {
+        const query = searchInput.value.trim();
+        if (query) {
+            searchMoviesAndTV(query);
+        } else {
+            // If search input is empty, revert to showing the default tab content
+            document.getElementById('searchResultsSection').style.display = 'none';
+            document.getElementById('tabbedContentSection').style.display = 'block';
+            // Reactivate the 'trending' tab or whichever default you prefer
+            document.querySelector('.tab-button.active').classList.remove('active');
+            document.querySelector('.tab-button[data-category="trending"]').classList.add('active');
+            loadCategoryContent('trending');
+        }
+    });
+
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            searchButton.click();
+        }
+    });
+
+    // Header injection (from your original code)
+    const header = document.getElementById('animatedHeader');
+    if (header) {
+        header.innerHTML = `
+            <div class="logo-area">
+                <img src="https://salidaph.online/assests/salida.png" width="120" height="50" alt="Logo">
+            </div>
+            <nav class="nav-links">
+                <div class="scrolling-text">
+                    <div style="display: inline-block; animation: marquee 10s linear infinite;">
+                        📢 SALIDAPH IS NOW ONLINE!
+                    </div>
+                </div>
+                <a href="/">Home</a>
+                <a href="https://github.com/akirachoi01">Github</a>
+                <a href="/privacy-policy.html">Privacy</a>
+                <a href="/terms.html">Term</a>
+                <a href="https://file.salidaph.online/SalidaPH.apk">Get APK</a>
+            </nav>
+        `;
+    }
+
+    // Cloudflare Turnstile setup (from your original code)
+    if (typeof turnstile !== 'undefined') {
+        turnstile.ready(function () {
+            turnstile.render("#example-container", {
+                sitekey: "0x4AAAAAABcuP4RkP-L5lN-C",
+                callback: function (token) {
+                    console.log(`Challenge Success ${token}`);
+                },
+            });
+        });
+    }
 });
 
-function fetchMoviesByGenre(type) {
-  let genreId;
-  if (type === 'movies') genreId = 28;
-  else if (type === 'tv') genreId = 10759;
-  else if (type === 'anime') genreId = 16;
-
-  if (!genreId) return;
-
-  const genreUrl = `${API_URL}/discover/movie?api_key=${API_KEY}&with_genres=${genreId}&language=en`;
-  const movieList = document.getElementById('movieList');
-
-  fetch(genreUrl)
-    .then(res => res.json())
-    .then(data => {
-      movieList.innerHTML = '';
-      data.results.forEach(movie => {
-        const movieCard = createMovieCard(movie);
-        movieList.appendChild(movieCard);
-      });
-    })
-    .catch(err => console.error('Genre fetch failed', err));
-}
-
-function createMovieCard(movie) {
-  const movieCard = document.createElement('div');
-  movieCard.classList.add('movie-card');
-  movieCard.style.position = 'relative';
-
-  const movieImage = document.createElement('img');
-  movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-  movieImage.addEventListener('click', (e) => showVideoPlayer(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), e.target));
-
-  const playButton = document.createElement('button');
-  playButton.className = 'play-button';
-  playButton.textContent = '▶';
-  playButton.style.position = 'absolute';
-  playButton.style.top = '50%';
-  playButton.style.left = '50%';
-  playButton.style.transform = 'translate(-50%, -50%)';
-  playButton.style.background = 'rgba(0, 0, 0, 0.6)';
-  playButton.style.border = 'none';
-  playButton.style.borderRadius = '50%';
-  playButton.style.color = '#fff';
-  playButton.style.fontSize = '24px';
-  playButton.style.cursor = 'pointer';
-  playButton.addEventListener('click', (e) => {
-    e.stopPropagation();
-    showVideoPlayer(movie.id, movie.media_type || (movie.title ? 'movie' : 'tv'), movieImage);
-  });
-
-  const movieTitle = document.createElement('div');
-  movieTitle.classList.add('movie-title');
-  movieTitle.textContent = movie.title || movie.name;
-
-  movieCard.appendChild(movieImage);
-  movieCard.appendChild(playButton);
-  movieCard.appendChild(movieTitle);
-
-  return movieCard;
-}
+// --- Remaining helper functions for video player (from player.js) ---
+// Ensure these functions are either in api.js or player.js is loaded AFTER api.js
+// If player.js contains these, remove them from here to avoid duplication.
 
 function showVideoPlayer(id, type = 'movie', triggerElement = null) {
-  const videoPlayer = document.getElementById('videoPlayer');
-  const videoFrame = document.getElementById('videoFrame');
+    const videoPlayer = document.getElementById('videoPlayer');
+    const videoFrame = document.getElementById('videoFrame');
 
-  fetch(`${API_URL}/${type}/${id}/videos?api_key=${API_KEY}&language=en`)
-    .then(response => response.json())
-    .then(data => {
-      const videoKey = data.results[0]?.key;
-      if (videoKey) {
-        videoFrame.src = `https://player.videasy.net/${type}/${id}?color=8B5CF6`;
+    fetch(`${API_URL}/${type}/${id}/videos?api_key=${API_KEY}&language=en`)
+        .then(response => response.json())
+        .then(data => {
+            const videoKey = data.results[0]?.key;
+            if (videoKey) {
+                videoFrame.src = `https://player.videasy.net/${type}/${id}?color=8B5CF6`;
 
-        const rect = triggerElement?.getBoundingClientRect();
-        const topOffset = window.scrollY + (rect?.top || 100);
-        videoPlayer.style.top = `${topOffset}px`;
-        videoPlayer.style.left = '50%';
-        videoPlayer.style.transform = 'translateX(-50%)';
-        videoPlayer.style.position = 'absolute';
-        videoPlayer.style.display = 'block';
-        videoPlayer.style.width = '80%';
-        videoPlayer.style.maxWidth = '800px';
-        videoPlayer.style.aspectRatio = '16 / 9';
-        videoPlayer.style.backgroundColor = '#000';
-        videoPlayer.style.zIndex = '10000';
-        videoPlayer.style.borderRadius = '12px';
-        videoPlayer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      } else {
-        alert('No video available for this content.');
-      }
-    })
-    .catch(error => console.error('Error fetching video:', error));
+                const rect = triggerElement?.getBoundingClientRect();
+                const topOffset = window.scrollY + (rect?.top || (window.innerHeight / 2 - videoPlayer.offsetHeight / 2));
+
+                videoPlayer.style.top = `${topOffset}px`;
+                videoPlayer.style.left = '50%';
+                videoPlayer.style.transform = 'translateX(-50%)';
+                videoPlayer.style.position = 'absolute';
+                videoPlayer.style.display = 'block';
+                videoPlayer.style.width = '80%';
+                videoPlayer.style.maxWidth = '800px';
+                videoPlayer.style.aspectRatio = '16 / 9';
+                videoPlayer.style.backgroundColor = '#000';
+                videoPlayer.style.zIndex = '10000';
+                videoPlayer.style.borderRadius = '12px';
+                videoPlayer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                alert('No video available for this content.');
+            }
+        })
+        .catch(error => console.error('Error fetching video:', error));
 }
 
 function setupVideoPlayerClose() {
-  const videoPlayer = document.getElementById('videoPlayer');
+    const videoPlayer = document.getElementById('videoPlayer');
 
-  // Close button
-  const closeButton = document.createElement('button');
-  closeButton.textContent = '×';
-  Object.assign(closeButton.style, {
-    position: 'absolute',
-    top: '10px',
-    right: '10px',
-    zIndex: '9999',
-    fontSize: '24px',
-    background: 'transparent',
-    border: 'none',
-    color: '#fff',
-    cursor: 'pointer'
-  });
-  closeButton.addEventListener('click', () => {
-    videoPlayer.style.display = 'none';
-    document.getElementById('videoFrame').src = '';
-  });
-  videoPlayer.appendChild(closeButton);
-
-  // Fullscreen button
-  const fullscreenButton = document.createElement('button');
-  fullscreenButton.textContent = '⛶';
-  Object.assign(fullscreenButton.style, {
-    position: 'absolute',
-    bottom: '10px',
-    right: '10px',
-    zIndex: '9999',
-    fontSize: '20px',
-    background: 'rgba(255, 255, 255, 0.1)',
-    border: 'none',
-    color: '#fff',
-    cursor: 'pointer',
-    padding: '5px 10px',
-    borderRadius: '6px'
-  });
-
-  fullscreenButton.addEventListener('click', () => {
-    if (!document.fullscreenElement) {
-      videoPlayer.requestFullscreen().catch(err => console.error('Failed to enter fullscreen', err));
-    } else {
-      document.exitFullscreen();
+    let closeButton = videoPlayer.querySelector('.close-button');
+    if (!closeButton) {
+        closeButton = document.createElement('button');
+        closeButton.textContent = '×';
+        closeButton.classList.add('close-button');
+        Object.assign(closeButton.style, {
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            zIndex: '9999',
+            fontSize: '24px',
+            background: 'transparent',
+            border: 'none',
+            color: '#fff',
+            cursor: 'pointer'
+        });
+        closeButton.addEventListener('click', () => {
+            videoPlayer.style.display = 'none';
+            document.getElementById('videoFrame').src = '';
+        });
+        videoPlayer.appendChild(closeButton);
     }
-  });
 
-  videoPlayer.appendChild(fullscreenButton);
+    let fullscreenButton = videoPlayer.querySelector('.fullscreen-button');
+    if (!fullscreenButton) {
+        fullscreenButton = document.createElement('button');
+        fullscreenButton.textContent = '⛶';
+        fullscreenButton.classList.add('fullscreen-button');
+        Object.assign(fullscreenButton.style, {
+            position: 'absolute',
+            bottom: '10px',
+            right: '10px',
+            zIndex: '9999',
+            fontSize: '20px',
+            background: 'rgba(255, 255, 255, 0.1)',
+            border: 'none',
+            color: '#fff',
+            cursor: 'pointer',
+            padding: '5px 10px',
+            borderRadius: '6px'
+        });
+
+        fullscreenButton.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                videoPlayer.requestFullscreen().catch(err => console.error('Failed to enter fullscreen', err));
+            } else {
+                document.exitFullscreen();
+            }
+        });
+        videoPlayer.appendChild(fullscreenButton);
+    }
 }
 
 function setupVideoPlayer() {
-  const videoPlayer = document.getElementById('videoPlayer');
-  if (!videoPlayer) {
-    const player = document.createElement('div');
-    player.id = 'videoPlayer';
-    player.style.display = 'none';
-    player.style.position = 'absolute';
-    player.style.width = '80%';
-    player.style.maxWidth = '800px';
-    player.style.aspectRatio = '16 / 9';
-    player.style.backgroundColor = '#000';
-    player.style.borderRadius = '12px';
-    player.style.overflow = 'hidden';
-    player.style.zIndex = '10000';
-    const iframe = document.createElement('iframe');
-    iframe.id = 'videoFrame';
-    iframe.width = '100%';
-    iframe.height = '100%';
-    iframe.style.border = 'none';
-    player.appendChild(iframe);
-    document.body.appendChild(player);
-  }
+    let videoPlayer = document.getElementById('videoPlayer');
+    if (!videoPlayer) {
+        const player = document.createElement('div');
+        player.id = 'videoPlayer';
+        player.style.display = 'none';
+        player.style.position = 'fixed';
+        player.style.top = '50%';
+        player.style.left = '50%';
+        player.style.transform = 'translate(-50%, -50%)';
+        player.style.width = '80%';
+        player.style.maxWidth = '800px';
+        player.style.aspectRatio = '16 / 9';
+        player.style.backgroundColor = '#000';
+        player.style.borderRadius = '12px';
+        player.style.overflow = 'hidden';
+        player.style.zIndex = '10000';
+        const iframe = document.createElement('iframe');
+        iframe.id = 'videoFrame';
+        iframe.width = '100%';
+        iframe.height = '100%';
+        iframe.style.border = 'none';
+        player.appendChild(iframe);
+        document.body.appendChild(player);
+    }
 }
-
-if (document.getElementById('movieList')) {
-  fetchMoviesByGenre('movies');
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Initial content loading
-  init();
-  setupVideoPlayer(); // Ensures the video player div and iframe are in the DOM
-  setupVideoPlayerClose(); // Adds the close button to the video player
-
-  const header = document.getElementById('animatedHeader');
-  if (header) {
-    header.innerHTML = `
-      <div class="logo-area">
-        <img src="https://salidaph.online/assests/salida.png" width="120" height="50" alt="Logo">
-      </div>
-      <nav class="nav-links">
-        <div class="scrolling-text">
-          <div style="display: inline-block; animation: marquee 10s linear infinite;">
-            📢 SALIDAPH IS NOW ONLINE!
-          </div>
-        </div>
-        <a href="/">Home</a>
-        <a href="https://github.com/akirachoi01">Github</a>
-        <a href="/privacy-policy.html">Privacy</a>
-        <a href="/terms.html">Term</a>
-        <a href="https://file.salidaph.online/SalidaPH.apk">Get APK</a>
-      </nav>
-    `;
-  }
-
-
-
-  // Cloudflare Turnstile setup (from your original code)
-  if (typeof turnstile !== 'undefined') {
-    turnstile.ready(function () {
-      turnstile.render("#example-container", {
-        sitekey: "0x4AAAAAABcuP4RkP-L5lN-C",
-        callback: function (token) {
-          console.log(`Challenge Success ${token}`);
-        },
-      });
-    });
-  }
-});
