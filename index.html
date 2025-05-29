@@ -1,210 +1,319 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SalidaPH</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SalidaPH</title>
 
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5171614866616581"
-     crossorigin="anonymous"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5171614866616581"
+     crossorigin="anonymous"></script>
 
-  <link rel="icon" href="https://salidaph.online/assests/salida.png" />
-  <link rel="stylesheet" href="https://salidaph.online/index.css" />
+  <link rel="icon" href="https://salidaph.online/assests/salida.png" />
+  <link rel="stylesheet" href="https://salidaph.online/index.css" />
 
-  <link rel="stylesheet" href="https://salidaph.online/player/player.css" />
+  <link rel="stylesheet" href="https://salidaph.online/player/player.css" />
 
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
 
-  <meta name="google-site-verification" content="CkQVoXgh_OEaHibbMRa9ZMxRGzg6Xyglep9WpKxpAnw" />
+  <meta name="google-site-verification" content="CkQVoXgh_OEaHibbMRa9ZMxRGzg6Xyglep9WpKxpAnw" />
 
-  <script>
-    (function(w,d,s,l,i){
-      w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
-      var f=d.getElementsByTagName(s)[0],
-          j=d.createElement(s), dl=l!='dataLayer'?'&l='+l:'';
-      j.async=true; j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-      f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-TFZG4ZPJ');
-  </script>
+  <script>
+    (function(w,d,s,l,i){
+      w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+      var f=d.getElementsByTagName(s)[0],
+          j=d.createElement(s), dl=l!='dataLayer'?'&l='+l:'';
+      j.async=true; j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+      f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TFZG4ZPJ');
+  </script>
 
-  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17056210414"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'AW-17056210414');
-  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17056210414"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'AW-17056210414');
+  </script>
 
-  <style>
-    /* Basic styling for the search container */
-    .search-container {
-      display: flex;
-      justify-content: center;
-      padding: 20px;
-      background-color: #f0f0f0; /* Light background for the search bar */
-      border-bottom: 1px solid #ddd;
+  <style>
+    /* Basic styling for the search container */
+    .search-container {
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      background-color: #f0f0f0; /* Light background for the search bar */
+      border-bottom: 1px solid #ddd;
+    }
+
+    .search-container input[type="text"] {
+      padding: 10px 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      width: 60%; /* Adjust width as needed */
+      max-width: 500px;
+    }
+
+    .search-container button {
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-left: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    .search-container button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Styling for search results */
+    #searchResults {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+      justify-items: center;
+    }
+
+    .search-result-item {
+      text-align: center;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.2s ease;
+    }
+
+    .search-result-item:hover {
+      transform: translateY(-5px);
+    }
+
+    .search-result-item img {
+      width: 100%;
+      height: 270px; /* Standardize image height */
+      object-fit: cover;
+      border-bottom: 1px solid #eee;
+    }
+
+    .search-result-item h3 {
+      font-size: 1em;
+      margin: 10px 0 5px;
+      padding: 0 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .search-result-item p {
+      font-size: 0.9em;
+      color: #666;
+      padding: 0 10px 10px;
+    }
+
+    /* Custom styles for tabs */
+    .tab-container {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+        background-color: #222;
+        padding: 10px;
+        border-radius: 8px;
+        flex-wrap: wrap; /* Allow tabs to wrap on smaller screens */
     }
 
-    .search-container input[type="text"] {
-      padding: 10px 15px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 16px;
-      width: 60%; /* Adjust width as needed */
-      max-width: 500px;
+    .tab-button {
+        background-color: #333;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        margin: 5px; /* Adjust margin for spacing */
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease, transform 0.2s ease;
     }
 
-    .search-container button {
-      padding: 10px 20px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-left: 10px;
-      transition: background-color 0.3s ease;
+    .tab-button:hover {
+        background-color: #555;
+        transform: translateY(-2px);
     }
 
-    .search-container button:hover {
-      background-color: #0056b3;
+    .tab-button.active {
+        background-color: #e50914; /* Netflix red */
+        font-weight: bold;
+        box-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
     }
 
-    /* Styling for search results */
-    #searchResults {
-      padding: 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 20px;
-      justify-items: center;
+    /* Styles for content display container */
+    #content-display-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 20px;
+        padding: 20px;
     }
 
-    .search-result-item {
-      text-align: center;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      overflow: hidden;
-      transition: transform 0.2s ease;
+    /* Existing movie-card and videoPlayer styles */
+    .movie-card {
+        background-color: #1a1a1a;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        position: relative;
+        cursor: pointer;
+        transition: transform 0.2s ease-in-out;
     }
 
-    .search-result-item:hover {
-      transform: translateY(-5px);
+    .movie-card:hover {
+        transform: translateY(-5px);
     }
 
-    .search-result-item img {
-      width: 100%;
-      height: 270px; /* Standardize image height */
-      object-fit: cover;
-      border-bottom: 1px solid #eee;
+    .movie-card img {
+        width: 100%;
+        height: 270px;
+        object-fit: cover;
+        display: block;
     }
 
-    .search-result-item h3 {
-      font-size: 1em;
-      margin: 10px 0 5px;
-      padding: 0 10px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    .movie-card-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 10px;
+        box-sizing: border-box;
+        text-align: center;
     }
 
-    .search-result-item p {
-      font-size: 0.9em;
-      color: #666;
-      padding: 0 10px 10px;
+    .movie-card-info h3 {
+        margin: 0;
+        font-size: 1em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
-  </style>
+
+    .movie-card-info p {
+        margin: 5px 0 0;
+        font-size: 0.8em;
+        color: #ccc;
+    }
+
+    .play-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.6);
+        border: none;
+        border-radius: 50%;
+        color: #fff;
+        font-size: 24px;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .movie-card:hover .play-button {
+        opacity: 1;
+    }
+
+    #videoPlayer {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10000;
+        display: none;
+        background-color: #000;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+        width: 90%;
+        max-width: 900px;
+        aspect-ratio: 16 / 9;
+    }
+
+    #videoPlayer button {
+        z-index: 10001;
+    }
+  </style>
 </head>
 
 <body>
-  <noscript>
-    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TFZG4ZPJ"
-            height="0" width="0" style="display:none;visibility:hidden"></iframe>
-  </noscript>
+  <noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TFZG4ZPJ"
+            height="0" width="0" style="display:none;visibility:hidden"></iframe>
+  </noscript>
 
-  <header id="animatedHeader">
-    <a href="https://salidaph.online">
-      <img src="assets/salida.png" alt="SalidaPH Logo" width="30" height="30" style="margin-right: 10px;" />
-    </a>
-  </header>
+  <header id="animatedHeader">
+    <a href="https://salidaph.online">
+      <img src="https://salidaph.online/assests/salida.png" alt="SalidaPH Logo" width="30" height="30" style="margin-right: 10px;" />
+    </a>
+  </header>
 
-  <div class="search-container">
-    <input type="text" id="searchInput" placeholder="Search for movies or TV shows..." />
-    <button id="searchButton">Search</button>
-  </div>
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search for movies or TV shows..." />
+    <button id="searchButton">Search</button>
+  </div>
 
-  <section class="movie-list-section" id="searchResultsSection" style="display: none;">
-    <h2>Search Results</h2>
-    <div id="searchResults" class="movie-list-vertical"></div>
-  </section>
+  <section class="movie-list-section" id="searchResultsSection" style="display: none;">
+    <h2>Search Results</h2>
+    <div id="searchResults" class="movie-list-vertical"></div>
+  </section>
 
-  <div class="sections-container">
-
-    <section class="movie-list-section" id="trending-now">
-      <h2 class="trending-title">🔥 Trending Now</h2>
-      <div class="movie-list-vertical trending-container"></div>
+    <section class="tab-section" id="tabbedContentSection">
+        <div class="tab-container">
+            <button class="tab-button active" data-category="trending">Trending</button>
+            <button class="tab-button" data-category="movies">Movies</button>
+            <button class="tab-button" data-category="tv">TV Shows</button>
+            <button class="tab-button" data-category="anime">Anime</button>
+        </div>
+        <div id="content-display-container" class="category-container">
+            </div>
     </section>
 
-    <section class="movie-list-section" id="top-rated-movies">
-      <h2 class="toprated-title">🔥 Top Rated</h2>
-      <div class="movie-list-vertical top-container"></div>
-    </section>
+    <a href="https://t.me/akirachoi01" target="_blank" class="hide-if-iframe Telegram"
+     style="height: 60px; width: 60px; z-index: 9999; position: fixed; bottom: 150px; right: 0;">
+    <img src="https://i.ibb.co.com/QNfMhcp/telegram.png" alt="Telegram Channel" style="width: 50px;">
+  </a>
+  <link rel="stylesheet" href="https://salidaph.online/chat.css" />
+  <p>Click the floating button to open BUNOS Video!</p>
 
-    <section class="movie-list-section" id="horror-movies">
-      <h2 class="horror-title">🔥 Horror Movie</h2>
-      <div class="movie-list-vertical horror-container"></div>
-    </section>
+  <button id="chat-fab" class="chat-fab-button chat-icon" title="Open Chat"></button>
+  <div id="chat-modal-overlay" class="chat-modal-overlay">
+      <div class="chat-modal-content">
+          <iframe width="376" height="669" src="https://www.youtube.com/embed/UMmQD594sKs" title="Cute PRRD describes Cute VP Sara" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+  </div>
 
-    <section class="movie-list-section" id="comedy-movies">
-      <h2>Comedy Movies</h2>
-      <div class="movie-list-vertical comedy-container"></div>
-    </section>
+    <div id="videoPlayer">
+        <iframe id="videoFrame" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+    </div>
 
-    <section class="movie-list-section" id="thriller-movies">
-      <h2>Thriller Movies</h2>
-      <div class="movie-list-vertical thriller-container"></div>
-    </section>
+  <footer style="text-align: center; padding: 20px 10px; background: #f4f4f4; margin-top: 30px;">
+    <p>© 2025 SalidaPH | 
+      <a href="https://salidaph.online/privacy-policy.html" target="_blank" style="color: #007BFF; text-decoration: none;">
+        Privacy Policy
+      </a>
+    </p>
+  </footer>
 
-    <section class="movie-list-section" id="anime-popular">
-      <h2>Popular Anime</h2>
-      <div class="movie-list-vertical anime-popular-container"></div>
-    </section>
+  <script src="https://salidaph.online/api.js"></script>
+  <script src="https://salidaph.online/ping.js"></script>
+  <script src="https://salidaph.online/chat.js"></script>
+  <script src="https://salidaph.online/search.js"></script>
 
-    <section class="movie-list-section" id="drama-tv">
-      <h2>Drama TV Shows</h2>
-      <div class="movie-list-vertical drama-tv-container"></div>
-    </section>
-
-  </div>
-
-  
-  <a href="https://t.me/akirachoi01" target="_blank" class="hide-if-iframe Telegram"
-     style="height: 60px; width: 60px; z-index: 9999; position: fixed; bottom: 150px; right: 0;">
-    <img src="https://i.ibb.co.com/QNfMhcp/telegram.png" alt="Telegram Channel" style="width: 50px;">
-  </a>
-  <link rel="stylesheet" href="https://salidaph.online/chat.css" />
-  <p>Click the floating button to open BUNOS Video!</p>
-
-  <button id="chat-fab" class="chat-fab-button chat-icon" title="Open Chat"></button>
-  <div id="chat-modal-overlay" class="chat-modal-overlay">
-      <div class="chat-modal-content">
-          <iframe width="376" height="669" src="https://www.youtube.com/embed/UMmQD594sKs" title="Cute PRRD describes Cute VP Sara" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-      </div>
-  </div>
-
-  <footer style="text-align: center; padding: 20px 10px; background: #f4f4f4; margin-top: 30px;">
-    <p>© 2025 SalidaPH | 
-      <a href="https://salidaph.online/privacy-policy.html" target="_blank" style="color: #007BFF; text-decoration: none;">
-        Privacy Policy
-      </a>
-    </p>
-  </footer>
-
-  <script src="https://salidaph.online/api.js"></script>
-  <script src="https://salidaph.online/ping.js"></script>
-  <script src="https://salidaph.online/chat.js"></script>
-  <script src="https://salidaph.online/search.js"></script>
-
-  <script src="https://salidaph.online/player/player.js"></script>
+  <script src="https://salidaph.online/player/player.js"></script>
 </body>
 </html>
