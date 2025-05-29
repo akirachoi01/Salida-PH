@@ -103,6 +103,19 @@ const loadCategoryContent = async (category) => {
             content = await fetchDataByCategory('tv', 'popular');
             break;
         case 'anime':
+             case 'horror':
+            content = await fetchByGenre('movie', GENRE_IDS.horror);
+            break;
+        case 'comedy':
+            content = await fetchByGenre('movie', GENRE_IDS.comedy);
+            break;
+        case 'thriller':
+            content = await fetchByGenre('movie', GENRE_IDS.thriller);
+            break;
+        case 'drama':
+            // You can choose to show drama movies or TV shows, or both
+            content = await fetchByGenre('movie', GENRE_IDS.drama);
+            break;
             // For anime, we typically target the 'Animation' genre for both movies and TV
             const animeMovies = await fetchByGenre('movie', GENRE_IDS.movie.Animation);
             const animeTv = await fetchByGenre('tv', GENRE_IDS.tv.Animation);
