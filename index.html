@@ -1,469 +1,470 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
-  <meta charset="UTF-8" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>SalidaPH</title>
-
-
-
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5171614866616581"
-
-     crossorigin="anonymous"></script>
-
-
-
-  <link rel="icon" href="https://salidaph.online/assests/salida.png" />
-
-  <link rel="stylesheet" href="https://salidaph.online/index.css" />
-
-
-
-  <link rel="stylesheet" href="https://salidaph.online/player/player.css" />
-
-
-
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
-
-
-
-  <meta name="google-site-verification" content="CkQVoXgh_OEaHibbMRa9ZMxRGzg6Xyglep9WpKxpAnw" />
-
-
-
-  <script>
-
-    (function(w,d,s,l,i){
-
-      w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
-
-      var f=d.getElementsByTagName(s)[0],
-
-          j=d.createElement(s), dl=l!='dataLayer'?'&l='+l:'';
-
-      j.async=true; j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-
-      f.parentNode.insertBefore(j,f);
-
-    })(window,document,'script','dataLayer','GTM-TFZG4ZPJ');
-
-  </script>
-
-
-
-  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17056210414"></script>
-
-  <script>
-
-    window.dataLayer = window.dataLayer || [];
-
-    function gtag(){dataLayer.push(arguments);}
-
-    gtag('js', new Date());
-
-    gtag('config', 'AW-17056210414');
-
-  </script>
-
-
-
-  <style>
-    /* Global styles for HTML and Body for a flexible layout */
-    html, body {
-        margin: 0;
-        padding: 0;
-        width: 100%; /* Ensures full width */
-        min-height: 100vh; /* Ensures body takes at least full viewport height */
-        display: flex; /* Use flexbox to stack content vertically */
-        flex-direction: column; /* Stack children top to bottom */
-        background-color: #000; /* Dark background for the whole page */
-        color: #fff; /* Default text color for the page */
-        font-family: Arial, sans-serif; /* A common, readable font */
-    }
-
-    /* Ensure major sections take full width and respect padding */
-    body > header,
-    body > .search-container,
-    body > .movie-list-section,
-    body > .tab-section,
-    body > footer {
-        width: 100%; /* Make sure these main sections take full width */
-        max-width: 100%; /* Important to prevent horizontal scroll if padding is added */
-        box-sizing: border-box; /* Include padding/border in width calculation */
-    }
-
-    /* Header styling */
-    #animatedHeader {
-        background-color: #1a1a1a; /* Darker header */
-        padding: 15px 20px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between; /* Space out logo and nav links */
-        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    }
-
-    #animatedHeader img {
-        height: 50px; /* Adjust logo size */
-        width: auto;
-    }
-
-    .nav-links {
-        display: flex;
-        align-items: center;
-        gap: 20px; /* Space between nav items */
-    }
-
-    .nav-links a {
-        color: #fff;
-        text-decoration: none;
-        font-weight: bold;
-        transition: color 0.3s ease;
-    }
-
-    .nav-links a:hover {
-        color: #e50914; /* Netflix red on hover */
-    }
-
-    .scrolling-text {
-        overflow: hidden;
-        white-space: nowrap;
-        color: #ffd700; /* Gold color for announcement */
-        font-weight: bold;
-        margin-right: 20px;
-        flex-shrink: 0; /* Prevent text from shrinking */
-    }
-
-    /* Keyframe animation for scrolling text */
-    @keyframes marquee {
-        0% { transform: translateX(100%); }
-        100% { transform: translateX(-100%); }
-    }
-
-
-    /* Basic styling for the search container */
-    .search-container {
-        display: flex;
-        justify-content: center;
-        padding: 20px;
-        background-color: #111; /* Dark background for the search bar */
-        border-bottom: 1px solid #333;
-        box-sizing: border-box; /* Ensure padding is included in width */
-    }
-
-    .search-container input[type="text"] {
-        padding: 12px 18px; /* Slightly larger padding */
-        border: 1px solid #555;
-        border-radius: 25px; /* More rounded corners */
-        font-size: 16px;
-        width: 60%;
-        max-width: 500px;
-        background-color: #333;
-        color: #eee;
-        outline: none; /* Remove outline on focus */
-    }
-
-    .search-container input[type="text"]::placeholder {
-        color: #bbb; /* Placeholder text color */
-    }
-
-    .search-container button {
-        padding: 12px 25px; /* Slightly larger padding */
-        background-color: #e50914; /* Netflix red */
-        color: white;
-        border: none;
-        border-radius: 25px; /* More rounded corners */
-        font-size: 16px;
-        cursor: pointer;
-        margin-left: 10px;
-        transition: background-color 0.3s ease;
-    }
-
-    .search-container button:hover {
-        background-color: #b20710; /* Darker red on hover */
-    }
-
-    /* Styling for search results section */
-    #searchResultsSection {
-        flex-grow: 1; /* Allows this section to take up available vertical space */
-        padding: 20px; /* Add padding to the section itself */
-        background-color: #0a0a0a; /* Dark background for content areas */
-    }
-
-    #searchResultsSection h2 {
-        color: #fff;
-        text-align: center;
-        margin-bottom: 25px; /* Space below title */
-        font-size: 2em;
-    }
-
-    #searchResults {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 20px;
-        justify-items: center; /* Center cards within their grid cells */
-        width: 100%; /* Explicitly set 100% width */
-        box-sizing: border-box; /* Include padding in width */
-    }
-
-    .search-result-item {
-        text-align: center;
-        background-color: #1a1a1a;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.5); /* Stronger shadow */
-        overflow: hidden;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        color: #fff;
-        position: relative; /* Needed for play button positioning */
-        cursor: pointer; /* Indicate it's clickable */
-    }
-
-    .search-result-item:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 15px rgba(0,0,0,0.7); /* Even stronger shadow on hover */
-    }
-
-    .search-result-item img {
-        width: 100%;
-        height: 270px;
-        object-fit: cover;
-        border-bottom: 1px solid #333;
-        display: block;
-    }
-
-    .search-result-item h3 {
-        font-size: 1.1em; /* Slightly larger title */
-        margin: 10px 0 5px;
-        padding: 0 10px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        color: #fff;
-    }
-
-    .search-result-item p {
-        font-size: 0.9em;
-        color: #aaa; /* Lighter grey for year */
-        padding: 0 10px 10px;
-    }
-
-    /* Custom styles for tabs */
-    .tab-section {
-        flex-grow: 1; /* Allows this section to take up available vertical space */
-        display: flex;
-        flex-direction: column;
-        padding: 0 20px; /* Padding for the entire tab section */
-        background-color: #0a0a0a; /* Dark background for content areas */
-    }
-
-    .tab-container {
-        display: flex;
-        justify-content: center;
-        margin: 20px auto; /* Center the tab buttons block */
-        background-color: #222;
-        padding: 10px;
-        border-radius: 8px;
-        flex-wrap: wrap;
-        width: calc(100% - 40px); /* Adjust width to account for padding/margin */
-        max-width: 1200px; /* Limit max width of tab buttons row */
-        box-sizing: border-box;
-    }
-
-    .tab-button {
-        background-color: #333;
-        color: #fff;
-        border: none;
-        padding: 12px 25px; /* Slightly larger and more clickable */
-        margin: 5px;
-        border-radius: 25px; /* More rounded like search button */
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    }
-
-    .tab-button:hover {
-        background-color: #555;
-        transform: translateY(-2px);
-        box-shadow: 0 0 10px rgba(255,255,255,0.2); /* Subtle glow on hover */
-    }
-
-    .tab-button.active {
-        background-color: #e50914; /* Netflix red */
-        font-weight: bold;
-        box-shadow: 0 0 15px rgba(229, 9, 20, 0.7); /* More prominent glow */
-        transform: translateY(-3px); /* More pronounced lift */
-    }
-
-    /* Styles for content display container (for categories) */
-    #content-display-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 20px;
-        padding: 20px;
-        width: 100%; /* Explicitly set 100% width */
-        box-sizing: border-box; /* Include padding in width */
-    }
-
-    /* Existing movie-card and videoPlayer styles - now with play button fix */
-    .movie-card {
-        background-color: #1a1a1a;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        position: relative;
-        cursor: pointer;
-        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease;
-        color: #fff; /* Default text color for cards */
-    }
-
-    .movie-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6);
-    }
-
-    .movie-card img {
-        width: 100%;
-        height: 270px;
-        object-fit: cover;
-        display: block;
-        border-bottom: 1px solid #333;
-    }
-
-    .movie-card-info {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background-color: rgba(0, 0, 0, 0.7);
-        color: white;
-        padding: 10px;
-        box-sizing: border-box;
-        text-align: center;
-        z
-
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SalidaPH</title>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5171614866616581"
+        crossorigin="anonymous"></script>
+
+    <link rel="icon" href="https://salidaph.online/assests/salida.png" />
+    <link rel="stylesheet" href="https://salidaph.online/index.css" />
+    <link rel="stylesheet" href="https://salidaph.online/player/player.css" /> 
+
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
+
+    <meta name="google-site-verification" content="CkQVoXgh_OEaHibbMRa9ZMxRGzg6Xyglep9WpKxpAnw" />
+
+    <script>
+        (function(w,d,s,l,i){
+            w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+            var f=d.getElementsByTagName(s)[0],
+                j=d.createElement(s), dl=l!='dataLayer'?'&l='+l:'';
+            j.async=true; j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+            f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-TFZG4ZPJ');
+    </script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17056210414"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'AW-17056210414');
+    </script>
+
+    <style>
+        /* Global styles for HTML and Body for a flexible layout */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%; /* Ensures full width */
+            min-height: 100vh; /* Ensures body takes at least full viewport height */
+            display: flex; /* Use flexbox to stack content vertically */
+            flex-direction: column; /* Stack children top to bottom */
+            background-color: #000; /* Dark background for the whole page */
+            color: #fff; /* Default text color for the page */
+            font-family: Arial, sans-serif; /* A common, readable font */
+        }
+
+        /* Ensure major sections take full width and respect padding */
+        body > header,
+        body > .search-container,
+        body > .movie-list-section,
+        body > .tab-section,
+        body > footer {
+            width: 100%; /* Make sure these main sections take full width */
+            max-width: 100%; /* Important to prevent horizontal scroll if padding is added */
+            box-sizing: border-box; /* Include padding/border in width calculation */
+        }
+
+        /* Header styling */
+        #animatedHeader {
+            background-color: #1a1a1a; /* Darker header */
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Space out logo and nav links */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        #animatedHeader img {
+            height: 50px; /* Adjust logo size */
+            width: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* Space between nav items */
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #e50914; /* Netflix red on hover */
+        }
+
+        .scrolling-text {
+            overflow: hidden;
+            white-space: nowrap;
+            color: #ffd700; /* Gold color for announcement */
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0; /* Prevent text from shrinking */
+        }
+
+        /* Keyframe animation for scrolling text */
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+
+        /* Basic styling for the search container */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            background-color: #111; /* Dark background for the search bar */
+            border-bottom: 1px solid #333;
+            box-sizing: border-box; /* Ensure padding is included in width */
+        }
+
+        .search-container input[type="text"] {
+            padding: 12px 18px; /* Slightly larger padding */
+            border: 1px solid #555;
+            border-radius: 25px; /* More rounded corners */
+            font-size: 16px;
+            width: 60%;
+            max-width: 500px;
+            background-color: #333;
+            color: #eee;
+            outline: none; /* Remove outline on focus */
+        }
+
+        .search-container input[type="text"]::placeholder {
+            color: #bbb; /* Placeholder text color */
+        }
+
+        .search-container button {
+            padding: 12px 25px; /* Slightly larger padding */
+            background-color: #e50914; /* Netflix red */
+            color: white;
+            border: none;
+            border-radius: 25px; /* More rounded corners */
+            font-size: 16px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-container button:hover {
+            background-color: #b20710; /* Darker red on hover */
+        }
+
+        /* Styling for search results section */
+        #searchResultsSection {
+            flex-grow: 1; /* Allows this section to take up available vertical space */
+            padding: 20px; /* Add padding to the section itself */
+            background-color: #0a0a0a; /* Dark background for content areas */
+        }
+
+        #searchResultsSection h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 25px; /* Space below title */
+            font-size: 2em;
+        }
+
+        #searchResults {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            justify-items: center; /* Center cards within their grid cells */
+            width: 100%; /* Explicitly set 100% width */
+            box-sizing: border-box; /* Include padding in width */
+        }
+
+        .search-result-item {
+            text-align: center;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5); /* Stronger shadow */
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            color: #fff;
+            position: relative; /* Needed for play button positioning */
+            cursor: pointer; /* Indicate it's clickable */
+        }
+
+        .search-result-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.7); /* Even stronger shadow on hover */
+        }
+
+        .search-result-item img {
+            width: 100%;
+            height: 270px;
+            object-fit: cover;
+            border-bottom: 1px solid #333;
+            display: block;
+        }
+
+        .search-result-item h3 {
+            font-size: 1.1em; /* Slightly larger title */
+            margin: 10px 0 5px;
+            padding: 0 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #fff;
+        }
+
+        .search-result-item p {
+            font-size: 0.9em;
+            color: #aaa; /* Lighter grey for year */
+            padding: 0 10px 10px;
+        }
+
+        /* Custom styles for tabs */
+        .tab-section {
+            flex-grow: 1; /* Allows this section to take up available vertical space */
+            display: flex;
+            flex-direction: column;
+            padding: 0 20px; /* Padding for the entire tab section */
+            background-color: #0a0a0a; /* Dark background for content areas */
+        }
+
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px auto; /* Center the tab buttons block */
+            background-color: #222;
+            padding: 10px;
+            border-radius: 8px;
+            flex-wrap: wrap;
+            width: calc(100% - 40px); /* Adjust width to account for padding/margin */
+            max-width: 1200px; /* Limit max width of tab buttons row */
+            box-sizing: border-box;
+        }
+
+        .tab-button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 12px 25px; /* Slightly larger and more clickable */
+            margin: 5px;
+            border-radius: 25px; /* More rounded like search button */
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        .tab-button:hover {
+            background-color: #555;
+            transform: translateY(-2px);
+            box-shadow: 0 0 10px rgba(255,255,255,0.2); /* Subtle glow on hover */
+        }
+
+        .tab-button.active {
+            background-color: #e50914; /* Netflix red */
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(229, 9, 20, 0.7); /* More prominent glow */
+            transform: translateY(-3px); /* More pronounced lift */
+        }
+
+        /* Styles for content display container (for categories) */
+        #content-display-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            width: 100%; /* Explicitly set 100% width */
+            box-sizing: border-box; /* Include padding in width */
+        }
+
+        /* Existing movie-card and videoPlayer styles - now with play button fix */
+        .movie-card {
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease;
+            color: #fff; /* Default text color for cards */
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6);
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: 270px;
+            object-fit: cover;
+            display: block;
+            border-bottom: 1px solid #333;
+        }
+
+        .movie-card-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            box-sizing: border-box;
+            text-align: center;
+            z-index: 1; /* FIXED: Ensure this is correctly here */
+        }
+
+        .movie-card-info h3 {
+            margin: 0;
+            font-size: 1.1em; /* Consistent with search results */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .movie-card-info p {
+            margin: 5px 0 0;
+            font-size: 0.9em;
+            color: #ccc;
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.6);
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 24px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0; /* Starts hidden */
+            transition: opacity 0.3s ease, background-color 0.2s ease; /* Smooth transition */
+            z-index: 2; /* Ensure it's above the image and info */
+            pointer-events: auto; /* IMPORTANT: Ensure it's always clickable even when invisible */
+        }
+
+        .movie-card:hover .play-button {
+            opacity: 1;
+        }
+
+        .play-button:hover {
+            background-color: rgba(0, 0, 0, 0.8); /* Darken on hover */
+        }
+
+        #videoPlayer {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10000;
+            display: none;
+            background-color: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+            width: 90%;
+            max-width: 900px;
+            aspect-ratio: 16 / 9;
+        }
+
+        #videoPlayer button {
+            z-index: 10001;
+        }
+
+        /* Footer styling adjustments */
+        footer {
+            flex-shrink: 0; /* Prevent footer from shrinking */
+            margin-top: 50px; /* Add more space above the footer */
+            background: #111; /* Darker footer background */
+            color: #aaa; /* Lighter text color */
+            padding: 20px 10px;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center; /* Ensure text is centered */
+        }
+
+        footer a {
+            color: #e50914 !important; /* Netflix red for links, using !important for override */
+            text-decoration: none;
+        }
+
+        /* General text color for sections */
+        .movie-list-section h2 {
+            color: #fff; /* White text for section titles */
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Telegram button positioning */
+        .Telegram {
+            height: 60px;
+            width: 60px;
+            z-index: 9999;
+            position: fixed;
+            bottom: 150px;
+            right: 0;
+            display: block; /* Ensure it respects width/height */
+            text-decoration: none; /* Remove underline */
+        }
+        .Telegram img {
+            width: 50px;
+            height: auto; /* Maintain aspect ratio */
+        }
+    </style>
 </head>
 
-
-
 <body>
-
-  <noscript>
-
-    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TFZG4ZPJ"
-
-            height="0" width="0" style="display:none;visibility:hidden"></iframe>
-
-  </noscript>
-
-
-
-  <header id="animatedHeader">
-
-    <a href="https://salidaph.online">
-
-      <img src="https://salidaph.online/assests/salida.png" alt="SalidaPH Logo" width="30" height="30" style="margin-right: 10px;" />
-
-    </a>
-
-  </header>
-
-
-
-  <div class="search-container">
-
-    <input type="text" id="searchInput" placeholder="Search for movies or TV shows..." />
-
-    <button id="searchButton">Search</button>
-
-  </div>
-
-
-
-  <section class="movie-list-section" id="searchResultsSection" style="display: none;">
-
-    <h2>Search Results</h2>
-
-    <div id="searchResults" class="movie-list-vertical"></div>
-
-  </section>
-
-
-
-    <section class="tab-section" id="tabbedContentSection">
-
-        <div class="tab-container">
-
-            <button class="tab-button active" data-category="trending">Trending</button>
-
-            <button class="tab-button" data-category="movies">Movies</button>
-
-            <button class="tab-button" data-category="tv">TV Shows</button>
-
-            <button class="tab-button" data-category="anime">Anime</button>
-
-             <button class="tab-button" data-category="horror">Horror</button>
-
-            <button class="tab-button" data-category="comedy">Comedy</button>
-
-            <button class="tab-button" data-category="thriller">Thriller</button>
-
-            <button class="tab-button" data-category="drama">Drama</button>
-
-        </div>
-
-        <div id="content-display-container" class="category-container">
-
-            </div>
-
-    </section>
-
-
-
-        <a href="https://t.me/akirachoi01" target="_blank" class="hide-if-iframe Telegram"
-
-     style="height: 60px; width: 60px; z-index: 9999; position: fixed; bottom: 150px; right: 0;">
-
-    <img src="https://i.ibb.co.com/QNfMhcp/telegram.png" alt="Telegram Channel" style="width: 50px;">
-
-
-
-
-
-    <div id="videoPlayer">
-
-        <iframe id="videoFrame" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-
-    </div>
-
-
-
-  <footer style="text-align: center; padding: 20px 10px; background: #f4f4f4; margin-top: 30px;">
-
-    <p>© 2025 SalidaPH | 
-
-      <a href="https://salidaph.online/privacy-policy.html" target="_blank" style="color: #007BFF; text-decoration: none;">
-
-        Privacy Policy
-
-      </a>
-
-    </p>
-
-  </footer>
-
-
-
-  <script src="https://salidaph.online/api.js"></script>
-
-  <script src="https://salidaph.online/ping.js"></script>
-
-  <script src="https://salidaph.online/search.js"></script>
-
-</body>
-
+    <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TFZG4ZPJ"
+            height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+
+    <header id="animatedHeader">
+        </header>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search for movies or TV shows..." />
+        <button id="searchButton">Search</button>
+    </div>
+
+    <section class="movie-list-section" id="searchResultsSection" style="display: none;">
+        <h2>Search Results</h2>
+        <div id="searchResults" class="movie-list-vertical"></div>
+    </section>
+
+    <section class="tab-section" id="tabbedContentSection">
+        <div class="tab-container">
+            <button class="tab-button active" data-category="trending">Trending</button>
+            <button class="tab-button" data-category="movies">Movies</button>
+            <button class="tab-button" data-category="tv">TV Shows</button>
+            <button class="tab-button" data-category="anime">Anime</button>
+            <button class="tab-button" data-category="horror">Horror</button>
+            <button class="tab-button" data-category="comedy">Comedy</button>
+            <button class="tab-button" data-category="thriller">Thriller</button>
+            <button class="tab-button" data-category="drama">Drama</button>
+        </div>
+        <div id="content-display-container" class="category-container">
+        </div>
+    </section>
+
+    <a href="https://t.me/akirachoi01" target="_blank" class="hide-if-iframe Telegram"
+        style="height: 60px; width: 60px; z-index: 9999; position: fixed; bottom: 150px; right: 0;">
+        <img src="https://i.ibb.co.com/QNfMhcp/telegram.png" alt="Telegram Channel" style="width: 50px; height: auto;">
+    </a>
+
+    <div id="videoPlayer">
+        <iframe id="videoFrame" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <footer style="text-align: center; padding: 20px 10px; background: #f4f4f4; margin-top: 30px;">
+        <p>© 2025 SalidaPH |
+            <a href="https://salidaph.online/privacy-policy.html" target="_blank" style="color: #007BFF; text-decoration: none;">
+                Privacy Policy
+            </a>
+        </p>
+    </footer>
+
+    <script src="https://salidaph.online/api.js"></script>
+    </body>
 </html>
-
