@@ -7,9 +7,62 @@ const GENRE_IDS = {
     'horror': 27,
     'comedy': 35,
     'thriller': 53,
-    'animation': 16, // Often used for Anime/Animated content
+    'animation': 16,
     'drama': 18
 };
+
+// --- START: Initial Access Dialog and Turnstile Logic ---
+let isTurnstileVerified = false;
+
+// This function will be called by Turnstile directly when successful
+function onTurnstileSuccess(token) {
+    console.log(`Turnstile verified! Token: ${token}`);
+    isTurnstileVerified = true;
+    document.getElementById('turnstileOkButton').style.display = 'block'; // Show the OK button
+    // You could optionally verify this token on a backend here for stronger security
+}
+
+const initializeInitialAccessDialog = () => {
+    const initialAccessDialog = document.getElementById('initialAccessDialog');
+    const turnstileContainer = document.getElementById('turnstileContainer');
+    const turnstileOkButton = document.getElementById('turnstileOkButton');
+    const siteContentWrapper = document.getElementById('siteContentWrapper');
+
+    // Render Turnstile
+    turnstile.ready(function () {
+        turnstile.render(turnstileContainer, {
+            sitekey: "0x4AAAAAABcuP4RkP-L5lN-C", // Your actual sitekey
+            callback: onTurnstileSuccess, // Reference the global callback function
+            'error-callback': function() {
+                console.error("Turnstile widget encountered an error.");
+                // Optionally show an error message or retry button
+            },
+            'expired-callback': function() {
+                console.warn("Turnstile challenge expired. Please re-verify.");
+                isTurnstileVerified = false;
+                turnstileOkButton.style.display = 'none'; // Hide OK button if expired
+            }
+        });
+    });
+
+    // Event listener for the OK button in the initial dialog
+    if (turnstileOkButton) {
+        turnstileOkButton.addEventListener('click', () => {
+            if (isTurnstileVerified) {
+                initialAccessDialog.classList.remove('show'); // Hide the dialog
+                document.body.style.overflow = 'auto'; // Re-enable scrolling
+                siteContentWrapper.style.display = 'flex'; // Show the main site content
+                // Optionally trigger initial content load if not already handled by DOMContentLoaded
+                // setupTabNavigation(); // if you want to explicitly trigger it here
+            } else {
+                // If button is clicked before verification (shouldn't happen if button is hidden)
+                showCustomDialog("Please complete the verification challenge first.");
+            }
+        });
+    }
+};
+// --- END: Initial Access Dialog and Turnstile Logic ---
+
 
 // Helper function to fetch data for a given type (movie/tv) and category (popular, top_rated, etc.)
 const fetchData = async (type, category) => {
@@ -42,65 +95,45 @@ const Player = (() => {
     let closeButton;
     let fullscreenButton;
 
-    // Initializes the player elements only once
     const initializePlayerElements = () => {
         videoPlayer = document.getElementById('videoPlayer');
         videoFrame = document.getElementById('videoFrame');
 
-        // Create close button if it doesn't exist
         closeButton = videoPlayer.querySelector('.close-button');
         if (!closeButton) {
             closeButton = document.createElement('button');
             closeButton.textContent = '×';
             closeButton.classList.add('close-button');
             Object.assign(closeButton.style, {
-                position: 'absolute',
-                top: '10px',
-                right: '10px',
-                zIndex: '9999',
-                fontSize: '24px',
-                background: 'transparent',
-                border: 'none',
-                color: '#fff',
-                cursor: 'pointer'
+                position: 'absolute', top: '10px', right: '10px', zIndex: '9999',
+                fontSize: '24px', background: 'transparent', border: 'none',
+                color: '#fff', cursor: 'pointer'
             });
             videoPlayer.appendChild(closeButton);
         }
 
-        // Create fullscreen button if it doesn't exist
         fullscreenButton = videoPlayer.querySelector('.fullscreen-button');
         if (!fullscreenButton) {
             fullscreenButton = document.createElement('button');
-            fullscreenButton.textContent = '⛶'; // Unicode for "squared plus" or "maximize"
+            fullscreenButton.textContent = '⛶';
             fullscreenButton.classList.add('fullscreen-button');
             Object.assign(fullscreenButton.style, {
-                position: 'absolute',
-                bottom: '10px',
-                right: '10px',
-                zIndex: '9999',
-                fontSize: '20px',
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: 'none',
-                color: '#fff',
-                cursor: 'pointer',
-                padding: '5px 10px',
-                borderRadius: '6px'
+                position: 'absolute', bottom: '10px', right: '10px', zIndex: '9999',
+                fontSize: '20px', background: 'rgba(255, 255, 255, 0.1)', border: 'none',
+                color: '#fff', cursor: 'pointer', padding: '5px 10px', borderRadius: '6px'
             });
             videoPlayer.appendChild(fullscreenButton);
         }
     };
 
-    // Sets up event listeners for player controls
     const setupPlayerEventListeners = () => {
         if (!closeButton || !fullscreenButton) {
-            // Ensure buttons exist before adding listeners
             initializePlayerElements();
         }
 
         closeButton.onclick = () => {
             videoPlayer.style.display = 'none';
-            videoFrame.src = ''; // Stop video playback
-            // Remove any potential fullscreen state if active
+            videoFrame.src = '';
             if (document.fullscreenElement) {
                 document.exitFullscreen();
             }
@@ -110,7 +143,7 @@ const Player = (() => {
             if (!document.fullscreenElement) {
                 videoPlayer.requestFullscreen().catch(err => {
                     console.error('Failed to enter fullscreen:', err);
-                    alert('Fullscreen might be blocked by your browser settings or not supported.');
+                    showCustomDialog('Fullscreen might be blocked by your browser settings or not supported.');
                 });
             } else {
                 document.exitFullscreen();
@@ -118,7 +151,6 @@ const Player = (() => {
         };
     };
 
-    // Public method to show the video player
     const showVideo = async (id, type = 'movie') => {
         if (!videoPlayer || !videoFrame) {
             console.error('Video player elements not initialized. Call Player.init() first.');
@@ -129,14 +161,10 @@ const Player = (() => {
             const response = await fetch(`${API_URL}/${type}/${id}/videos?api_key=${API_KEY}&language=en`);
             const data = await response.json();
 
-            // Prioritize a trailer, otherwise take the first available video
             const videoToPlay = data.results.find(vid => vid.type === 'Trailer' && vid.site === 'YouTube') ||
                                data.results[0];
 
             if (videoToPlay) {
-                // Using the specific player URL from your HTML
-                // IMPORTANT: This URL needs to be valid and hosted on your end for full content.
-                // TMDB only provides trailers/teasers, not full movies.
                 videoFrame.src = `https://player.videasy.net/${type}/${id}?color=8B5CF6`;
 
                 videoPlayer.style.display = 'block';
@@ -152,23 +180,21 @@ const Player = (() => {
                 videoPlayer.style.borderRadius = '12px';
 
             } else {
-                alert('No video (trailer or otherwise) available for this content.');
-                videoPlayer.style.display = 'none'; // Hide player if no video found
+                showCustomDialog('No video (trailer or otherwise) available for this content.');
+                videoPlayer.style.display = 'none';
             }
         } catch (error) {
             console.error('Error fetching video details:', error);
-            alert('Could not load video. Please try again.');
-            videoPlayer.style.display = 'none'; // Hide player on error
+            showCustomDialog('Could not load video. Please try again.');
+            videoPlayer.style.display = 'none';
         }
     };
 
-    // Public initialization method
     const init = () => {
         initializePlayerElements();
         setupPlayerEventListeners();
     };
 
-    // Expose public methods
     return {
         init: init,
         show: showVideo
@@ -200,7 +226,7 @@ const performSearch = async (query) => {
 
     } catch (error) {
         console.error('Error during search:', error);
-        alert('Failed to perform search. Please try again later.');
+        showCustomDialog('Failed to perform search. Please try again later.');
         return [];
     }
 };
@@ -215,7 +241,7 @@ const renderSearchResults = (results) => {
         return;
     }
 
-    searchResultsContainer.innerHTML = ''; // Clear previous results
+    searchResultsContainer.innerHTML = '';
 
     if (results.length === 0) {
         searchResultsContainer.innerHTML = '<p style="color: #ccc; text-align: center; padding: 20px;">No results found for your search.</p>';
@@ -239,11 +265,11 @@ const renderSearchResults = (results) => {
 
             playButton.addEventListener('click', (e) => {
                 e.stopPropagation();
-                Player.show(item.id, mediaType); // Use Player.show
+                Player.show(item.id, mediaType);
             });
 
             card.addEventListener('click', () => {
-                Player.show(item.id, mediaType); // Use Player.show
+                Player.show(item.id, mediaType);
             });
 
             searchResultsContainer.appendChild(card);
@@ -263,7 +289,7 @@ const renderContent = (items, containerId) => {
         console.error(`Container with ID '${containerId}' not found.`);
         return;
     }
-    container.innerHTML = ''; // Clear existing content
+    container.innerHTML = '';
 
     if (!items || items.length === 0) {
         container.innerHTML = '<p style="color: #ccc; text-align: center; padding: 20px;">No content available for this category.</p>';
@@ -286,11 +312,10 @@ const renderContent = (items, containerId) => {
             </div>
         `;
 
-        // Event listeners for card and play button - now using Player.show()
         card.querySelector('img').addEventListener('click', () => Player.show(item.id, mediaType));
         card.querySelector('.play-button').addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent the card click event from firing too
-            Player.show(item.id, mediaType); // Use Player.show
+            e.stopPropagation();
+            Player.show(item.id, mediaType);
         });
 
         container.appendChild(card);
@@ -351,7 +376,6 @@ const setupTabNavigation = () => {
         });
     });
 
-    // Load trending content by default on page load
     loadCategoryContent('trending');
 };
 
@@ -370,14 +394,68 @@ const showDefaultCategoryContent = () => {
     }
 };
 
+// --- Custom Dialog (OK button) ---
+let customDialogOverlay;
+let dialogMessageElement;
+let dialogOkButton;
+let dialogCallback = null;
+
+const setupCustomDialog = () => {
+    customDialogOverlay = document.getElementById('customDialogOverlay');
+    dialogMessageElement = document.getElementById('dialogMessage');
+    dialogOkButton = document.getElementById('dialogOkButton');
+
+    if (dialogOkButton) {
+        dialogOkButton.addEventListener('click', () => {
+            hideCustomDialog();
+            if (dialogCallback && typeof dialogCallback === 'function') {
+                dialogCallback();
+            }
+        });
+    }
+
+    if (customDialogOverlay) {
+        customDialogOverlay.addEventListener('click', (event) => {
+            if (event.target === customDialogOverlay) {
+                hideCustomDialog();
+            }
+        });
+    }
+};
+
+const showCustomDialog = (message, callback = null) => {
+    if (!customDialogOverlay || !dialogMessageElement) {
+        console.error('Custom dialog elements not initialized. Call setupCustomDialog() first.');
+        return;
+    }
+    dialogMessageElement.textContent = message;
+    dialogCallback = callback;
+    customDialogOverlay.classList.add('show');
+};
+
+const hideCustomDialog = () => {
+    if (customDialogOverlay) {
+        customDialogOverlay.classList.remove('show');
+        dialogCallback = null;
+    }
+};
+// --- End Custom Dialog ---
+
 
 // Initialize everything when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize the Player module
+    // Initially hide site content until Turnstile is passed
+    document.getElementById('siteContentWrapper').style.display = 'none';
+    document.body.style.overflow = 'hidden'; // Prevent scrolling before access
+
+    // Initialize the initial access dialog and Turnstile
+    initializeInitialAccessDialog();
+
+    // Initialize the main Player module
     Player.init();
 
-    // Setup tab navigation and load initial content
-    setupTabNavigation();
+    // Setup the general purpose custom dialog
+    setupCustomDialog();
 
     // Inject the header content dynamically
     const header = document.getElementById('animatedHeader');
@@ -401,16 +479,6 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
 
-    // Cloudflare Turnstile setup
-    turnstile.ready(function () {
-        turnstile.render("CUTEKO", { // Ensure you have an element with this ID if you want to render it.
-            sitekey: "0x4AAAAAABgzKYEq1QVv2Bto",
-            callback: function (token) {
-                console.log(`Challenge Success ${token}`);
-            },
-        });
-    });
-
     // Event listeners for the search functionality
     const searchInput = document.getElementById('searchInput');
     const searchButton = document.getElementById('searchButton');
@@ -425,17 +493,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Listen for 'Enter' key press in the search input
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             searchButton.click();
         }
     });
 
-    // Optional: Clear search and show default content when input is cleared manually
     searchInput.addEventListener('input', () => {
         if (searchInput.value.trim() === '') {
             showDefaultCategoryContent();
         }
     });
+
+    // Note: setupTabNavigation() will be called automatically once siteContentWrapper is displayed,
+    // as it also calls loadCategoryContent('trending') to populate the initial content.
+    // If you want content to load immediately in the background, move setupTabNavigation() outside
+    // the conditional block after showContent(). But for this setup, it's fine.
 });
+
+// Make onTurnstileSuccess globally accessible (required by Turnstile)
+window.onTurnstileSuccess = onTurnstileSuccess;
