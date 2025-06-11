@@ -1,3 +1,5 @@
+// api.js
+
 const API_KEY = 'ba3885a53bc2c4f3c4b5bdc1237e69a0';
 const API_URL = 'https://api.themoviedb.org/3';
 
@@ -33,6 +35,95 @@ const fetchByGenre = async (mediaType, genreId) => {
         return [];
     }
 };
+
+// --- START: Search Functionality ---
+const performSearch = async (query) => {
+    if (!query) {
+        // No alert here, handled by showDefaultCategoryContent in DOMContentLoaded
+        return [];
+    }
+
+    try {
+        // Search for both movies and TV shows
+        const movieResponse = await fetch(`${API_URL}/search/movie?api_key=${API_KEY}&language=en-US&query=${encodeURIComponent(query)}&page=1`);
+        const tvResponse = await fetch(`${API_URL}/search/tv?api_key=${API_KEY}&language=en-US&query=${encodeURIComponent(query)}&page=1`);
+
+        const movieData = await movieResponse.json();
+        const tvData = await tvResponse.json();
+
+        // Combine and sort results by popularity
+        const combinedResults = [...(movieData.results || []), ...(tvData.results || [])];
+
+        // Filter out items without a poster path or title/name
+        const filteredResults = combinedResults.filter(item => item.poster_path && (item.title || item.name));
+
+        // Sort by popularity in descending order
+        filteredResults.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+
+        return filteredResults;
+
+    } catch (error) {
+        console.error('Error during search:', error);
+        alert('Failed to perform search. Please try again later.');
+        return [];
+    }
+};
+
+const renderSearchResults = (results) => {
+    const searchResultsContainer = document.getElementById('searchResults');
+    const searchResultsSection = document.getElementById('searchResultsSection');
+    const tabbedContentSection = document.getElementById('tabbedContentSection');
+
+    if (!searchResultsContainer || !searchResultsSection || !tabbedContentSection) {
+        console.error('One or more search-related containers not found.');
+        return;
+    }
+
+    searchResultsContainer.innerHTML = ''; // Clear previous results
+
+    if (results.length === 0) {
+        searchResultsContainer.innerHTML = '<p style="color: #ccc; text-align: center; padding: 20px;">No results found for your search.</p>';
+    } else {
+        results.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'search-result-item'; // Use specific class for search results
+
+            // Determine media type for accurate video playback
+            const mediaType = item.media_type || (item.title ? 'movie' : 'tv');
+
+            card.innerHTML = `
+                <img src="https://image.tmdb.org/t/p/w200${item.poster_path}" alt="${item.title || item.name}" data-id="${item.id}">
+                <h3>${item.title || item.name}</h3>
+                <p>${item.release_date ? item.release_date.split('-')[0] : (item.first_air_date ? item.first_air_date.split('-')[0] : 'No Year')}</p>
+            `;
+
+            // Add a play button for search results as well for consistency
+            const playButton = document.createElement('button');
+            playButton.className = 'play-button';
+            playButton.textContent = '▶';
+            card.appendChild(playButton);
+
+            // Add event listener for playing the video
+            playButton.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent card click if it were a link
+                showVideoPlayer(item.id, mediaType, card.querySelector('img')); // Pass the image as trigger element
+            });
+
+            // Make the entire card clickable to play the video
+            card.addEventListener('click', () => {
+                showVideoPlayer(item.id, mediaType, card.querySelector('img'));
+            });
+
+            searchResultsContainer.appendChild(card);
+        });
+    }
+
+    // Show search results section and hide tabbed content
+    searchResultsSection.style.display = 'block';
+    tabbedContentSection.style.display = 'none'; // Hide category tabs
+};
+// --- END: Search Functionality ---
+
 
 // Renders movies/TV shows into a specified container
 const renderContent = (items, containerId) => {
@@ -86,7 +177,7 @@ const loadCategoryContent = async (category) => {
             // TMDB's 'trending/all/week' gives a mix of movies and TV shows
             content = await fetchData('trending/all', 'week');
             break;
-        case 'movie':
+        case 'movies': // Changed from 'movie' to 'movies' to match data-category
             content = await fetchData('movie', 'popular');
             break;
         case 'tv':
@@ -122,6 +213,10 @@ const setupTabNavigation = () => {
 
     tabButtons.forEach(button => {
         button.addEventListener('click', (event) => {
+            // Ensure category tabs are visible when a tab is clicked
+            document.getElementById('searchResultsSection').style.display = 'none';
+            document.getElementById('tabbedContentSection').style.display = 'block';
+
             // Remove 'active' class from all buttons
             tabButtons.forEach(btn => btn.classList.remove('active'));
             // Add 'active' class to the clicked button
@@ -136,8 +231,6 @@ const setupTabNavigation = () => {
     loadCategoryContent('trending');
 };
 
-// --- Your existing functions below, with minor adjustments ---
-
 // showVideoPlayer function (remains largely the same, but check position)
 function showVideoPlayer(id, type = 'movie', triggerElement = null) {
     const videoPlayer = document.getElementById('videoPlayer');
@@ -148,12 +241,9 @@ function showVideoPlayer(id, type = 'movie', triggerElement = null) {
         .then(data => {
             const videoKey = data.results[0]?.key;
             if (videoKey) {
-                videoFrame.src = `https://player.videasy.net/${type}/${id}?color=8B5CF6`; // Ensure this URL is correct
+                // Using the specific player URL from your HTML
+                videoFrame.src = `https://player.videasy.net/${type}/${id}?color=8B5CF6`;
 
-                // Calculate position relative to the viewport if triggerElement is provided
-                // This ensures the player appears centered or near the clicked element
-                const rect = triggerElement?.getBoundingClientRect();
-                // Adjusting 'top' to be a fixed percentage or centered is often better for fixed overlays
                 videoPlayer.style.top = '50%'; // Center vertically in viewport
                 videoPlayer.style.left = '50%'; // Center horizontally in viewport
                 videoPlayer.style.transform = 'translate(-50%, -50%)'; // Use transform for perfect centering
@@ -165,8 +255,6 @@ function showVideoPlayer(id, type = 'movie', triggerElement = null) {
                 videoPlayer.style.backgroundColor = '#000';
                 videoPlayer.style.zIndex = '10000';
                 videoPlayer.style.borderRadius = '12px';
-                // Optional: scroll to the top of the page or just ensure player is visible
-                // window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
                 alert('No video available for this content.');
             }
@@ -261,6 +349,24 @@ function setupVideoPlayer() {
     }
 }
 
+// Function to handle showing the default category content
+const showDefaultCategoryContent = () => {
+    const searchResultsSection = document.getElementById('searchResultsSection');
+    const tabbedContentSection = document.getElementById('tabbedContentSection');
+
+    searchResultsSection.style.display = 'none';
+    tabbedContentSection.style.display = 'block';
+    // Ensure the 'trending' tab is active and its content is loaded
+    const trendingButton = document.querySelector('.tab-button[data-category="trending"]');
+    if (trendingButton) {
+        // Remove active class from all other buttons
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        trendingButton.classList.add('active');
+        loadCategoryContent('trending');
+    }
+};
+
+
 // Initialize on DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
     setupTabNavigation(); // This will load the initial 'Trending' content
@@ -290,22 +396,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Cloudflare Turnstile setup (from your original code)
-    // The explicit render is now handled by your HTML script tag
     turnstile.ready(function () {
     turnstile.render("#example-container", {
-       sitekey: "0x4AAAAAABcuP4RkP-L5lN-C",
-       callback: function (token) {
-         console.log(`Challenge Success ${token}`);
-       },
+        sitekey: "0x4AAAAAABcuP4RkP-L5lN-C",
+        callback: function (token) {
+          console.log(`Challenge Success ${token}`);
+        },
       });
-     });
-});
+    });
 
-// Remove these specific loaders as they are now handled by loadCategoryContent
-// const loadTrendingMovies = async () => { ... };
-// const loadTopRatedMovies = async () => { ... };
-// const loadHorrorMovies = async () => { ... };
-// const loadComedyMovies = async () => { ... };
-// const loadThrillerMovies = async () => { ... };
-// const loadPopularAnime = async () => { ... };
-// const loadDramaTVShows = async () => { ... };
+    // Event listeners for the search functionality
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+
+    searchButton.addEventListener('click', async () => {
+        const query = searchInput.value.trim();
+        if (query) {
+            const results = await performSearch(query);
+            renderSearchResults(results);
+        } else {
+            // If search query is empty, show default categories
+            showDefaultCategoryContent();
+        }
+    });
+
+    // Listen for 'Enter' key press in the search input
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            searchButton.click(); // Simulate a click on the search button
+        }
+    });
+
+    // Optional: Clear search and show default content when input is cleared manually
+    searchInput.addEventListener('input', () => {
+        if (searchInput.value.trim() === '') {
+            showDefaultCategoryContent();
+        }
+    });
+});
