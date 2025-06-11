@@ -403,8 +403,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Cloudflare Turnstile setup
     turnstile.ready(function () {
-        turnstile.render("#example-container", { // Ensure you have an element with this ID if you want to render it.
-            sitekey: "0x4AAAAAABcuP4RkP-L5lN-C",
+        turnstile.render("CUTEKO", { // Ensure you have an element with this ID if you want to render it.
+            sitekey: "0x4AAAAAABgzKYEq1QVv2Bto",
             callback: function (token) {
                 console.log(`Challenge Success ${token}`);
             },
