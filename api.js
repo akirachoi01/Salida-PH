@@ -11,83 +11,6 @@ const GENRE_IDS = {
     'drama': 18
 };
 
-// --- START: Initial Access Dialog and Turnstile Logic ---
-let isTurnstileVerified = false;
-
-// This function will be called by Turnstile directly when successful
-function onTurnstileSuccess(token) {
-    console.log(`Turnstile verified! Token: ${token}`);
-    isTurnstileVerified = true;
-    document.getElementById('turnstileOkButton').style.display = 'block'; // Show the OK button
-    // You could optionally verify this token on a backend here for stronger security
-}
-
-const initializeInitialAccessDialog = () => {
-    const initialAccessDialog = document.getElementById('initialAccessDialog');
-    const turnstileContainer = document.getElementById('turnstileContainer');
-    const turnstileOkButton = document.getElementById('turnstileOkButton');
-    const siteContentWrapper = document.getElementById('siteContentWrapper');
-
-    // Render Turnstile
-    turnstile.ready(function () {
-        turnstile.render(turnstileContainer, {
-            sitekey: "0x4AAAAAABgzYPDrg0KpZZ1K", // Your actual sitekey
-            callback: onTurnstileSuccess, // Reference the global callback function
-            'error-callback': function() {
-                console.error("PAKYAS, Ako lang ang cute.");
-                // Optionally show an error message or retry button
-            },
-            'expired-callback': function() {
-                console.warn("Turnstile challenge expired. Please re-verify.");
-                isTurnstileVerified = false;
-                turnstileOkButton.style.display = 'none'; // Hide OK button if expired
-            }
-        });
-    });
-
-    // Event listener for the OK button in the initial dialog
-    if (turnstileOkButton) {
-        turnstileOkButton.addEventListener('click', () => {
-            if (isTurnstileVerified) {
-                initialAccessDialog.classList.remove('show'); // Hide the dialog
-                document.body.style.overflow = 'auto'; // Re-enable scrolling
-                siteContentWrapper.style.display = 'flex'; // Show the main site content
-                // Optionally trigger initial content load if not already handled by DOMContentLoaded
-                // setupTabNavigation(); // if you want to explicitly trigger it here
-            } else {
-                // If button is clicked before verification (shouldn't happen if button is hidden)
-                showCustomDialog("Please complete the verification challenge first.");
-            }
-        });
-    }
-};
-// --- END: Initial Access Dialog and Turnstile Logic ---
-
-
-// Helper function to fetch data for a given type (movie/tv) and category (popular, top_rated, etc.)
-const fetchData = async (type, category) => {
-    try {
-        const response = await fetch(`${API_URL}/${type}/${category}?api_key=${API_KEY}&language=en-US&page=1`);
-        const data = await response.json();
-        return data.results;
-    } catch (error) {
-        console.error(`Error fetching ${type} ${category}:`, error);
-        return [];
-    }
-};
-
-// Helper function to fetch data by genre
-const fetchByGenre = async (mediaType, genreId) => {
-    try {
-        const response = await fetch(`${API_URL}/discover/${mediaType}?api_key=${API_KEY}&with_genres=${genreId}&language=en-US&page=1`);
-        const data = await response.json();
-        return data.results;
-    } catch (error) {
-        console.error(`Error fetching ${mediaType} by genre ${genreId}:`, error);
-        return [];
-    }
-};
-
 // --- Player Module ---
 const Player = (() => {
     let videoPlayer;
@@ -165,6 +88,8 @@ const Player = (() => {
                                data.results[0];
 
             if (videoToPlay) {
+                // IMPORTANT: This URL needs to be valid and hosted on your end for full content.
+                // TMDB only provides trailers/teasers, not full movies.
                 videoFrame.src = `https://player.videasy.net/${type}/${id}?color=8B5CF6`;
 
                 videoPlayer.style.display = 'block';
@@ -201,6 +126,189 @@ const Player = (() => {
     };
 })();
 // --- End of Player Module ---
+
+
+// --- Generic Custom Dialog (for messages within the site) ---
+let customDialogOverlay;
+let dialogMessageElement;
+let dialogOkButton;
+let dialogCallback = null; // To store a callback function if provided
+
+const setupCustomDialog = () => {
+    customDialogOverlay = document.getElementById('customDialogOverlay');
+    dialogMessageElement = document.getElementById('dialogMessage');
+    dialogOkButton = document.getElementById('dialogOkButton');
+
+    if (dialogOkButton) {
+        dialogOkButton.addEventListener('click', () => {
+            hideCustomDialog();
+            if (dialogCallback && typeof dialogCallback === 'function') {
+                dialogCallback();
+            }
+        });
+    }
+
+    if (customDialogOverlay) {
+        // Close dialog if clicking outside the content (on the overlay itself)
+        customDialogOverlay.addEventListener('click', (event) => {
+            if (event.target === customDialogOverlay) {
+                hideCustomDialog();
+            }
+        });
+    }
+};
+
+// Function to show the custom dialog
+// Usage: showCustomDialog("This is a custom message!");
+// Usage with callback: showCustomDialog("Operation complete!", () => console.log("User clicked OK!"));
+const showCustomDialog = (message, callback = null) => {
+    if (!customDialogOverlay || !dialogMessageElement) {
+        console.error('Custom dialog elements not initialized. Call setupCustomDialog() first.');
+        return;
+    }
+    dialogMessageElement.textContent = message;
+    dialogCallback = callback; // Store the callback
+    customDialogOverlay.classList.add('show');
+};
+
+// Function to hide the custom dialog
+const hideCustomDialog = () => {
+    if (customDialogOverlay) {
+        customDialogOverlay.classList.remove('show');
+        dialogCallback = null; // Clear the callback
+    }
+};
+// --- End Custom Dialog ---
+
+
+// --- Initial Access Dialog and Turnstile Logic ---
+let isTurnstileVerified = false;
+const TRANSITION_DELAY_MS = 500; // Matches CSS transition duration for initial dialog
+
+// This function will be called by Turnstile directly when successful
+function onTurnstileSuccess(token) {
+    console.log(`Turnstile verified! Token: ${token}`);
+    isTurnstileVerified = true;
+    document.getElementById('turnstileOkButton').style.display = 'block'; // Show the OK button
+    // You could optionally send this token to your backend for stronger security
+}
+
+const initializeInitialAccessDialog = () => {
+    const initialAccessDialog = document.getElementById('initialAccessDialog');
+    const turnstileContainer = document.getElementById('turnstileContainer');
+    const turnstileOkButton = document.getElementById('turnstileOkButton');
+    const siteContentWrapper = document.getElementById('siteContentWrapper');
+
+    // Ensure initial state: site content hidden, body overflow hidden, dialog shown
+    siteContentWrapper.classList.remove('show-content');
+    document.body.style.overflow = 'hidden';
+    initialAccessDialog.classList.remove('hide'); // Ensure it's shown initially
+
+    // Render Turnstile widget
+    turnstile.ready(function () {
+        turnstile.render(turnstileContainer, {
+            sitekey: "0x4AAAAAABcuP4RkP-L5lN-C", // <<< REPLACE THIS WITH YOUR ACTUAL CLOUDFLARE SITE KEY
+            callback: onTurnstileSuccess,
+            'error-callback': function() {
+                console.error("Turnstile widget encountered an error.");
+                showCustomDialog("Verification error. Please refresh the page.");
+            },
+            'expired-callback': function() {
+                console.warn("Turnstile challenge expired. Please re-verify.");
+                isTurnstileVerified = false;
+                turnstileOkButton.style.display = 'none';
+                turnstile.reset(turnstileContainer); // Reset the widget for a new challenge
+            }
+        });
+    });
+
+    // Event listener for the OK button in the initial dialog
+    if (turnstileOkButton) {
+        turnstileOkButton.addEventListener('click', () => {
+            if (isTurnstileVerified) {
+                // Start hiding the dialog with transition
+                initialAccessDialog.classList.add('hide');
+
+                // After transition, hide it completely and show site content
+                setTimeout(() => {
+                    initialAccessDialog.style.display = 'none'; // Completely hide after transition
+                    siteContentWrapper.classList.add('show-content'); // Show site content with fade-in
+                    document.body.style.overflow = 'auto'; // Re-enable scrolling
+                }, TRANSITION_DELAY_MS);
+            } else {
+                showCustomDialog("Please complete the verification challenge first.");
+            }
+        });
+    }
+};
+// --- End Initial Access Dialog and Turnstile Logic ---
+
+
+// --- API Fetching Functions ---
+const fetchData = async (type, category) => {
+    try {
+        const response = await fetch(`${API_URL}/${type}/${category}?api_key=${API_KEY}&language=en-US&page=1`);
+        const data = await response.json();
+        return data.results;
+    } catch (error) {
+        console.error(`Error fetching ${type} ${category}:`, error);
+        return [];
+    }
+};
+
+const fetchByGenre = async (mediaType, genreId) => {
+    try {
+        const response = await fetch(`${API_URL}/discover/${mediaType}?api_key=${API_KEY}&with_genres=${genreId}&language=en-US&page=1`);
+        const data = await response.json();
+        return data.results;
+    } catch (error) {
+        console.error(`Error fetching ${mediaType} by genre ${genreId}:`, error);
+        return [];
+    }
+};
+// --- End API Fetching Functions ---
+
+
+// --- Content Rendering Functions ---
+const renderContent = (items, containerId) => {
+    const container = document.getElementById(containerId);
+    if (!container) {
+        console.error(`Container with ID '${containerId}' not found.`);
+        return;
+    }
+    container.innerHTML = '';
+
+    if (!items || items.length === 0) {
+        container.innerHTML = '<p style="color: #ccc; text-align: center; padding: 20px;">No content available for this category.</p>';
+        return;
+    }
+
+    items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'movie-card';
+        card.style.position = 'relative';
+
+        const mediaType = item.media_type || (item.title ? 'movie' : 'tv');
+
+        card.innerHTML = `
+            <img src="https://image.tmdb.org/t/p/w200${item.poster_path}" alt="${item.title || item.name}" data-id="${item.id}">
+            <button class="play-button">▶</button>
+            <div class="movie-card-info">
+                <h3>${item.title || item.name}</h3>
+                <p>${item.release_date ? item.release_date.split('-')[0] : (item.first_air_date ? item.first_air_date.split('-')[0] : 'No Year')}</p>
+            </div>
+        `;
+
+        card.querySelector('img').addEventListener('click', () => Player.show(item.id, mediaType));
+        card.querySelector('.play-button').addEventListener('click', (e) => {
+            e.stopPropagation();
+            Player.show(item.id, mediaType);
+        });
+
+        container.appendChild(card);
+    });
+};
+// --- End Content Rendering Functions ---
 
 
 // --- Search Functionality ---
@@ -282,47 +390,7 @@ const renderSearchResults = (results) => {
 // --- End Search Functionality ---
 
 
-// Renders movies/TV shows into a specified container (for categories)
-const renderContent = (items, containerId) => {
-    const container = document.getElementById(containerId);
-    if (!container) {
-        console.error(`Container with ID '${containerId}' not found.`);
-        return;
-    }
-    container.innerHTML = '';
-
-    if (!items || items.length === 0) {
-        container.innerHTML = '<p style="color: #ccc; text-align: center; padding: 20px;">No content available for this category.</p>';
-        return;
-    }
-
-    items.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'movie-card';
-        card.style.position = 'relative';
-
-        const mediaType = item.media_type || (item.title ? 'movie' : 'tv');
-
-        card.innerHTML = `
-            <img src="https://image.tmdb.org/t/p/w200${item.poster_path}" alt="${item.title || item.name}" data-id="${item.id}">
-            <button class="play-button">▶</button>
-            <div class="movie-card-info">
-                <h3>${item.title || item.name}</h3>
-                <p>${item.release_date ? item.release_date.split('-')[0] : (item.first_air_date ? item.first_air_date.split('-')[0] : 'No Year')}</p>
-            </div>
-        `;
-
-        card.querySelector('img').addEventListener('click', () => Player.show(item.id, mediaType));
-        card.querySelector('.play-button').addEventListener('click', (e) => {
-            e.stopPropagation();
-            Player.show(item.id, mediaType);
-        });
-
-        container.appendChild(card);
-    });
-};
-
-// Function to handle tab clicks and load content
+// --- Category Loading and Navigation ---
 const loadCategoryContent = async (category) => {
     const contentDisplayContainerId = 'content-display-container';
     let content = [];
@@ -359,7 +427,6 @@ const loadCategoryContent = async (category) => {
     renderContent(content, contentDisplayContainerId);
 };
 
-// Sets up event listeners for tab navigation
 const setupTabNavigation = () => {
     const tabButtons = document.querySelectorAll('.tab-button');
 
@@ -376,10 +443,9 @@ const setupTabNavigation = () => {
         });
     });
 
-    loadCategoryContent('trending');
+    loadCategoryContent('trending'); // Load trending content by default
 };
 
-// Function to handle showing the default category content
 const showDefaultCategoryContent = () => {
     const searchResultsSection = document.getElementById('searchResultsSection');
     const tabbedContentSection = document.getElementById('tabbedContentSection');
@@ -393,71 +459,19 @@ const showDefaultCategoryContent = () => {
         loadCategoryContent('trending');
     }
 };
-
-// --- Custom Dialog (OK button) ---
-let customDialogOverlay;
-let dialogMessageElement;
-let dialogOkButton;
-let dialogCallback = null;
-
-const setupCustomDialog = () => {
-    customDialogOverlay = document.getElementById('customDialogOverlay');
-    dialogMessageElement = document.getElementById('dialogMessage');
-    dialogOkButton = document.getElementById('dialogOkButton');
-
-    if (dialogOkButton) {
-        dialogOkButton.addEventListener('click', () => {
-            hideCustomDialog();
-            if (dialogCallback && typeof dialogCallback === 'function') {
-                dialogCallback();
-            }
-        });
-    }
-
-    if (customDialogOverlay) {
-        customDialogOverlay.addEventListener('click', (event) => {
-            if (event.target === customDialogOverlay) {
-                hideCustomDialog();
-            }
-        });
-    }
-};
-
-const showCustomDialog = (message, callback = null) => {
-    if (!customDialogOverlay || !dialogMessageElement) {
-        console.error('Custom dialog elements not initialized. Call setupCustomDialog() first.');
-        return;
-    }
-    dialogMessageElement.textContent = message;
-    dialogCallback = callback;
-    customDialogOverlay.classList.add('show');
-};
-
-const hideCustomDialog = () => {
-    if (customDialogOverlay) {
-        customDialogOverlay.classList.remove('show');
-        dialogCallback = null;
-    }
-};
-// --- End Custom Dialog ---
+// --- End Category Loading and Navigation ---
 
 
-// Initialize everything when the DOM is fully loaded
+// --- Main Initialization on DOMContentLoaded ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Initially hide site content until Turnstile is passed
-    document.getElementById('siteContentWrapper').style.display = 'none';
-    document.body.style.overflow = 'hidden'; // Prevent scrolling before access
-
-    // Initialize the initial access dialog and Turnstile
+    // 1. Initialize the initial access dialog and Turnstile (this should be first)
     initializeInitialAccessDialog();
 
-    // Initialize the main Player module
+    // 2. Initialize core modules and utilities (these run in the background, content is hidden by CSS)
     Player.init();
-
-    // Setup the general purpose custom dialog
     setupCustomDialog();
 
-    // Inject the header content dynamically
+    // 3. Inject header content
     const header = document.getElementById('animatedHeader');
     if (header) {
       header.innerHTML = `
@@ -479,7 +493,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
 
-    // Event listeners for the search functionality
+    // 4. Setup Search bar event listeners
     const searchInput = document.getElementById('searchInput');
     const searchButton = document.getElementById('searchButton');
 
@@ -505,11 +519,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Note: setupTabNavigation() will be called automatically once siteContentWrapper is displayed,
-    // as it also calls loadCategoryContent('trending') to populate the initial content.
-    // If you want content to load immediately in the background, move setupTabNavigation() outside
-    // the conditional block after showContent(). But for this setup, it's fine.
+    // 5. Setup Tab Navigation (this also loads initial content like "Trending")
+    // This is called here so content is ready to be displayed when the wrapper becomes visible.
+    setupTabNavigation();
 });
 
-// Make onTurnstileSuccess globally accessible (required by Turnstile)
+// Make onTurnstileSuccess globally accessible (required by Turnstile for explicit rendering)
 window.onTurnstileSuccess = onTurnstileSuccess;
