@@ -112,7 +112,9 @@
         /* Basic styling for the search container */
         .search-container {
             display: flex;
-            justify-content: center;
+            flex-direction: column; /* Stack children vertically */
+            align-items: center; /* Center children horizontally */
+            gap: 15px; /* Space between search bar/button and tab buttons */
             padding: 20px;
             background-color: #111; /* Dark background for the search bar */
             border-bottom: 1px solid #333;
@@ -120,13 +122,22 @@
             flex-shrink: 0; /* Prevent search container from shrinking */
         }
 
+        /* Wrapper for search input and button */
+        .search-input-button-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 600px; /* Limit combined width */
+        }
+
         .search-container input[type="text"] {
             padding: 12px 18px; /* Slightly larger padding */
             border: 1px solid #555;
             border-radius: 25px; /* More rounded corners */
             font-size: 16px;
-            width: 60%;
-            max-width: 500px;
+            width: 60%; /* Keep its relative width */
+            max-width: 500px; /* Keep its max-width */
             background-color: #333;
             color: #eee;
             outline: none; /* Remove outline on focus */
@@ -144,12 +155,53 @@
             border-radius: 25px; /* More rounded corners */
             font-size: 16px;
             cursor: pointer;
-            margin-left: 10px;
+            margin-left: 10px; /* Space between input and button */
             transition: background-color 0.3s ease;
         }
 
         .search-container button:hover {
             background-color: #b20710; /* Darker red on hover */
+        }
+
+        /* Custom styles for tabs (now inside search-container) */
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            margin: 0; /* Remove specific top/bottom margin, parent gap handles it */
+            background-color: #222;
+            padding: 10px;
+            border-radius: 8px;
+            flex-wrap: wrap;
+            width: calc(100% - 40px); /* Adjust width to account for padding/margin */
+            max-width: 1200px; /* Limit max width of tab buttons row */
+            box-sizing: border-box;
+            gap: 5px; /* Space between tab buttons themselves */
+        }
+
+        .tab-button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 12px 25px; /* Slightly larger and more clickable */
+            /* margin: 5px; Removed, using parent gap */
+            border-radius: 25px; /* More rounded like search button */
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            flex-shrink: 0; /* Prevent buttons from shrinking too much */
+        }
+
+        .tab-button:hover {
+            background-color: #555;
+            transform: translateY(-2px);
+            box-shadow: 0 0 10px rgba(255,255,255,0.2); /* Subtle glow on hover */
+        }
+
+        .tab-button.active {
+            background-color: #e50914; /* Netflix red */
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(229, 9, 20, 0.7); /* More prominent glow */
+            transform: translateY(-3px); /* More pronounced lift */
         }
 
         /* Styling for search results section */
@@ -216,8 +268,8 @@
             padding: 0 10px 10px;
         }
 
-        /* Custom styles for tabs */
-        .tab-section {
+        /* Custom styles for content display container (for categories) */
+        .tab-section { /* Renamed for clarity, but keeps the old ID */
             flex-grow: 1; /* Allows this section to take up available vertical space */
             display: flex;
             flex-direction: column;
@@ -225,45 +277,6 @@
             background-color: #0a0a0a; /* Dark background for content areas */
         }
 
-        .tab-container {
-            display: flex;
-            justify-content: center;
-            margin: 20px auto; /* Center the tab buttons block */
-            background-color: #222;
-            padding: 10px;
-            border-radius: 8px;
-            flex-wrap: wrap;
-            width: calc(100% - 40px); /* Adjust width to account for padding/margin */
-            max-width: 1200px; /* Limit max width of tab buttons row */
-            box-sizing: border-box;
-        }
-
-        .tab-button {
-            background-color: #333;
-            color: #fff;
-            border: none;
-            padding: 12px 25px; /* Slightly larger and more clickable */
-            margin: 5px;
-            border-radius: 25px; /* More rounded like search button */
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-        }
-
-        .tab-button:hover {
-            background-color: #555;
-            transform: translateY(-2px);
-            box-shadow: 0 0 10px rgba(255,255,255,0.2); /* Subtle glow on hover */
-        }
-
-        .tab-button.active {
-            background-color: #e50914; /* Netflix red */
-            font-weight: bold;
-            box-shadow: 0 0 15px rgba(229, 9, 20, 0.7); /* More prominent glow */
-            transform: translateY(-3px); /* More pronounced lift */
-        }
-
-        /* Styles for content display container (for categories) */
         #content-display-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -572,12 +585,28 @@
                 width: 100%;
                 text-align: center;
             }
-            .search-container input[type="text"] {
-                width: 80%;
+            .search-container {
+                padding: 15px;
+                gap: 10px; /* Smaller gap on mobile */
+            }
+            .search-input-button-wrapper {
+                flex-direction: column; /* Stack input and button vertically on small screens */
+                gap: 10px; /* Space between input and button when stacked */
+                max-width: none; /* Remove max-width constraint for full width */
+            }
+            .search-input-button-wrapper input[type="text"] {
+                width: 90%; /* Wider input on small screens */
+                max-width: none;
+            }
+            .search-input-button-wrapper button {
+                margin-left: 0; /* No side margin when stacked */
+                width: 90%; /* Make button full width as well */
             }
             .tab-container {
-                width: 100%;
-                margin: 10px auto;
+                width: 95%; /* Adjust width on smaller screens */
+                margin: 0; /* Reset margin, controlled by parent gap */
+                padding: 8px; /* Smaller padding inside the tab container */
+                gap: 3px; /* Smaller gap between tab buttons */
             }
             .tab-button {
                 padding: 10px 15px;
@@ -605,19 +634,13 @@
 
     <div id="siteContentWrapper">
         <header id="animatedHeader">
-            </header>
+        </header>
 
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search for movies or TV shows..." />
-            <button id="searchButton">Search</button>
-        </div>
-
-        <section class="movie-list-section" id="searchResultsSection" style="display: none;">
-            <h2>Search Results</h2>
-            <div id="searchResults" class="movie-list-vertical"></div>
-        </section>
-
-        <section class="tab-section" id="tabbedContentSection">
+            <div class="search-input-button-wrapper">
+                <input type="text" id="searchInput" placeholder="Search for movies or TV shows..." />
+                <button id="searchButton">Search</button>
+            </div>
             <div class="tab-container">
                 <button class="tab-button active" data-category="trending">Trending</button>
                 <button class="tab-button" data-category="movies">Movies</button>
@@ -628,6 +651,14 @@
                 <button class="tab-button" data-category="thriller">Thriller</button>
                 <button class="tab-button" data-category="drama">Drama</button>
             </div>
+        </div>
+
+        <section class="movie-list-section" id="searchResultsSection" style="display: none;">
+            <h2>Search Results</h2>
+            <div id="searchResults" class="movie-list-vertical"></div>
+        </section>
+
+        <section class="tab-section" id="tabbedContentSection">
             <div id="content-display-container" class="category-container">
             </div>
         </section>
