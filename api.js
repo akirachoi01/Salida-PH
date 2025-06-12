@@ -235,7 +235,7 @@ const initializeInitialAccessDialog = () => {
                     siteContentWrapper.classList.add('show-content'); // Show site content with fade-in
                     
                     // IMPORTANT: Re-enable scrolling here specifically after content is shown
-                    document.body.style.overflow = 'auto'; 
+                    document.body.style.overflow = 'scrollable'; 
                 }, TRANSITION_DELAY_MS);
             } else {
                 showCustomDialog("Please complete the verification challenge first.");
