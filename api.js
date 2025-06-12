@@ -81,7 +81,7 @@ const Player = (() => {
         }
 
         try {
-            const response = await fetch(`<span class="math-inline">\{API\_URL\}/</span>{type}/<span class="math-inline">\{id\}/videos?api\_key\=</span>{API_KEY}&language=en`);
+            const response = await fetch(`${API_URL}/${type}/${id}/videos?api_key=${API_KEY}&language=en`);
             const data = await response.json();
 
             const videoToPlay = data.results.find(vid => vid.type === 'Trailer' && vid.site === 'YouTube') ||
@@ -90,7 +90,7 @@ const Player = (() => {
             if (videoToPlay) {
                 // IMPORTANT: This URL needs to be valid and hosted on your end for full content.
                 // TMDB only provides trailers/teasers, not full movies.
-                videoFrame.src = `https://player.videasy.net/<span class="math-inline">\{type\}/</span>{id}?color=8B5CF6`;
+                videoFrame.src = `https://player.videasy.net/${type}/${id}?color=8B5CF6`;
 
                 videoPlayer.style.display = 'block';
                 videoPlayer.style.position = 'fixed';
@@ -249,7 +249,7 @@ const initializeInitialAccessDialog = () => {
 // --- API Fetching Functions ---
 const fetchData = async (type, category) => {
     try {
-        const response = await fetch(`<span class="math-inline">\{API\_URL\}/</span>{type}/<span class="math-inline">\{category\}?api\_key\=</span>{API_KEY}&language=en-US&page=1`);
+        const response = await fetch(`${API_URL}/${type}/${category}?api_key=${API_KEY}&language=en-US&page=1`);
         const data = await response.json();
         return data.results;
     } catch (error) {
@@ -260,7 +260,7 @@ const fetchData = async (type, category) => {
 
 const fetchByGenre = async (mediaType, genreId) => {
     try {
-        const response = await fetch(`<span class="math-inline">\{API\_URL\}/discover/</span>{mediaType}?api_key=<span class="math-inline">\{API\_KEY\}&with\_genres\=</span>{genreId}&language=en-US&page=1`);
+        const response = await fetch(`${API_URL}/discover/${mediaType}?api_key=${API_KEY}&with_genres=${genreId}&language=en-US&page=1`);
         const data = await response.json();
         return data.results;
     } catch (error) {
@@ -293,11 +293,11 @@ const renderContent = (items, containerId) => {
         const mediaType = item.media_type || (item.title ? 'movie' : 'tv');
 
         card.innerHTML = `
-            <img src="https://image.tmdb.org/t/p/w200${item.poster_path}" alt="<span class="math-inline">\{item\.title \|\| item\.name\}" data\-id\="</span>{item.id}">
+            <img src="https://image.tmdb.org/t/p/w200${item.poster_path}" alt="${item.title || item.name}" data-id="${item.id}">
             <button class="play-button">▶</button>
             <div class="movie-card-info">
-                <h3><span class="math-inline">\{item\.title \|\| item\.name\}</h3\>
-<p\></span>{item.release_date ? item.release_date.split('-')[0] : (item.first_air_date ? item.first_air_date.split('-')[0] : 'No Year')}</p>
+                <h3>${item.title || item.name}</h3>
+                <p>${item.release_date ? item.release_date.split('-')[0] : (item.first_air_date ? item.first_air_date.split('-')[0] : 'No Year')}</p>
             </div>
         `;
 
@@ -320,8 +320,8 @@ const performSearch = async (query) => {
     }
 
     try {
-        const movieResponse = await fetch(`<span class="math-inline">\{API\_URL\}/search/movie?api\_key\=</span>{API_KEY}&language=en-US&query=${encodeURIComponent(query)}&page=1`);
-        const tvResponse = await fetch(`<span class="math-inline">\{API\_URL\}/search/tv?api\_key\=</span>{API_KEY}&language=en-US&query=${encodeURIComponent(query)}&page=1`);
+        const movieResponse = await fetch(`${API_URL}/search/movie?api_key=${API_KEY}&language=en-US&query=${encodeURIComponent(query)}&page=1`);
+        const tvResponse = await fetch(`${API_URL}/search/tv?api_key=${API_KEY}&language=en-US&query=${encodeURIComponent(query)}&page=1`);
 
         const movieData = await movieResponse.json();
         const tvData = await tvResponse.json();
@@ -363,9 +363,9 @@ const renderSearchResults = (results) => {
             const mediaType = item.media_type || (item.title ? 'movie' : 'tv');
 
             card.innerHTML = `
-                <img src="https://image.tmdb.org/t/p/w200${item.poster_path}" alt="<span class="math-inline">\{item\.title \|\| item\.name\}" data\-id\="</span>{item.id}">
-                <h3><span class="math-inline">\{item\.title \|\| item\.name\}</h3\>
-<p\></span>{item.release_date ? item.release_date.split('-')[0] : (item.first_air_date ? item.first_air_date.split('-')[0] : 'No Year')}</p>
+                <img src="https://image.tmdb.org/t/p/w200${item.poster_path}" alt="${item.title || item.name}" data-id="${item.id}">
+                <h3>${item.title || item.name}</h3>
+                <p>${item.release_date ? item.release_date.split('-')[0] : (item.first_air_date ? item.first_air_date.split('-')[0] : 'No Year')}</p>
             `;
 
             const playButton = document.createElement('button');
@@ -489,4 +489,42 @@ document.addEventListener('DOMContentLoaded', () => {
           <a href="/">Home</a>
           <a href="https://github.com/akirachoi01">Github</a>
           <a href="/privacy-policy.html">Privacy</a>
-          <a href="/terms
+          <a href="/terms.html">Term</a>
+          <a href="https://file.salidaph.online/SalidaPH.apk">Get APK</a>
+        </nav>
+      `;
+    }
+
+    // 4. Setup Search bar event listeners
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+
+    searchButton.addEventListener('click', async () => {
+        const query = searchInput.value.trim();
+        if (query) {
+            const results = await performSearch(query);
+            renderSearchResults(results);
+        } else {
+            showDefaultCategoryContent(); // Show default content if search is empty
+        }
+    });
+
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            searchButton.click();
+        }
+    });
+
+    searchInput.addEventListener('input', () => {
+        if (searchInput.value.trim() === '') {
+            showDefaultCategoryContent(); // Show default content if input is cleared
+        }
+    });
+
+    // 5. Setup Tab Navigation (this also loads initial content like "Trending")
+    // This is called here so content is ready to be displayed when the wrapper becomes visible.
+    setupTabNavigation();
+});
+
+// Make onTurnstileSuccess globally accessible (required by Turnstile for explicit rendering)
+window.onTurnstileSuccess = onTurnstileSuccess;
