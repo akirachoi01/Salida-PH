@@ -207,7 +207,7 @@ const initializeInitialAccessDialog = () => {
     // Render Turnstile widget
     turnstile.ready(function () {
         turnstile.render(turnstileContainer, {
-            sitekey: "0x4AAAAAABcuP4RkP-L5lN-C", // <<< REPLACE THIS WITH YOUR ACTUAL CLOUDFLARE SITE KEY
+            sitekey: "0x4AAAAAABgzYPDrg0KpZZ1K", // <<< REPLACE THIS WITH YOUR ACTUAL CLOUDFLARE SITE KEY
             callback: onTurnstileSuccess,
             'error-callback': function() {
                 console.error("Turnstile widget encountered an error.");
