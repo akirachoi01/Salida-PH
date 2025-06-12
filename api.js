@@ -31,10 +31,10 @@ const initializeInitialAccessDialog = () => {
     // Render Turnstile
     turnstile.ready(function () {
         turnstile.render(turnstileContainer, {
-            sitekey: "0x4AAAAAABcuP4RkP-L5lN-C", // Your actual sitekey
+            sitekey: "0x4AAAAAABgzYPDrg0KpZZ1K", // Your actual sitekey
             callback: onTurnstileSuccess, // Reference the global callback function
             'error-callback': function() {
-                console.error("Turnstile widget encountered an error.");
+                console.error("PAKYAS, Ako lang ang cute.");
                 // Optionally show an error message or retry button
             },
             'expired-callback': function() {
