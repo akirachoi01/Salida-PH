@@ -490,7 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <a href="https://github.com/akirachoi01">Github</a>
           <a href="/privacy-policy.html">Privacy</a>
           <a href="/terms.html">Term</a>
-          <a href="https://file.salidaph.online/SalidaPH.apk">Get APK</a>
+          <a href="https://github.com/akirachoi01/Salida-PH/releases/download/SalidaPHAPK/SalidaPH.zip">Get APK</a>
         </nav>
       `;
     }
