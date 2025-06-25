@@ -39,13 +39,16 @@
             margin: 0;
             padding: 0;
             width: 100%; /* Ensures full width */
-            min-height: 100vh; /* Ensures body takes at least full viewport height */
-            display: flex; /* Use flexbox to stack content vertically */
-            flex-direction: column; /* Stack children top to bottom */
+            /* min-height: 100vh; is handled by flexbox on body and siteContentWrapper */
             background-color: #000; /* Dark background for the whole page */
             color: #fff; /* Default text color for the page */
             font-family: Arial, sans-serif; /* A common, readable font */
-        
+        }
+
+        body {
+            display: flex; /* Use flexbox to stack content vertically */
+            flex-direction: column; /* Stack children top to bottom */
+            min-height: 100vh; /* Ensures body takes at least full viewport height */
         }
 
         /* Ensure major sections take full width and respect padding */
@@ -136,8 +139,7 @@
             border: 1px solid #555;
             border-radius: 25px; /* More rounded corners */
             font-size: 16px;
-            width: 60%; /* Keep its relative width */
-            max-width: 500px; /* Keep its max-width */
+            width: 100%; /* Changed to 100% to fill wrapper */
             background-color: #333;
             color: #eee;
             outline: none; /* Remove outline on focus */
@@ -157,6 +159,7 @@
             cursor: pointer;
             margin-left: 10px; /* Space between input and button */
             transition: background-color 0.3s ease;
+            flex-shrink: 0; /* Prevent button from shrinking */
         }
 
         .search-container button:hover {
@@ -172,7 +175,7 @@
             padding: 10px;
             border-radius: 8px;
             flex-wrap: wrap;
-            width: calc(100% - 40px); /* Adjust width to account for padding/margin */
+            width: 100%; /* Adjust width to account for padding/margin */
             max-width: 1200px; /* Limit max width of tab buttons row */
             box-sizing: border-box;
             gap: 5px; /* Space between tab buttons themselves */
@@ -183,7 +186,6 @@
             color: #fff;
             border: none;
             padding: 12px 25px; /* Slightly larger and more clickable */
-            /* margin: 5px; Removed, using parent gap */
             border-radius: 25px; /* More rounded like search button */
             cursor: pointer;
             font-size: 16px;
@@ -209,6 +211,7 @@
             flex-grow: 1; /* Allows this section to take up available vertical space */
             padding: 20px; /* Add padding to the section itself */
             background-color: #0a0a0a; /* Dark background for content areas */
+            box-sizing: border-box; /* Ensure padding is included in width */
         }
 
         #searchResultsSection h2 {
@@ -237,6 +240,7 @@
             color: #fff;
             position: relative; /* Needed for play button positioning */
             cursor: pointer; /* Indicate it's clickable */
+            width: 100%; /* Ensure item takes full width of grid cell */
         }
 
         .search-result-item:hover {
@@ -275,13 +279,14 @@
             flex-direction: column;
             padding: 0 20px; /* Padding for the entire tab section */
             background-color: #0a0a0a; /* Dark background for content areas */
+            box-sizing: border-box; /* Ensure padding is included in width */
         }
 
         #content-display-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 20px;
-            padding: 20px;
+            padding: 20px; /* Padding inside the grid container */
             width: 100%; /* Explicitly set 100% width */
             box-sizing: border-box; /* Include padding in width */
         }
@@ -296,6 +301,7 @@
             cursor: pointer;
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease;
             color: #fff; /* Default text color for cards */
+            width: 100%; /* Ensure card takes full width of grid cell */
         }
 
         .movie-card:hover {
@@ -321,7 +327,7 @@
             padding: 10px;
             box-sizing: border-box;
             text-align: center;
-            z-index: 1; /* FIXED: Ensure this is correctly here */
+            z-index: 1; /* Ensure this is correctly here */
         }
 
         .movie-card-info h3 {
@@ -360,7 +366,8 @@
             pointer-events: auto; /* IMPORTANT: Ensure it's always clickable even when invisible */
         }
 
-        .movie-card:hover .play-button {
+        .movie-card:hover .play-button,
+        .search-result-item:hover .play-button { /* Apply hover effect to both */
             opacity: 1;
         }
 
@@ -406,7 +413,8 @@
         }
 
         /* General text color for sections */
-        .movie-list-section h2 {
+        .movie-list-section h2,
+        .tab-section h2 { /* Added tab-section h2 for consistency */
             color: #fff; /* White text for section titles */
             text-align: center;
             padding: 20px;
@@ -430,9 +438,9 @@
 
         /* Styles for content wrapper to hide/show site content */
         #siteContentWrapper {
-            display: none; /* Hidden by default */
+            display: none; /* Hidden by default - relies on JS to show */
             flex-direction: column; /* Ensure content stacks vertically */
-            flex-grow: 1; /* Allow it to grow */
+            flex-grow: 1; /* Allow it to grow to fill available space */
             width: 100%; /* Take full width */
             opacity: 0; /* Start invisible for fade-in */
             transition: opacity 0.5s ease; /* Smooth fade-in */
@@ -444,17 +452,17 @@
             opacity: 1;
         }
 
-       
         /* Responsive adjustments */
         @media (max-width: 768px) {
             #animatedHeader {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 10px;
+                padding: 10px 15px; /* Adjust padding for smaller screens */
             }
             .nav-links {
                 justify-content: flex-start;
-                gap: 15px;
+                gap: 10px; /* Smaller gap on mobile */
             }
             .scrolling-text {
                 margin-right: 0;
@@ -468,19 +476,15 @@
             .search-input-button-wrapper {
                 flex-direction: column; /* Stack input and button vertically on small screens */
                 gap: 10px; /* Space between input and button when stacked */
-                max-width: none; /* Remove max-width constraint for full width */
+                max-width: 100%; /* Allow input/button to take full width */
             }
-            .search-input-button-wrapper input[type="text"] {
-                width: 90%; /* Wider input on small screens */
-                max-width: none;
-            }
+            .search-input-button-wrapper input[type="text"],
             .search-input-button-wrapper button {
+                width: 100%; /* Wider input/button on small screens */
                 margin-left: 0; /* No side margin when stacked */
-                width: 90%; /* Make button full width as well */
             }
             .tab-container {
-                width: 95%; /* Adjust width on smaller screens */
-                margin: 0; /* Reset margin, controlled by parent gap */
+                width: 100%; /* Adjust width on smaller screens */
                 padding: 8px; /* Smaller padding inside the tab container */
                 gap: 3px; /* Smaller gap between tab buttons */
             }
@@ -489,15 +493,58 @@
                 font-size: 14px;
             }
             
+            #searchResults,
+            #content-display-container {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Adjust min-width for smaller cards */
+                gap: 15px; /* Slightly smaller gap between cards */
+                padding: 15px; /* Adjust padding for smaller screens */
+            }
+
+            .search-result-item img,
+            .movie-card img {
+                height: 200px; /* Adjust image height for smaller screens */
+            }
+
+            .search-result-item h3,
+            .movie-card-info h3 {
+                font-size: 1em; /* Smaller font size for titles */
+            }
+
+            .search-result-item p,
+            .movie-card-info p {
+                font-size: 0.8em; /* Smaller font size for year/description */
+            }
+
+            .Telegram {
+                bottom: 20px; /* Adjust Telegram button position for mobile */
+                right: 15px;
+            }
+        }
+
+        /* Extra small screens (e.g., old phones) */
+        @media (max-width: 480px) {
+            .tab-button {
+                padding: 8px 12px;
+                font-size: 13px;
             }
         }
     </style>
 </head>
 
 <body>
-
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TFZG4ZPJ"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div id="siteContentWrapper">
         <header id="animatedHeader">
+            <img src="https://salidaph.online/assests/salida.png" alt="SalidaPH Logo" />
+            <div class="scrolling-text">
+                <span id="marqueeText">Welcome to SalidaPH! Your go-to source for movies and TV shows. New content added daily!</span>
+            </div>
+            <nav class="nav-links">
+                <a href="#">Home</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+            </nav>
         </header>
 
         <div class="search-container">
@@ -523,8 +570,9 @@
         </section>
 
         <section class="tab-section" id="tabbedContentSection">
+            <h2>Latest & Popular</h2>
             <div id="content-display-container" class="category-container">
-            </div>
+                </div>
         </section>
 
         <a href="https://t.me/akirachoi01" target="_blank" class="hide-if-iframe Telegram"
@@ -534,18 +582,79 @@
 
         <div id="videoPlayer">
             <iframe id="videoFrame" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+            <button id="closeVideoPlayer" style="position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 18px; cursor: pointer;">X</button>
         </div>
 
         <footer>
             <p>© 2025 SalidaPH |
-                <a href="https://salidaph.online/privacy-policy.html" target="_blank" style="color: #007BFF; text-decoration: none;">
+                <a href="https://salidaph.online/privacy-policy.html" target="_blank" style="color: #e50914; text-decoration: none;">
                     Privacy Policy
                 </a>
             </p>
         </footer>
-    
+    </div>
 
     <script src="https://salidaph.online/api.js"></script>
-         <script src="https://www.googletagmanager.com/ns.html?id=GTM-TFZG4ZPJ"></script>
+    <script>
+        // JavaScript to show the content wrapper after everything is loaded or a specific event
+        document.addEventListener('DOMContentLoaded', () => {
+            const siteContentWrapper = document.getElementById('siteContentWrapper');
+            siteContentWrapper.classList.add('show-content');
+
+            // Optional: Start marquee animation if not already handled by CSS
+            const marqueeText = document.getElementById('marqueeText');
+            if (marqueeText) {
+                // Check if animation is already applied via CSS or apply here
+                // For simplicity, assuming CSS handles it. If not, you might need JS for complex marquee.
+                // marqueeText.style.animation = 'marquee 15s linear infinite';
+            }
+
+            // Example of how you might handle the video player close button
+            const videoPlayer = document.getElementById('videoPlayer');
+            const closeVideoPlayerBtn = document.getElementById('closeVideoPlayer');
+            const videoFrame = document.getElementById('videoFrame');
+
+            if (closeVideoPlayerBtn) {
+                closeVideoPlayerBtn.addEventListener('click', () => {
+                    videoPlayer.style.display = 'none';
+                    videoFrame.src = ''; // Stop the video
+                });
+            }
+
+            // Placeholder for your movie loading logic (e.g., from api.js)
+            // You would likely have functions like:
+            // loadTrendingMovies();
+            // setupTabListeners();
+            // setupSearchFunctionality();
+        });
+
+        // Example of a minimal play button click handler (assuming it's added dynamically by your api.js)
+        document.addEventListener('click', (event) => {
+            if (event.target.classList.contains('play-button')) {
+                const videoUrl = event.target.dataset.videoUrl; // Assuming you store the video URL in a data attribute
+                const videoPlayer = document.getElementById('videoPlayer');
+                const videoFrame = document.getElementById('videoFrame');
+
+                if (videoUrl) {
+                    videoFrame.src = videoUrl;
+                    videoPlayer.style.display = 'block'; // Show the video player
+                }
+            }
+        });
+
+        // Ensure the header marquee animation starts
+        // This can be done purely in CSS as you have, but if dynamic, here's a thought:
+        window.addEventListener('load', () => {
+            const scrollingText = document.querySelector('.scrolling-text');
+            if (scrollingText) {
+                const textWidth = scrollingText.scrollWidth;
+                const containerWidth = scrollingText.clientWidth;
+                if (textWidth > containerWidth) {
+                    // Only apply animation if text overflows
+                    scrollingText.style.animation = `marquee ${textWidth / 50}s linear infinite`; // Speed based on text length
+                }
+            }
+        });
+    </script>
 </body>
 </html>
