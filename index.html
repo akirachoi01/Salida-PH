@@ -45,7 +45,7 @@
             background-color: #000; /* Dark background for the whole page */
             color: #fff; /* Default text color for the page */
             font-family: Arial, sans-serif; /* A common, readable font */
-            overflow: hidden; /* Prevent scrolling until main content is visible */
+        
         }
 
         /* Ensure major sections take full width and respect padding */
@@ -444,131 +444,7 @@
             opacity: 1;
         }
 
-        /* Custom Dialog (generic) styles */
-        .dialog-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8); /* Dark semi-transparent background */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10002; /* Higher than video player */
-            opacity: 0; /* Start invisible */
-            visibility: hidden; /* Hide from screen readers and interaction */
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-
-        .dialog-overlay.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .dialog-content {
-            background-color: #1a1a1a; /* Dark background */
-            color: #eee; /* Light text */
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            transform: scale(0.9); /* Start slightly smaller */
-            transition: transform 0.3s ease;
-        }
-
-        .dialog-overlay.show .dialog-content {
-            transform: scale(1); /* Scale up when shown */
-        }
-
-        .dialog-content p {
-            margin-bottom: 20px;
-            font-size: 1.1em;
-            line-height: 1.5;
-        }
-
-        #dialogOkButton {
-            background-color: #e50914; /* Netflix red */
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 5px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        #dialogOkButton:hover {
-            background-color: #b20710; /* Darker red */
-            transform: translateY(-2px);
-        }
-
-        /* Specific styles for the initial Turnstile access dialog */
-        #initialAccessDialog {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95); /* Very dark, almost opaque background */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10003; /* Ensure it's on top of everything */
-            opacity: 1; /* Start visible */
-            visibility: visible;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-
-        #initialAccessDialog.hide {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .turnstile-dialog-content {
-            background-color: #0a0a0a; /* Very dark background for the dialog itself */
-            padding: 40px; /* More padding */
-            border-radius: 12px; /* More rounded */
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7); /* Stronger shadow */
-            max-width: 450px; /* Slightly wider */
-            width: 90%;
-            text-align: center;
-            transform: scale(1); /* Ensure it starts at 1 */
-        }
-
-        .turnstile-dialog-content p {
-            font-size: 1.4em; /* Larger text */
-            color: #ffcc00; /* Gold/yellow for the message */
-            margin-bottom: 25px;
-            font-weight: bold;
-        }
-
-        .turnstile-dialog-content #turnstileContainer {
-            margin: 20px auto; /* Center the turnstile widget */
-            /* Cloudflare Turnstile widget usually has its own sizing */
-            /* transform: scale(0.9); transform-origin: center; /* Adjust size if needed, depends on widget */
-        }
-
-        .turnstile-dialog-content #turnstileOkButton {
-            display: none; /* Hidden until Turnstile is verified */
-            background-color: #e50914;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-size: 1.1em;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .turnstile-dialog-content #turnstileOkButton:hover {
-            background-color: #b20710;
-            transform: translateY(-3px);
-        }
-
+       
         /* Responsive adjustments */
         @media (max-width: 768px) {
             #animatedHeader {
@@ -612,8 +488,7 @@
                 padding: 10px 15px;
                 font-size: 14px;
             }
-            .turnstile-dialog-content p {
-                font-size: 1.2em;
+            
             }
         }
     </style>
@@ -625,12 +500,7 @@
             height="0" width="0" style="display:none;visibility:hidden"></iframe>
     </noscript>
 
-    <div id="initialAccessDialog" class="dialog-overlay show">
-        <div class="turnstile-dialog-content">
-            <p id="initialDialogMessage">ANG CUTE KO TALAGA TAS IKAW HINDI</p>
-            <div id="turnstileContainer"></div> <button id="turnstileOkButton">OK</button>
-        </div>
-    </div>
+   
 
     <div id="siteContentWrapper">
         <header id="animatedHeader">
@@ -679,12 +549,7 @@
                 </a>
             </p>
         </footer>
-    </div> <div id="customDialogOverlay" class="dialog-overlay">
-        <div class="dialog-content">
-            <p id="dialogMessage"></p>
-            <button id="dialogOkButton">OK</button>
-        </div>
-    </div>
+    
 
     <script src="https://salidaph.online/api.js"></script>
 </body>
