@@ -301,4 +301,157 @@ const renderSearchResults = (results) => {
 
             playButton.addEventListener('click', (e) => {
                 e.stopPropagation(); // Prevent the card click listener from firing
-                Player.
+                Player.show(item.id, mediaType);
+            });
+
+            card.addEventListener('click', () => {
+                Player.show(item.id, mediaType);
+            });
+
+            searchResultsContainer.appendChild(card);
+        });
+    }
+
+    // Show search results and hide tabbed content
+    searchResultsSection.style.display = 'block';
+    tabbedContentSection.style.display = 'none';
+};
+// --- End Search Functionality ---
+
+
+// --- Category Loading and Navigation ---
+const loadCategoryContent = async (category) => {
+    const contentDisplayContainerId = 'content-display-container';
+    let content = [];
+
+    switch (category) {
+        case 'trending':
+            content = await fetchData('trending/all', 'week');
+            break;
+        case 'movies':
+            content = await fetchData('movie', 'popular');
+            break;
+        case 'tv':
+            content = await fetchData('tv', 'popular');
+            break;
+        case 'anime':
+            content = await fetchByGenre('tv', GENRE_IDS.animation); // Anime is typically TV shows
+            break;
+        case 'horror':
+            content = await fetchByGenre('movie', GENRE_IDS.horror);
+            break;
+        case 'comedy':
+            content = await fetchByGenre('movie', GENRE_IDS.comedy);
+            break;
+        case 'thriller':
+            content = await fetchByGenre('movie', GENRE_IDS.thriller);
+            break;
+        case 'drama':
+            content = await fetchByGenre('movie', GENRE_IDS.drama);
+            break;
+        default:
+            content = await fetchData('trending/all', 'week');
+            break;
+    }
+    renderContent(content, contentDisplayContainerId);
+};
+
+const setupTabNavigation = () => {
+    const tabButtons = document.querySelectorAll('.tab-button');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            document.getElementById('searchResultsSection').style.display = 'none'; // Hide search results
+            document.getElementById('tabbedContentSection').style.display = 'block'; // Ensure tabbed content is shown
+
+            // Remove 'active' class from all buttons and add to the clicked one
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const category = event.target.dataset.category;
+            loadCategoryContent(category); // Load content for the selected category
+        });
+    });
+
+    // Load trending content by default on initial page load
+    loadCategoryContent('trending');
+};
+
+const showDefaultCategoryContent = () => {
+    const searchResultsSection = document.getElementById('searchResultsSection');
+    const tabbedContentSection = document.getElementById('tabbedContentSection');
+
+    searchResultsSection.style.display = 'none'; // Hide search results section
+    tabbedContentSection.style.display = 'block'; // Show tabbed content section
+
+    // Activate the 'Trending' tab and load its content
+    const trendingButton = document.querySelector('.tab-button[data-category="trending"]');
+    if (trendingButton) {
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        trendingButton.classList.add('active');
+        loadCategoryContent('trending'); // Reload trending to ensure it's visible and active
+    }
+};
+// --- End Category Loading and Navigation ---
+
+
+// --- Main Initialization on DOMContentLoaded ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize core modules and utilities
+    Player.init();
+    setupCustomDialog(); // Ensure custom dialog is set up
+
+    // Inject header content
+    const header = document.getElementById('animatedHeader');
+    if (header) {
+      header.innerHTML = `
+        <a href="https://salidaph.online">
+          <img src="https://salidaph.online/assests/salida.png" alt="SalidaPH Logo" width="120" height="50" style="margin-right: 10px;" />
+        </a>
+        <nav class="nav-links">
+          <div class="scrolling-text">
+            <span style="display: inline-block; animation: marquee 10s linear infinite;">
+              📢 SALIDAPH IS NOW ONLINE!
+            </span>
+          </div>
+          <a href="/">Home</a>
+          <a href="https://github.com/akirachoi01">Github</a>
+          <a href="/privacy-policy.html">Privacy</a>
+          <a href="/terms.html">Term</a>
+          <a href="https://github.com/akirachoi01/Salida-PH/releases/download/SalidaPHAPK/SalidaPH.zip">Get APK</a>
+        </nav>
+      `;
+    }
+
+    // Setup Search bar event listeners
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+
+    searchButton.addEventListener('click', async () => {
+        const query = searchInput.value.trim();
+        if (query) {
+            const results = await performSearch(query);
+            renderSearchResults(results);
+        } else {
+            showDefaultCategoryContent(); // Show default content if search is empty
+        }
+    });
+
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            searchButton.click();
+        }
+    });
+
+    searchInput.addEventListener('input', () => {
+        if (searchInput.value.trim() === '') {
+            showDefaultCategoryContent(); // Show default content if input is cleared
+        }
+    });
+
+    // Setup Tab Navigation (this also loads initial content like "Trending")
+    setupTabNavigation();
+
+    // Since siteContentWrapper is removed, no need to add 'show-content' class.
+    // The content is already directly in the body, which is flexed by default.
+});
