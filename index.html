@@ -10,10 +10,6 @@
 
     <link rel="icon" href="https://salidaph.online/assests/salida.png" />
     
-    <link rel="stylesheet" href="https://salidaph.online/player/player.css" />
-
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
-
     <meta name="google-site-verification" content="CkQVoXgh_OEaHibbMRa9ZMxRGzg6Xyglep9WpKxpAnw" />
 
     <script>
@@ -33,22 +29,23 @@
         gtag('config', 'AW-17056210414');
     </script>
 
+    <link rel="stylesheet" href="https://salidaph.online/player/player.css" />
+
     <style>
-        /* Global styles for HTML and Body for a flexible layout */
+        /* Your existing CSS styles go here */
         html, body {
             margin: 0;
             padding: 0;
-            width: 100%; /* Ensures full width */
-            /* min-height: 100vh; is handled by flexbox on body and siteContentWrapper */
-            background-color: #000; /* Dark background for the whole page */
-            color: #fff; /* Default text color for the page */
-            font-family: Arial, sans-serif; /* A common, readable font */
+            width: 100%;
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
         }
 
         body {
-            display: flex; /* Use flexbox to stack content vertically */
-            flex-direction: column; /* Stack children top to bottom */
-            min-height: 100vh; /* Ensures body takes at least full viewport height */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         /* Ensure major sections take full width and respect padding */
@@ -57,33 +54,33 @@
         body > .movie-list-section,
         body > .tab-section,
         body > footer {
-            width: 100%; /* Make sure these main sections take full width */
-            max-width: 100%; /* Important to prevent horizontal scroll if padding is added */
-            box-sizing: border-box; /* Include padding/border in width calculation */
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
         /* Header styling */
         #animatedHeader {
-            background-color: #1a1a1a; /* Darker header */
+            background-color: #1a1a1a;
             padding: 15px 20px;
             display: flex;
             align-items: center;
-            justify-content: space-between; /* Space out logo and nav links */
+            justify-content: space-between;
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            flex-shrink: 0; /* Prevent header from shrinking */
+            flex-shrink: 0;
         }
 
         #animatedHeader img {
-            height: 50px; /* Adjust logo size */
+            height: 50px;
             width: auto;
         }
 
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 20px; /* Space between nav items */
-            flex-wrap: wrap; /* Allow nav links to wrap on small screens */
-            justify-content: flex-end; /* Align to end if wrapped */
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
         }
 
         .nav-links a {
@@ -94,16 +91,16 @@
         }
 
         .nav-links a:hover {
-            color: #e50914; /* Netflix red on hover */
+            color: #e50914;
         }
 
         .scrolling-text {
             overflow: hidden;
             white-space: nowrap;
-            color: #ffd700; /* Gold color for announcement */
+            color: #ffd700;
             font-weight: bold;
             margin-right: 20px;
-            flex-shrink: 0; /* Prevent text from shrinking */
+            flex-shrink: 0;
         }
 
         /* Keyframe animation for scrolling text */
@@ -115,14 +112,14 @@
         /* Basic styling for the search container */
         .search-container {
             display: flex;
-            flex-direction: column; /* Stack children vertically */
-            align-items: center; /* Center children horizontally */
-            gap: 15px; /* Space between search bar/button and tab buttons */
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
             padding: 20px;
-            background-color: #111; /* Dark background for the search bar */
+            background-color: #111;
             border-bottom: 1px solid #333;
-            box-sizing: border-box; /* Ensure padding is included in width */
-            flex-shrink: 0; /* Prevent search container from shrinking */
+            box-sizing: border-box;
+            flex-shrink: 0;
         }
 
         /* Wrapper for search input and button */
@@ -131,93 +128,93 @@
             justify-content: center;
             align-items: center;
             width: 100%;
-            max-width: 600px; /* Limit combined width */
+            max-width: 600px;
         }
 
         .search-container input[type="text"] {
-            padding: 12px 18px; /* Slightly larger padding */
+            padding: 12px 18px;
             border: 1px solid #555;
-            border-radius: 25px; /* More rounded corners */
+            border-radius: 25px;
             font-size: 16px;
-            width: 100%; /* Changed to 100% to fill wrapper */
+            width: 100%;
             background-color: #333;
             color: #eee;
-            outline: none; /* Remove outline on focus */
+            outline: none;
         }
 
         .search-container input[type="text"]::placeholder {
-            color: #bbb; /* Placeholder text color */
+            color: #bbb;
         }
 
         .search-container button {
-            padding: 12px 25px; /* Slightly larger padding */
-            background-color: #e50914; /* Netflix red */
+            padding: 12px 25px;
+            background-color: #e50914;
             color: white;
             border: none;
-            border-radius: 25px; /* More rounded corners */
+            border-radius: 25px;
             font-size: 16px;
             cursor: pointer;
-            margin-left: 10px; /* Space between input and button */
+            margin-left: 10px;
             transition: background-color 0.3s ease;
-            flex-shrink: 0; /* Prevent button from shrinking */
+            flex-shrink: 0;
         }
 
         .search-container button:hover {
-            background-color: #b20710; /* Darker red on hover */
+            background-color: #b20710;
         }
 
         /* Custom styles for tabs (now inside search-container) */
         .tab-container {
             display: flex;
             justify-content: center;
-            margin: 0; /* Remove specific top/bottom margin, parent gap handles it */
+            margin: 0;
             background-color: #222;
             padding: 10px;
             border-radius: 8px;
             flex-wrap: wrap;
-            width: 100%; /* Adjust width to account for padding/margin */
-            max-width: 1200px; /* Limit max width of tab buttons row */
+            width: 100%;
+            max-width: 1200px;
             box-sizing: border-box;
-            gap: 5px; /* Space between tab buttons themselves */
+            gap: 5px;
         }
 
         .tab-button {
             background-color: #333;
             color: #fff;
             border: none;
-            padding: 12px 25px; /* Slightly larger and more clickable */
-            border-radius: 25px; /* More rounded like search button */
+            padding: 12px 25px;
+            border-radius: 25px;
             cursor: pointer;
             font-size: 16px;
             transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-            flex-shrink: 0; /* Prevent buttons from shrinking too much */
+            flex-shrink: 0;
         }
 
         .tab-button:hover {
             background-color: #555;
             transform: translateY(-2px);
-            box-shadow: 0 0 10px rgba(255,255,255,0.2); /* Subtle glow on hover */
+            box-shadow: 0 0 10px rgba(255,255,255,0.2);
         }
 
         .tab-button.active {
-            background-color: #e50914; /* Netflix red */
+            background-color: #e50914;
             font-weight: bold;
-            box-shadow: 0 0 15px rgba(229, 9, 20, 0.7); /* More prominent glow */
-            transform: translateY(-3px); /* More pronounced lift */
+            box-shadow: 0 0 15px rgba(229, 9, 20, 0.7);
+            transform: translateY(-3px);
         }
 
         /* Styling for search results section */
         #searchResultsSection {
-            flex-grow: 1; /* Allows this section to take up available vertical space */
-            padding: 20px; /* Add padding to the section itself */
-            background-color: #0a0a0a; /* Dark background for content areas */
-            box-sizing: border-box; /* Ensure padding is included in width */
+            flex-grow: 1;
+            padding: 20px;
+            background-color: #0a0a0a;
+            box-sizing: border-box;
         }
 
         #searchResultsSection h2 {
             color: #fff;
             text-align: center;
-            margin-bottom: 25px; /* Space below title */
+            margin-bottom: 25px;
             font-size: 2em;
         }
 
@@ -225,27 +222,27 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 20px;
-            justify-items: center; /* Center cards within their grid cells */
-            width: 100%; /* Explicitly set 100% width */
-            box-sizing: border-box; /* Include padding in width */
+            justify-items: center;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .search-result-item {
             text-align: center;
             background-color: #1a1a1a;
             border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5); /* Stronger shadow */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             overflow: hidden;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             color: #fff;
-            position: relative; /* Needed for play button positioning */
-            cursor: pointer; /* Indicate it's clickable */
-            width: 100%; /* Ensure item takes full width of grid cell */
+            position: relative;
+            cursor: pointer;
+            width: 100%;
         }
 
         .search-result-item:hover {
             transform: translateY(-5px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.7); /* Even stronger shadow on hover */
+            box-shadow: 0 6px 15px rgba(0,0,0,0.7);
         }
 
         .search-result-item img {
@@ -257,7 +254,7 @@
         }
 
         .search-result-item h3 {
-            font-size: 1.1em; /* Slightly larger title */
+            font-size: 1.1em;
             margin: 10px 0 5px;
             padding: 0 10px;
             white-space: nowrap;
@@ -268,27 +265,33 @@
 
         .search-result-item p {
             font-size: 0.9em;
-            color: #aaa; /* Lighter grey for year */
+            color: #aaa;
             padding: 0 10px 10px;
         }
 
         /* Custom styles for content display container (for categories) */
-        .tab-section { /* Renamed for clarity, but keeps the old ID */
-            flex-grow: 1; /* Allows this section to take up available vertical space */
+        .tab-section {
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
-            padding: 0 20px; /* Padding for the entire tab section */
-            background-color: #0a0a0a; /* Dark background for content areas */
-            box-sizing: border-box; /* Ensure padding is included in width */
+            padding: 0 20px;
+            background-color: #0a0a0a;
+            box-sizing: border-box;
+        }
+
+        .tab-section h2 {
+            color: #fff;
+            text-align: center;
+            padding: 20px;
         }
 
         #content-display-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 20px;
-            padding: 20px; /* Padding inside the grid container */
-            width: 100%; /* Explicitly set 100% width */
-            box-sizing: border-box; /* Include padding in width */
+            padding: 20px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         /* Existing movie-card and videoPlayer styles - now with play button fix */
@@ -300,8 +303,8 @@
             position: relative;
             cursor: pointer;
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease;
-            color: #fff; /* Default text color for cards */
-            width: 100%; /* Ensure card takes full width of grid cell */
+            color: #fff;
+            width: 100%;
         }
 
         .movie-card:hover {
@@ -327,12 +330,12 @@
             padding: 10px;
             box-sizing: border-box;
             text-align: center;
-            z-index: 1; /* Ensure this is correctly here */
+            z-index: 1;
         }
 
         .movie-card-info h3 {
             margin: 0;
-            font-size: 1.1em; /* Consistent with search results */
+            font-size: 1.1em;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -360,19 +363,19 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            opacity: 0; /* Starts hidden */
-            transition: opacity 0.3s ease, background-color 0.2s ease; /* Smooth transition */
-            z-index: 2; /* Ensure it's above the image and info */
-            pointer-events: auto; /* IMPORTANT: Ensure it's always clickable even when invisible */
+            opacity: 0;
+            transition: opacity 0.3s ease, background-color 0.2s ease;
+            z-index: 2;
+            pointer-events: auto;
         }
 
         .movie-card:hover .play-button,
-        .search-result-item:hover .play-button { /* Apply hover effect to both */
+        .search-result-item:hover .play-button {
             opacity: 1;
         }
 
         .play-button:hover {
-            background-color: rgba(0, 0, 0, 0.8); /* Darken on hover */
+            background-color: rgba(0, 0, 0, 0.8);
         }
 
         #videoPlayer {
@@ -397,25 +400,25 @@
 
         /* Footer styling adjustments */
         footer {
-            flex-shrink: 0; /* Prevent footer from shrinking */
-            margin-top: 50px; /* Add more space above the footer */
-            background: #111; /* Darker footer background */
-            color: #aaa; /* Lighter text color */
+            flex-shrink: 0;
+            margin-top: 50px;
+            background: #111;
+            color: #aaa;
             padding: 20px 10px;
             width: 100%;
             box-sizing: border-box;
-            text-align: center; /* Ensure text is centered */
+            text-align: center;
         }
 
         footer a {
-            color: #e50914 !important; /* Netflix red for links, using !important for override */
+            color: #e50914 !important;
             text-decoration: none;
         }
 
         /* General text color for sections */
         .movie-list-section h2,
-        .tab-section h2 { /* Added tab-section h2 for consistency */
-            color: #fff; /* White text for section titles */
+        .tab-section h2 {
+            color: #fff;
             text-align: center;
             padding: 20px;
         }
@@ -428,27 +431,27 @@
             position: fixed;
             bottom: 150px;
             right: 0;
-            display: block; /* Ensure it respects width/height */
-            text-decoration: none; /* Remove underline */
+            display: block;
+            text-decoration: none;
         }
         .Telegram img {
             width: 50px;
-            height: auto; /* Maintain aspect ratio */
+            height: auto;
         }
 
         /* Styles for content wrapper to hide/show site content */
         #siteContentWrapper {
             display: none; /* Hidden by default - relies on JS to show */
-            flex-direction: column; /* Ensure content stacks vertically */
-            flex-grow: 1; /* Allow it to grow to fill available space */
-            width: 100%; /* Take full width */
-            opacity: 0; /* Start invisible for fade-in */
-            transition: opacity 0.5s ease; /* Smooth fade-in */
+            flex-direction: column;
+            flex-grow: 1;
+            width: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
 
         /* Class to show the main site content */
         #siteContentWrapper.show-content {
-            display: flex; /* Or block, depends on your layout, but flex is good here */
+            display: flex;
             opacity: 1;
         }
 
@@ -458,11 +461,11 @@
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 10px;
-                padding: 10px 15px; /* Adjust padding for smaller screens */
+                padding: 10px 15px;
             }
             .nav-links {
                 justify-content: flex-start;
-                gap: 10px; /* Smaller gap on mobile */
+                gap: 10px;
             }
             .scrolling-text {
                 margin-right: 0;
@@ -471,22 +474,22 @@
             }
             .search-container {
                 padding: 15px;
-                gap: 10px; /* Smaller gap on mobile */
+                gap: 10px;
             }
             .search-input-button-wrapper {
-                flex-direction: column; /* Stack input and button vertically on small screens */
-                gap: 10px; /* Space between input and button when stacked */
-                max-width: 100%; /* Allow input/button to take full width */
+                flex-direction: column;
+                gap: 10px;
+                max-width: 100%;
             }
             .search-input-button-wrapper input[type="text"],
             .search-input-button-wrapper button {
-                width: 100%; /* Wider input/button on small screens */
-                margin-left: 0; /* No side margin when stacked */
+                width: 100%;
+                margin-left: 0;
             }
             .tab-container {
-                width: 100%; /* Adjust width on smaller screens */
-                padding: 8px; /* Smaller padding inside the tab container */
-                gap: 3px; /* Smaller gap between tab buttons */
+                width: 100%;
+                padding: 8px;
+                gap: 3px;
             }
             .tab-button {
                 padding: 10px 15px;
@@ -495,28 +498,28 @@
             
             #searchResults,
             #content-display-container {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Adjust min-width for smaller cards */
-                gap: 15px; /* Slightly smaller gap between cards */
-                padding: 15px; /* Adjust padding for smaller screens */
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 15px;
+                padding: 15px;
             }
 
             .search-result-item img,
             .movie-card img {
-                height: 200px; /* Adjust image height for smaller screens */
+                height: 200px;
             }
 
             .search-result-item h3,
             .movie-card-info h3 {
-                font-size: 1em; /* Smaller font size for titles */
+                font-size: 1em;
             }
 
             .search-result-item p,
             .movie-card-info p {
-                font-size: 0.8em; /* Smaller font size for year/description */
+                font-size: 0.8em;
             }
 
             .Telegram {
-                bottom: 20px; /* Adjust Telegram button position for mobile */
+                bottom: 20px;
                 right: 15px;
             }
         }
@@ -536,14 +539,20 @@
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div id="siteContentWrapper">
         <header id="animatedHeader">
-            <img src="https://salidaph.online/assests/salida.png" alt="SalidaPH Logo" />
-            <div class="scrolling-text">
-                <span id="marqueeText">Welcome to SalidaPH! Your go-to source for movies and TV shows. New content added daily!</span>
-            </div>
+            <a href="https://salidaph.online">
+                <img src="https://salidaph.online/assests/salida.png" alt="SalidaPH Logo" width="120" height="50" style="margin-right: 10px;" />
+            </a>
             <nav class="nav-links">
-                <a href="#">Home</a>
-                <a href="#">About</a>
-                <a href="#">Contact</a>
+                <div class="scrolling-text">
+                    <span style="display: inline-block; animation: marquee 10s linear infinite;">
+                        📢 SALIDAPH IS NOW ONLINE!
+                    </span>
+                </div>
+                <a href="/">Home</a>
+                <a href="https://github.com/akirachoi01">Github</a>
+                <a href="/privacy-policy.html">Privacy</a>
+                <a href="/terms.html">Term</a>
+                <a href="https://github.com/akirachoi01/Salida-PH/releases/download/SalidaPHAPK/SalidaPH.zip">Get APK</a>
             </nav>
         </header>
 
@@ -575,19 +584,19 @@
                 </div>
         </section>
 
-        <a href="https://t.me/akirachoi01" target="_blank" class="hide-if-iframe Telegram"
-            style="height: 60px; width: 60px; z-index: 9999; position: fixed; bottom: 150px; right: 0;">
+        <a href="https://t.me/akirachoi01" target="_blank" class="hide-if-iframe Telegram">
             <img src="https://i.ibb.co.com/QNfMhcp/telegram.png" alt="Telegram Channel" style="width: 50px; height: auto;">
         </a>
 
         <div id="videoPlayer">
             <iframe id="videoFrame" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-            <button id="closeVideoPlayer" style="position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 18px; cursor: pointer;">X</button>
+            <button id="closeVideoPlayer" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; padding: 0; z-index: 10001;">×</button>
+            <button id="fullscreenVideoPlayer" style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 6px; padding: 5px 10px; font-size: 20px; cursor: pointer; z-index: 10001;">⛶</button>
         </div>
 
         <footer>
             <p>© 2025 SalidaPH |
-                <a href="https://salidaph.online/privacy-policy.html" target="_blank" style="color: #e50914; text-decoration: none;">
+                <a href="https://salidaph.online/privacy-policy.html" target="_blank">
                     Privacy Policy
                 </a>
             </p>
@@ -595,6 +604,6 @@
     </div>
 
     <script src="https://salidaph.online/api.js"></script>
-   
+    
 </body>
 </html>
