@@ -595,66 +595,6 @@
     </div>
 
     <script src="https://salidaph.online/api.js"></script>
-    <script>
-        // JavaScript to show the content wrapper after everything is loaded or a specific event
-        document.addEventListener('DOMContentLoaded', () => {
-            const siteContentWrapper = document.getElementById('siteContentWrapper');
-            siteContentWrapper.classList.add('show-content');
-
-            // Optional: Start marquee animation if not already handled by CSS
-            const marqueeText = document.getElementById('marqueeText');
-            if (marqueeText) {
-                // Check if animation is already applied via CSS or apply here
-                // For simplicity, assuming CSS handles it. If not, you might need JS for complex marquee.
-                // marqueeText.style.animation = 'marquee 15s linear infinite';
-            }
-
-            // Example of how you might handle the video player close button
-            const videoPlayer = document.getElementById('videoPlayer');
-            const closeVideoPlayerBtn = document.getElementById('closeVideoPlayer');
-            const videoFrame = document.getElementById('videoFrame');
-
-            if (closeVideoPlayerBtn) {
-                closeVideoPlayerBtn.addEventListener('click', () => {
-                    videoPlayer.style.display = 'none';
-                    videoFrame.src = ''; // Stop the video
-                });
-            }
-
-            // Placeholder for your movie loading logic (e.g., from api.js)
-            // You would likely have functions like:
-            // loadTrendingMovies();
-            // setupTabListeners();
-            // setupSearchFunctionality();
-        });
-
-        // Example of a minimal play button click handler (assuming it's added dynamically by your api.js)
-        document.addEventListener('click', (event) => {
-            if (event.target.classList.contains('play-button')) {
-                const videoUrl = event.target.dataset.videoUrl; // Assuming you store the video URL in a data attribute
-                const videoPlayer = document.getElementById('videoPlayer');
-                const videoFrame = document.getElementById('videoFrame');
-
-                if (videoUrl) {
-                    videoFrame.src = videoUrl;
-                    videoPlayer.style.display = 'block'; // Show the video player
-                }
-            }
-        });
-
-        // Ensure the header marquee animation starts
-        // This can be done purely in CSS as you have, but if dynamic, here's a thought:
-        window.addEventListener('load', () => {
-            const scrollingText = document.querySelector('.scrolling-text');
-            if (scrollingText) {
-                const textWidth = scrollingText.scrollWidth;
-                const containerWidth = scrollingText.clientWidth;
-                if (textWidth > containerWidth) {
-                    // Only apply animation if text overflows
-                    scrollingText.style.animation = `marquee ${textWidth / 50}s linear infinite`; // Speed based on text length
-                }
-            }
-        });
-    </script>
+   
 </body>
 </html>
