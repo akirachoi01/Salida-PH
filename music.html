@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>YouTube Music Queue Player</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #eee;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    .player-controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .player-controls button {
+      background: #1e1e1e;
+      border: none;
+      padding: 10px 20px;
+      font-size: 18px;
+      color: #eee;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .player-controls button:hover {
+      background: #333;
+    }
+    input[type="range"] {
+      width: 100px;
+    }
+    #results div {
+      transition: background 0.3s;
+    }
+    #results div:hover {
+      background: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>YouTube Music Queue Player</h1>
+
+  <!-- 🔍 Search Input -->
+  <input type="text" id="yt-search" placeholder="Search YouTube Music..." style="width: 60%; padding: 10px; border-radius: 5px;" />
+  <button onclick="searchYouTube()" style="padding: 10px 15px; background: #00aaff; color: white; border: none; border-radius: 5px;">Search</button>
+
+  <!-- 📃 Search Results -->
+  <div id="results" style="max-width: 600px; margin: 20px auto;"></div>
+
+  <!-- 🎶 Player Controls -->
+  <div class="player-controls">
+    <button onclick="prevTrack()">⏮️</button>
+    <button onclick="togglePlayPause()" id="playPauseBtn">▶️</button>
+    <button onclick="nextTrack()">⏭️</button>
+    <input type="range" id="volumeControl" min="0" max="100" value="50">
+  </div>
+
+  <!-- 📜 Queue -->
+  <h3>Queue</h3>
+  <ul id="queue" style="list-style: none; padding: 0;"></ul>
+
+  <!-- 📺 Hidden YouTube Player -->
+  <div id="youtube-player" style="width: 0; height: 0;"></div>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    const API_KEY = "AIzaSyCT5uYssh2bfXO_mOIMTwDVoQ0r5mxsstU"; // Your API key
+
+    let player;
+    let playerReady = false;
+    let queue = [];
+    let currentIndex = -1;
+    let isPlaying = false;
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('youtube-player', {
+        height: '0',
+        width: '0',
+        videoId: '',
+        events: {
+          onReady: () => {
+            playerReady = true;
+            setVolume(50);
+          },
+          onStateChange: (event) => {
+            if (event.data === YT.PlayerState.ENDED) {
+              nextTrack();
+            }
+          }
+        }
+      });
+    }
+
+    function searchYouTube() {
+      const query = document.getElementById('yt-search').value;
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = 'Searching...';
+
+      fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=5&q=${encodeURIComponent(query)}&key=${API_KEY}`)
+        .then(res => res.json())
+        .then(data => {
+          resultsDiv.innerHTML = '';
+          data.items.forEach(item => {
+            const videoId = item.id.videoId;
+            const title = item.snippet.title;
+            const thumbnail = item.snippet.thumbnails.default.url;
+
+            const resultItem = document.createElement('div');
+            resultItem.style.display = 'flex';
+            resultItem.style.alignItems = 'center';
+            resultItem.style.marginBottom = '10px';
+            resultItem.style.cursor = 'pointer';
+            resultItem.style.background = '#222';
+            resultItem.style.borderRadius = '5px';
+            resultItem.style.padding = '10px';
+
+            resultItem.innerHTML = `
+              <img src="${thumbnail}" alt="${title}" style="margin-right: 10px; border-radius: 4px;">
+              <div>${title}</div>
+            `;
+
+            resultItem.onclick = () => addToQueue({ title, videoId });
+            resultsDiv.appendChild(resultItem);
+          });
+        })
+        .catch(err => {
+          console.error(err);
+          resultsDiv.innerHTML = 'Error fetching results.';
+        });
+    }
+
+    function addToQueue(song) {
+      queue.push(song);
+      updateQueueDisplay();
+      if (!isPlaying) {
+        currentIndex = queue.length - 1;
+        waitForPlayerThenPlay();
+      }
+    }
+
+    function waitForPlayerThenPlay() {
+      if (!playerReady || !player.loadVideoById) {
+        setTimeout(waitForPlayerThenPlay, 300);
+        return;
+      }
+      playCurrent();
+    }
+
+    function playCurrent() {
+      if (!playerReady || !queue[currentIndex]) {
+        console.warn("Player not ready or no track loaded.");
+        return;
+      }
+
+      player.loadVideoById(queue[currentIndex].videoId);
+      isPlaying = true;
+      updateQueueDisplay();
+      updatePlayPauseButton();
+    }
+
+    function nextTrack() {
+      if (currentIndex < queue.length - 1) {
+        currentIndex++;
+        playCurrent();
+      }
+    }
+
+    function prevTrack() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        playCurrent();
+      }
+    }
+
+    function togglePlayPause() {
+      if (!player) return;
+      const state = player.getPlayerState();
+      if (state === YT.PlayerState.PLAYING) {
+        player.pauseVideo();
+        isPlaying = false;
+      } else if (state === YT.PlayerState.PAUSED || state === YT.PlayerState.CUED) {
+        player.playVideo();
+        isPlaying = true;
+      }
+      updatePlayPauseButton();
+    }
+
+    function updatePlayPauseButton() {
+      const btn = document.getElementById('playPauseBtn');
+      btn.textContent = isPlaying ? '⏸️' : '▶️';
+    }
+
+    function setVolume(val) {
+      if (player && player.setVolume) {
+        player.setVolume(val);
+      }
+    }
+
+    document.getElementById('volumeControl').addEventListener('input', function () {
+      setVolume(this.value);
+    });
+
+    function updateQueueDisplay() {
+      const queueList = document.getElementById('queue');
+      queueList.innerHTML = '';
+      queue.forEach((song, i) => {
+        const li = document.createElement('li');
+        li.textContent = `${i === currentIndex ? '▶️ ' : ''}${song.title}`;
+        li.style.marginBottom = '5px';
+        queueList.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
