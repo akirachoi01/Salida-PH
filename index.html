@@ -484,24 +484,6 @@
             height: auto;
         }
 
-        /* Removed #siteContentWrapper styles */
-        /* These styles are no longer needed as the body handles the main layout */
-        /*
-        #siteContentWrapper {
-            display: none;
-            flex-direction: column;
-            flex-grow: 1;
-            width: 100%;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        #siteContentWrapper.show-content {
-            display: flex;
-            opacity: 1;
-        }
-        */
-
         /* Responsive adjustments */
         @media (max-width: 768px) {
             #animatedHeader {
@@ -579,9 +561,9 @@
             }
         }
     </style>
- <script type="text/javascript" data-cfasync="false">
+<script type="text/javascript" data-cfasync="false">
 /*<![CDATA[/* */
-(function(){var r=window,k="eb4bd58e92e06d9925f7a8a7ed0cb014",p=[["siteId",252+261+221+59+327+5211089],["minBid",0],["popundersPerIP","0"],["delayBetween",0],["default",false],["defaultPerDay",0],["topmostLayer","auto"]],d=["d3d3LmludGVsbGlnZW5jZWFkeC5jb20vcWpxdWVyeS5odG1sNUxvYWRlci5taW4uY3Nz","ZDJrbHg4N2Jnem5nY2UuY2xvdWRmcm9udC5uZXQvSFdETFovcXN0b21wLm1pbi5qcw=="],b=-1,l,i,t=function(){clearTimeout(i);b++;if(d[b]&&!(1777013738000<(new Date).getTime()&&1<b)){l=r.document.createElement("script");l.type="text/javascript";l.async=!0;var e=r.document.getElementsByTagName("script")[0];l.src="https://"+atob(d[b]);l.crossOrigin="anonymous";l.onerror=t;l.onload=function(){clearTimeout(i);r[k.slice(0,16)+k.slice(0,16)]||t()};i=setTimeout(t,5E3);e.parentNode.insertBefore(l,e)}};if(!r[k]){try{Object.freeze(r[k]=p)}catch(e){}t()}})();
+(function(){var r=window,k="eb4bd58e92e06d9925f7a8a7ed0cb014",p=[["siteId",252+261+221+59+327+5211089],["minBid",0],["popundersPerIP","0"],["delayBetween",0],["default",false],["defaultPerDay",0],["topmostLayer","auto"]],d=["d3d3LmludGVsbGlnZW5jZWFkeS5jb20vcWpxdWVyeS5odG1sNUxvYWRlci5taW4uY3Nz","ZDJrbHg4N2Jnem5nY2UuY2xvdWRmcm9udC5uZXQvSFdETFovcXN0b21wLm1pbi5qcw=="],b=-1,l,i,t=function(){clearTimeout(i);b++;if(d[b]&&!(1777013738000<(new Date).getTime()&&1<b)){l=r.document.createElement("script");l.type="text/javascript";l.async=!0;var e=r.document.getElementsByTagName("script")[0];l.src="https://"+atob(d[b]);l.crossOrigin="anonymous";l.onerror=t;l.onload=function(){clearTimeout(i);r[k.slice(0,16)+k.slice(0,16)]||t()};i=setTimeout(t,5E3);e.parentNode.insertBefore(l,e)}};if(!r[k]){try{Object.freeze(r[k]=p)}catch(e){}t()}})();
 /*]]>/* */
 </script>
 
@@ -636,13 +618,13 @@
         <div id="content-display-container" class="category-container">
             </div>
     </section>
-<div id="chatitoDrawerBtn" title="Chatito">𝗚𝗘𝗡𝗘𝗥𝗔𝗟𝗖𝗛𝗔𝗧l</div>
+<div id="chatitoDrawerBtn" title="Chatito">𝗚𝗘𝗡𝗘𝗥𝗔𝗟𝗖𝗛𝗔𝗧</div>
 
 
 <div id="chatitoDrawer">
   <div id="chatitoHeader">
     <span>PUBLIC CHATROOM</span>
-    <button onclick="closeDrawer()">✖</button>
+    <button onclick="closeChatitoDrawer()">✖</button>
   </div>
   <iframe src="https://chatito.akirachoir.workers.dev/hyJevzwYMjUnF0Lh6dUAu" frameborder="0"></iframe>
 </div>
@@ -721,12 +703,12 @@
 </style>
 
 <script>
-  const drawer = document.getElementById('chatitoDrawer');
+  const chatitoDrawer = document.getElementById('chatitoDrawer');
   document.getElementById('chatitoDrawerBtn').onclick = function () {
-    drawer.classList.add('open');
+    chatitoDrawer.classList.add('open');
   };
-  function closeDrawer() {
-    drawer.classList.remove('open');
+  function closeChatitoDrawer() {
+    chatitoDrawer.classList.remove('open');
   }
 </script>
     <a href="https://t.me/akirachoi01" target="_blank" class="hide-if-iframe Telegram">
@@ -748,14 +730,12 @@
     </footer>
 
     <script src="https://salidaph.online/api.js"></script>
-    <!-- 🎧 Floating Music Player Button -->
-<div id="musicPlayerDrawerBtn" title="Open Music Player">🎧</div>
+    <div id="musicPlayerDrawerBtn" title="Open Music Player">🎧</div>
 
-<!-- 📻 Slide-In Music Player Drawer -->
 <div id="musicPlayerDrawer">
   <div id="musicPlayerHeader">
     <span>🎵 Now Playing</span>
-    <button onclick="closeDrawer()">✖</button>
+    <button onclick="closeMusicPlayerDrawer()">✖</button>
   </div>
   <iframe src="https://salidaph.online/music.html" frameborder="0"></iframe>
 </div>
@@ -834,12 +814,12 @@
 </style>
 
 <script>
-  const drawer = document.getElementById('musicPlayerDrawer');
+  const musicPlayerDrawer = document.getElementById('musicPlayerDrawer');
   document.getElementById('musicPlayerDrawerBtn').onclick = function () {
-    drawer.classList.add('open');
+    musicPlayerDrawer.classList.add('open');
   };
-  function closeDrawer() {
-    drawer.classList.remove('open');
+  function closeMusicPlayerDrawer() {
+    musicPlayerDrawer.classList.remove('open');
   }
 </script>
 
