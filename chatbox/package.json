@@ -30,8 +30,8 @@
     "wrangler": "4.16.1"
   },
   "scripts": {
-    "cf-typegen": "wrangler types ./src/server/worker-configuration.d.ts",
-    "check": "tsc --project src/client && tsc --project src/server && wrangler deploy --dry-run",
+    "cf-typegen": "wrangler types ./chatbox/src/server/worker-configuration.d.ts",
+    "check": "tsc --project chatbox/src/client && tsc --project chatbox/src/server && wrangler deploy --dry-run",
     "deploy": "wrangler deploy",
     "dev": "wrangler dev"
   }
