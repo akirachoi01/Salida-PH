@@ -1,6 +1,6 @@
 {
   "compatibility_date": "2025-04-01",
-  "main": "src/server/index.ts",
+  "main": "chatbox/src/server/index.ts",
   "name": "chatito",
   "migrations": [
     {
@@ -9,12 +9,12 @@
     }
   ],
   "assets": {
-    "directory": "./public",
+    "directory": "./chatbox/public",
     "binding": "ASSETS",
     "not_found_handling": "single-page-application"
   },
   "build": {
-    "command": "esbuild src/client/index.tsx --bundle --splitting --format=esm --platform=browser --outdir=public/dist"
+    "command": "esbuild chatbox/src/client/index.tsx --bundle --splitting --format=esm --platform=browser --outdir=public/dist"
   },
   "durable_objects": {
     "bindings": [
