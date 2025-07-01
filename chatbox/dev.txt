@@ -1,1 +1,3 @@
-
+ChatBox, Made by: akirachoi01
+This chat room is hosted in a single Durable Object, running in one process in one machine in one location, very close to the users.
+Beta test V1.0.0
