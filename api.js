@@ -86,7 +86,7 @@ const Player = (() => {
             // TMDB only provides trailers/teasers, not full movies directly.
             // The URL `https://player.videasy.net/${type}/${id}?color=8B5CF6` seems to be
             // for an external player you are integrating. Ensure this service is reliable and legal.
-            videoFrame.src = `https://player.videasy.net/${type}/${id}?color=8B5CF6`;
+            videoFrame.src = `https://tmdb-stream.vercel.app/${type}/${id}?color=8B5CF6`;
 
             videoPlayer.style.display = 'block';
             videoPlayer.style.position = 'fixed';
