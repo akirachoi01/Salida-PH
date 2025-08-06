@@ -3,44 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MARUYA MOVIE PLAYER</title>
+  <title>Maruya Movie Player 🎬</title>
   <style>
     :root {
-      --bg-color: #0f2027;
-      --card-bg: #1c1c1c;
-      --text-color: #f0f0f0;
-      --accent: #34cfeb;
-    }
-
-    [data-theme="light"] {
-      --bg-color: #ffffff;
-      --card-bg: #f0f0f0;
-      --text-color: #111;
-      --accent: #007acc;
+      --bg: #111;
+      --fg: #fff;
+      --accent: #00bcd4;
     }
 
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: var(--bg-color);
-      color: var(--text-color);
-      transition: background 0.3s, color 0.3s;
+      font-family: sans-serif;
+      background: var(--bg);
+      color: var(--fg);
     }
 
     header {
-      padding: 20px;
       text-align: center;
-      background: var(--card-bg);
+      padding: 1rem;
+      background: #222;
       position: sticky;
       top: 0;
-      z-index: 999;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      z-index: 10;
     }
 
-    h1 {
-      margin-bottom: 10px;
-      font-size: 26px;
-      color: var(--accent);
+    .toggle {
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
+      cursor: pointer;
     }
 
     .tabs {
@@ -48,205 +39,195 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 10px;
-      margin-top: 10px;
+      padding: 10px;
     }
 
-    .tab-btn {
-      padding: 10px 16px;
+    .tab {
       background: var(--accent);
-      color: var(--bg-color);
+      color: #000;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .tab.active {
+      background: #fff;
+      color: #000;
+    }
+
+    .search-bar {
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .search-bar input {
+      width: 100%;
+      max-width: 500px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 10px;
       border: none;
-      border-radius: 5px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    .tab-btn:hover {
-      opacity: 0.9;
-    }
-
-    .dark-toggle {
-      position: absolute;
-      right: 15px;
-      top: 20px;
-      background: none;
-      border: 2px solid var(--accent);
-      color: var(--accent);
-      border-radius: 20px;
-      padding: 5px 12px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    .section {
-      max-width: 1200px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-
-    .section h2 {
-      margin: 10px 0 20px;
-      font-size: 22px;
-      color: var(--accent);
-      text-align: center;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      padding: 1rem;
     }
 
-    .card {
-      background: var(--card-bg);
+    .movie {
+      background: #222;
       border-radius: 10px;
       overflow: hidden;
-      text-align: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-      transition: transform 0.3s;
-      cursor: pointer;
+      transition: transform 0.2s;
     }
 
-    .card:hover {
-      transform: scale(1.05);
+    .movie:hover {
+      transform: scale(1.03);
     }
 
-    .card img {
+    .movie img {
       width: 100%;
-      height: 225px;
-      object-fit: cover;
+      height: auto;
+      display: block;
     }
 
     .info {
-      padding: 10px;
-    }
-
-    .info h3 {
+      padding: 8px;
       font-size: 14px;
-      margin: 5px 0;
     }
 
-    .info p {
-      margin: 0;
+    .meta {
+      color: #aaa;
       font-size: 12px;
-      color: #ccc;
-    }
-
-    #playerContainer {
-      display: none;
-      padding: 40px 20px;
-      max-width: 1000px;
-      margin: auto;
     }
 
     @media (max-width: 600px) {
-      .card img {
-        height: 180px;
+      .movie img {
+        height: auto;
       }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>🎬 MARUYA MOVIE PLAYER</h1>
-    <button class="dark-toggle" onclick="toggleTheme()">🌗</button>
-    <div class="tabs">
-      <button class="tab-btn" onclick="scrollToSection('latest_movies')">📽 Latest Movies</button>
-      <button class="tab-btn" onclick="scrollToSection('latest_tv')">📺 Latest TV</button>
-      <button class="tab-btn" onclick="scrollToSection('popular_movies')">🔥 Popular Movies</button>
-      <button class="tab-btn" onclick="scrollToSection('popular_tv')">⭐ Popular TV</button>
-    </div>
-  </header>
+<header>
+  <h1>🎬 Maruya Movie Player</h1>
+  <div class="toggle" onclick="toggleDarkMode()">🌗</div>
+</header>
 
-  <div id="content"></div>
+<div class="search-bar">
+  <input id="search" type="text" placeholder="🔍 Search movies..." oninput="searchMovies(this.value)" />
+</div>
 
-  <div id="playerContainer">
-    <div style="position:relative; padding-bottom:56.25%; height:0;">
-      <iframe id="playerIframe"
-        style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;"
-        allowfullscreen
-        referrerpolicy="origin">
-      </iframe>
-    </div>
-  </div>
+<div class="tabs" id="tabs">
+  <!-- Category buttons auto-generated -->
+</div>
 
-  <script>
-    const API_KEY = "ba3885a53bc2c4f3c4b5bdc1237e69a0";
-    const categories = {
-      latest_movies: { title: "📽 Latest Movies", url: `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}&language=en-US&page=1` },
-      latest_tv: { title: "📺 Latest TV Shows", url: `https://api.themoviedb.org/3/tv/on_the_air?api_key=${API_KEY}&language=en-US&page=1` },
-      popular_movies: { title: "🔥 Popular Movies", url: `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=1` },
-      popular_tv: { title: "⭐ Popular TV Shows", url: `https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}&language=en-US&page=1` }
+<div id="results" class="grid"></div>
+
+<script>
+const API_KEY = 'ba3885a53bc2c4f3c4b5bdc1237e69a0';
+const categories = {
+  Trending: 'trending/movie/day',
+  'Top Rated': 'movie/top_rated',
+  'Now Playing': 'movie/now_playing',
+  'Popular': 'movie/popular',
+  'Upcoming': 'movie/upcoming'
+};
+
+let currentPage = 1;
+let currentCategory = 'Trending';
+let isFetching = false;
+let searchQuery = '';
+
+function toggleDarkMode() {
+  const root = document.documentElement;
+  if (root.style.getPropertyValue('--bg') === '#fff') {
+    root.style.setProperty('--bg', '#111');
+    root.style.setProperty('--fg', '#fff');
+  } else {
+    root.style.setProperty('--bg', '#fff');
+    root.style.setProperty('--fg', '#000');
+  }
+}
+
+function createTabs() {
+  const tabsEl = document.getElementById('tabs');
+  Object.keys(categories).forEach(cat => {
+    const btn = document.createElement('div');
+    btn.className = 'tab' + (cat === currentCategory ? ' active' : '');
+    btn.textContent = cat;
+    btn.onclick = () => {
+      currentCategory = cat;
+      currentPage = 1;
+      searchQuery = '';
+      document.getElementById('search').value = '';
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      loadMovies(true);
     };
+    tabsEl.appendChild(btn);
+  });
+}
 
-    function fetchCategory(key, title, url) {
-      fetch(url)
-        .then(res => res.json())
-        .then(data => renderSection(key, title, data.results));
-    }
+async function fetchMovies(url) {
+  isFetching = true;
+  const res = await fetch(url);
+  const json = await res.json();
+  isFetching = false;
+  return json.results;
+}
 
-    function renderSection(id, title, items) {
-      const section = document.createElement("div");
-      section.className = "section";
-      section.id = id;
-      section.innerHTML = `<h2>${title}</h2><div class="grid"></div>`;
-      const grid = section.querySelector(".grid");
+async function loadMovies(clear = false) {
+  if (isFetching) return;
+  const url = searchQuery
+    ? `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(searchQuery)}&page=${currentPage}`
+    : `https://api.themoviedb.org/3/${categories[currentCategory]}?api_key=${API_KEY}&page=${currentPage}`;
 
-      items.forEach(item => {
-        const tmdbId = item.id;
-        const name = item.title || item.name;
-        const poster = item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : "";
-        const year = (item.release_date || item.first_air_date || "").split("-")[0] || "N/A";
-        const rating = item.vote_average ? item.vote_average.toFixed(1) : "N/A";
-        const type = item.media_type || (item.first_air_date ? "tv" : "movie");
+  const movies = await fetchMovies(url);
+  const grid = document.getElementById('results');
 
-        if (!poster) return;
+  if (clear) grid.innerHTML = '';
 
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `
-          <img src="${poster}" alt="${name}">
-          <div class="info">
-            <h3>${name}</h3>
-            <p>⭐ ${rating} · 🗓️ ${year}</p>
-          </div>
-        `;
-        card.onclick = () => loadPlayer(tmdbId, type);
-        grid.appendChild(card);
-      });
-
-      document.getElementById("content").appendChild(section);
-    }
-
-    function loadPlayer(tmdbId, type) {
-      const container = document.getElementById("playerContainer");
-      const iframe = document.getElementById("playerIframe");
-      container.style.display = "block";
-      iframe.src = `https://player.videasy.net/${type}/${tmdbId}`;
-      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-    }
-
-    function scrollToSection(id) {
-      const section = document.getElementById(id);
-      if (section) {
-        section.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-
-    function toggleTheme() {
-      const current = document.documentElement.getAttribute("data-theme");
-      document.documentElement.setAttribute("data-theme", current === "light" ? "dark" : "light");
-    }
-
-    // Load all categories
-    window.onload = () => {
-      Object.entries(categories).forEach(([key, val]) => {
-        fetchCategory(key, val.title, val.url);
-      });
+  for (const movie of movies) {
+    const div = document.createElement('div');
+    div.className = 'movie';
+    div.innerHTML = `
+      <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+      <div class="info">
+        ${movie.title}
+        <div class="meta">⭐ ${movie.vote_average} • 🗓️ ${movie.release_date?.split('-')[0]}</div>
+      </div>
+    `;
+    div.onclick = () => {
+      const id = movie.id;
+      window.open(`https://player.videasy.net/movie/${id}`, '_blank');
     };
-  </script>
+    grid.appendChild(div);
+  }
+
+  currentPage++;
+}
+
+function searchMovies(query) {
+  currentPage = 1;
+  searchQuery = query;
+  loadMovies(true);
+}
+
+window.addEventListener('scroll', () => {
+  if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 300) {
+    loadMovies();
+  }
+});
+
+createTabs();
+loadMovies();
+</script>
+
 </body>
 </html>
-
-
