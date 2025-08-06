@@ -2,124 +2,146 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TMDB Browser + VIP Player</title>
   <style>
-    * {
-      box-sizing: border-box;
+    :root {
+      --bg-color: #0f2027;
+      --card-bg: #1c1c1c;
+      --text-color: #f0f0f0;
+      --accent: #34cfeb;
+    }
+
+    [data-theme="light"] {
+      --bg-color: #ffffff;
+      --card-bg: #f0f0f0;
+      --text-color: #111;
+      --accent: #007acc;
     }
 
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: #f0f0f0;
       margin: 0;
-      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      transition: background 0.3s, color 0.3s;
     }
 
     header {
+      padding: 20px;
+      text-align: center;
+      background: var(--card-bg);
       position: sticky;
       top: 0;
-      background: rgba(28, 28, 28, 0.95);
-      padding: 20px 15px;
-      text-align: center;
       z-index: 999;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
     }
 
     h1 {
       margin-bottom: 10px;
-      font-size: 28px;
-      color: #34cfeb;
+      font-size: 26px;
+      color: var(--accent);
     }
 
-    select, input, button {
-      padding: 10px;
-      font-size: 16px;
-      margin: 5px;
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .tab-btn {
+      padding: 10px 16px;
+      background: var(--accent);
+      color: var(--bg-color);
       border: none;
-      border-radius: 6px;
-    }
-
-    select, input {
-      background: #2c2c2c;
-      color: #f0f0f0;
-    }
-
-    input:focus {
-      outline: none;
-      border: 1px solid #34cfeb;
-    }
-
-    button {
-      background: #34cfeb;
-      color: #111;
+      border-radius: 5px;
+      font-size: 14px;
       cursor: pointer;
-      transition: background 0.3s ease;
     }
 
-    button:hover {
-      background: #26aab8;
+    .tab-btn:hover {
+      opacity: 0.9;
     }
 
-    #results {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 20px;
-      padding: 30px 20px;
+    .dark-toggle {
+      position: absolute;
+      right: 15px;
+      top: 20px;
+      background: none;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .section {
       max-width: 1200px;
-      margin: auto;
+      margin: 40px auto;
+      padding: 0 20px;
     }
 
-    .result {
-      background: #222;
-      border-radius: 12px;
+    .section h2 {
+      margin: 10px 0 20px;
+      font-size: 22px;
+      color: var(--accent);
+      text-align: center;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 10px;
       overflow: hidden;
       text-align: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      transition: transform 0.3s;
       cursor: pointer;
     }
 
-    .result:hover {
+    .card:hover {
       transform: scale(1.05);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
     }
 
-    .result img {
+    .card img {
       width: 100%;
-      height: 230px;
+      height: 225px;
       object-fit: cover;
     }
 
-    .result-title {
+    .info {
       padding: 10px;
-      font-size: 15px;
-      color: #fff;
     }
 
-    #loadMoreBtn {
-      display: none;
-      background: #34cfeb;
-      color: #111;
-      border: none;
-      cursor: pointer;
-      border-radius: 6px;
-      padding: 12px 25px;
-      margin: 20px auto;
-      font-size: 16px;
+    .info h3 {
+      font-size: 14px;
+      margin: 5px 0;
+    }
+
+    .info p {
+      margin: 0;
+      font-size: 12px;
+      color: #ccc;
     }
 
     #playerContainer {
       display: none;
-      padding: 30px 20px;
+      padding: 40px 20px;
       max-width: 1000px;
       margin: auto;
     }
 
     @media (max-width: 600px) {
-      .result img {
-        height: 200px;
+      .card img {
+        height: 180px;
       }
     }
   </style>
@@ -127,110 +149,74 @@
 <body>
 
   <header>
-    <h1>🎬 TMDB Browser + VIP Player</h1>
-    <div>
-      <select id="category">
-        <option value="">📂 Select Category</option>
-        <option value="latest_movies">📽 Latest Movies</option>
-        <option value="latest_tv">📺 Latest TV Shows</option>
-        <option value="popular_movies">🔥 Popular Movies</option>
-        <option value="popular_tv">⭐ Popular TV Shows</option>
-      </select>
-      <input type="text" id="searchBox" placeholder="🔍 Search movie or show..." />
+    <h1>🎬 TMDB VIP Player</h1>
+    <button class="dark-toggle" onclick="toggleTheme()">🌗</button>
+    <div class="tabs">
+      <button class="tab-btn" onclick="scrollToSection('latest_movies')">📽 Latest Movies</button>
+      <button class="tab-btn" onclick="scrollToSection('latest_tv')">📺 Latest TV</button>
+      <button class="tab-btn" onclick="scrollToSection('popular_movies')">🔥 Popular Movies</button>
+      <button class="tab-btn" onclick="scrollToSection('popular_tv')">⭐ Popular TV</button>
     </div>
   </header>
 
-  <div id="results"></div>
-
-  <div style="text-align: center;">
-    <button id="loadMoreBtn">⬇️ Load More</button>
-  </div>
+  <div id="content"></div>
 
   <div id="playerContainer">
-    <div style="position: relative; padding-bottom: 56.25%; height: 0;">
+    <div style="position:relative; padding-bottom:56.25%; height:0;">
       <iframe id="playerIframe"
-              src=""
-              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
-              allowfullscreen
-              referrerpolicy="origin">
+        style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;"
+        allowfullscreen
+        referrerpolicy="origin">
       </iframe>
     </div>
   </div>
 
   <script>
     const API_KEY = "ba3885a53bc2c4f3c4b5bdc1237e69a0";
-    let currentCategory = "";
-    let currentPage = 1;
-    let lastQuery = "";
-    let searchMode = false;
+    const categories = {
+      latest_movies: { title: "📽 Latest Movies", url: `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}&language=en-US&page=1` },
+      latest_tv: { title: "📺 Latest TV Shows", url: `https://api.themoviedb.org/3/tv/on_the_air?api_key=${API_KEY}&language=en-US&page=1` },
+      popular_movies: { title: "🔥 Popular Movies", url: `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=1` },
+      popular_tv: { title: "⭐ Popular TV Shows", url: `https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}&language=en-US&page=1` }
+    };
 
-    document.getElementById("searchBox").addEventListener("keyup", function(e) {
-      if (e.key === "Enter") {
-        searchMode = true;
-        lastQuery = this.value;
-        currentPage = 1;
-        searchTMDB(lastQuery, true);
-      }
-    });
-
-    document.getElementById("category").addEventListener("change", function() {
-      if (this.value) {
-        searchMode = false;
-        currentCategory = this.value;
-        currentPage = 1;
-        loadCategory(currentCategory, true);
-      }
-    });
-
-    document.getElementById("loadMoreBtn").addEventListener("click", function() {
-      currentPage++;
-      if (searchMode) {
-        searchTMDB(lastQuery, false);
-      } else {
-        loadCategory(currentCategory, false);
-      }
-    });
-
-    function searchTMDB(query, clear) {
-      fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${currentPage}`)
-        .then(res => res.json())
-        .then(data => renderResults(data.results, clear));
-    }
-
-    function loadCategory(cat, clear) {
-      let url = "";
-      if (cat === "latest_movies") url = `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}&language=en-US&page=${currentPage}`;
-      if (cat === "latest_tv") url = `https://api.themoviedb.org/3/tv/on_the_air?api_key=${API_KEY}&language=en-US&page=${currentPage}`;
-      if (cat === "popular_movies") url = `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=${currentPage}`;
-      if (cat === "popular_tv") url = `https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}&language=en-US&page=${currentPage}`;
-
+    function fetchCategory(key, title, url) {
       fetch(url)
         .then(res => res.json())
-        .then(data => renderResults(data.results, clear));
+        .then(data => renderSection(key, title, data.results));
     }
 
-    function renderResults(items, clear) {
-      const resultsDiv = document.getElementById("results");
-      if (clear) resultsDiv.innerHTML = "";
+    function renderSection(id, title, items) {
+      const section = document.createElement("div");
+      section.className = "section";
+      section.id = id;
+      section.innerHTML = `<h2>${title}</h2><div class="grid"></div>`;
+      const grid = section.querySelector(".grid");
+
       items.forEach(item => {
         const tmdbId = item.id;
-        const title = item.title || item.name;
+        const name = item.title || item.name;
         const poster = item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : "";
-        const mediaType = item.media_type || (item.first_air_date ? "tv" : "movie");
+        const year = (item.release_date || item.first_air_date || "").split("-")[0] || "N/A";
+        const rating = item.vote_average ? item.vote_average.toFixed(1) : "N/A";
+        const type = item.media_type || (item.first_air_date ? "tv" : "movie");
 
         if (!poster) return;
 
-        const div = document.createElement("div");
-        div.className = "result";
-        div.innerHTML = `
-          <img src="${poster}" alt="${title}">
-          <div class="result-title">${title}</div>
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <img src="${poster}" alt="${name}">
+          <div class="info">
+            <h3>${name}</h3>
+            <p>⭐ ${rating} · 🗓️ ${year}</p>
+          </div>
         `;
-        div.onclick = () => loadPlayer(tmdbId, mediaType);
-        resultsDiv.appendChild(div);
+        card.onclick = () => loadPlayer(tmdbId, type);
+        grid.appendChild(card);
       });
 
-      document.getElementById("loadMoreBtn").style.display = items.length > 0 ? "inline-block" : "none";
+      document.getElementById("content").appendChild(section);
     }
 
     function loadPlayer(tmdbId, type) {
@@ -241,10 +227,23 @@
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     }
 
+    function scrollToSection(id) {
+      const section = document.getElementById(id);
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute("data-theme");
+      document.documentElement.setAttribute("data-theme", current === "light" ? "dark" : "light");
+    }
+
+    // Load all categories
     window.onload = () => {
-      currentCategory = "latest_movies";
-      document.getElementById("category").value = "latest_movies";
-      loadCategory(currentCategory, true);
+      Object.entries(categories).forEach(([key, val]) => {
+        fetchCategory(key, val.title, val.url);
+      });
     };
   </script>
 </body>
