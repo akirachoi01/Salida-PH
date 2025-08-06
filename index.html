@@ -91,7 +91,7 @@
     async function playMovie(movieId) {
       currentMovieId = movieId;
       // Ideally fetch video stream endpoint
-      document.getElementById('player').src = `https://player.videasy.net/tmdb/${movieId}`;
+      document.getElementById('player').src = `https://player.videasy.net/${type}/${movieId}`;
     }
 
     function previewHover(movieId, card) {
@@ -122,3 +122,4 @@
   </script>
 </body>
 </html>
+
