@@ -57,6 +57,25 @@
     }
   </style>
 </head>
+  <header style="display: flex; align-items: center; justify-content: space-between; background: #1a1a1a; padding: 10px 20px; color: white;">
+  <!-- Left side: Logo and title -->
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <img src="https://i.imgur.com/cmOdVwr.png" alt="Logo" style="height: 40px;">
+    <h1 style="margin: 0; font-size: 20px;">Maruya Movie Player</h1>
+  </div>
+
+  <!-- Center: Search -->
+  <div style="flex-grow: 1; margin: 0 20px;">
+    <input type="text" placeholder="Search movies or shows..." 
+           style="width: 100%; padding: 8px 12px; border-radius: 20px; border: none; background: #333; color: white;">
+  </div>
+
+  <!-- Right: Nav -->
+  <nav>
+    <a href="#" style="color: white; margin-left: 15px; text-decoration: none;">Categories</a>
+  </nav>
+</header>
+
 <body>
   <div class="player-layout">
     <iframe id="main-player" src="https://player.videasy.net/movie/872585" allowfullscreen></iframe>
@@ -104,3 +123,4 @@
   </script>
 </body>
 </html>
+
