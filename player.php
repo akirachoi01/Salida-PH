@@ -1,5 +1,4 @@
 <?php
-// Your player settings from before
 $player_font = "Poppins";
 $player_bg_color = "000000";
 $player_font_color = "ffffff";
@@ -8,71 +7,64 @@ $player_secondary_color = "6900e0";
 $player_loader = 1;
 $preferred_server = 1;
 $player_sources_toggle_type = 2;
-
-// Add this line to toggle ad-hiding
 $player_ads_toggle = 1;
 
-// The video and TMDB details from the URL
 $video_id = $_GET['video_id'] ?? '';
 $is_tmdb = $_GET['tmdb'] ?? 0;
 $season = $_GET['season'] ?? 0;
 $episode = $_GET['episode'] ?? 0;
 
 if (empty($video_id)) {
-    die("Error: Missing video_id.");
+  die("Error: Missing video_id.");
 }
 
-// Check if the content is a movie or a TV show
 $is_tv = ($season > 0 && $episode > 0);
 
-// Dynamically define server sources and their respective URLs
 $servers = [
-    'vidsrc' => [
-        'name' => 'Vidsrc',
-        'url' => $is_tv ? "https://vidsrc.net/embed/tv/{$video_id}/{$season}/{$episode}" : "https://vidsrc.net/embed/movie/{$video_id}",
-    ],
-    'vipstream' => [
-        'name' => 'Vipstream',
-        'url' => $is_tv ? "https://vipstream.tv/embed-2/tv?tmdb={$video_id}&season={$season}&episode={$episode}" : "https://vipstream.tv/embed-2/movie?tmdb={$video_id}",
-    ],
-    // Add more servers with correct conditional URLs here
+  'vidsrc' => [
+    'name' => 'Vidsrc',
+    'url' => $is_tv ? "https://vidsrc.net/embed/tv/{$video_id}/{$season}/{$episode}" : "https://vidsrc.net/embed/movie/{$video_id}",
+  ],
+  'vipstream' => [
+    'name' => 'Vipstream',
+    'url' => $is_tv ? "https://vipstream.tv/embed-2/tv?tmdb={$video_id}&season={$season}&episode={$episode}" : "https://vipstream.tv/embed-2/movie?tmdb={$video_id}",
+  ],
+  // Add more servers here if needed
 ];
 
-// Set a default server URL
 $default_server_url = $servers['vidsrc']['url'];
 
-// Output the full HTML page with the server dropdown and player iframe
 echo "<!DOCTYPE html>
 <html>
 <head>
-    <meta charset='UTF-8'>
-    <title>Maruya Player</title>
-    <style>
-        body { margin:0; background:#000; color: #fff; font-family: '{$player_font}', sans-serif; }
-        .server-selection { padding: 10px; background: #222; }
-        select { padding: 8px; font-size: 16px; background: #333; color: #fff; border: none; border-radius: 4px; }
-        iframe { border: none; width: 100%; height: 100vh; }
-    </style>
+  <meta charset='UTF-8'>
+  <title>Maruya Player</title>
+  <style>
+    body { margin:0; background:#000; color: #fff; font-family: '{$player_font}', sans-serif; }
+    .server-selection { padding: 10px; background: #222; }
+    select { padding: 8px; font-size: 16px; background: #333; color: #fff; border: none; border-radius: 4px; }
+    iframe { border: none; width: 100%; height: 100vh; }
+  </style>
 </head>
 <body>
-    <div class='server-selection'>
-        <label for='server-select'>Select Server:</label>
-        <select id='server-select' onchange='changeServer()'>";
+  <div class='server-selection'>
+    <label for='server-select'>Select Server:</label>
+    <select id='server-select' onchange='changeServer()'>";
 foreach ($servers as $key => $server) {
-    $selected = ($key === 'vidsrc') ? 'selected' : '';
-    echo "<option value='{$server['url']}' {$selected}>{$server['name']}</option>";
+  $selected = ($key === 'vidsrc') ? 'selected' : '';
+  echo "<option value='{$server['url']}' {$selected}>{$server['name']}</option>";
 }
 echo "</select>
-    </div>
-    <iframe id='player_iframe' src='{$default_server_url}' referrerpolicy='origin'></iframe>
+  </div>
+  <iframe id='player_iframe' src='{$default_server_url}' referrerpolicy='origin'></iframe>
 
-    <script>
-        function changeServer() {
-            const selectElement = document.getElementById('server-select');
-            const iframeElement = document.getElementById('player_iframe');
-            iframeElement.src = selectElement.value;
-        }
-    </script>
+  <script>
+    function changeServer() {
+      const selectElement = document.getElementById('server-select');
+      const iframeElement = document.getElementById('player_iframe');
+      iframeElement.src = selectElement.value;
+    }
+  </script>
 </body>
 </html>";
 ?>
