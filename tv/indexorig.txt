@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ṁ̷̡̿͛Ä̤́̃͑̕R̵̔U̶̢̎̍Y̵̶̮̓Ą̼̋̎T̴̘̪̪̍V̷̦́̐͜O̴͎̔F̴̛̩̭̅F̶̈́I̷̝C̶̓I̴̭̤͜A̶̠Ļ̶̏</title>
+  <link rel="icon" type="image/png" href="https://s14.gifyu.com/images/bKGoY.png">
+  <script src="https://jwplayer.salidaph.online/player/v/8.36.6/jwplayer.js"></script>
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    /* Added typewriter styles */
+    .typewriter {
+      font-size: 16px;
+      font-family: monospace;
+      white-space: pre;
+      border-right: 2px solid white;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Loading Spinner -->
+<div id="loadingScreen">
+  <div class="spinner"></div>
+  <div class="loading-text">
+    Ṁ̷̡̿͛Ä̤́̃͑̕R̵̔U̶̢̎̍Y̵̶̮̓Ą̼̋̎T̴̘̪̪̍V̷̦́̐͜O̴͎̔F̴̛̩̭̅F̶̈́I̷̝C̶̓I̴̭̤͜A̶̠Ļ̶̏
+  </div>
+  <div class="typewriter" id="typewriter"></div>
+</div>
+
+<!-- Popup Overlay -->
+<div id="popupOverlay" class="active">
+  <div class="popupBox">
+    <h2>Welcome to Ṁ̷̡̿͛Ä̤́̃͑̕R̵̔U̶̢̎̍Y̵̶̮̓Ą̼̋̎T̴̘̪̪̍V̷̦́̐͜</h2>
+    <p>Cute ko, Ikaw Dili.</p>
+    <button id="closePopupBtn">Ok!</button>
+  </div>
+</div>
+ 
+<!-- Main Container -->
+<div class="container">
+  <div class="video-container">
+      <div id="player"></div>
+    <div id="fallbackMessage">Select a channel to start watching!</div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="top-controls">
+
+     <div class="channel-header">
+  <img src="https://s14.gifyu.com/images/bKGoY.png" alt="MaruyaTV Logo" class="channel-logo" />
+  <div class="channel-text-group">
+    <div class="channel-text">MARUYATV</div>
+    <div id="clock" class="clock-text"></div>
+  </div>
+</div>
+      <div class="credits">
+        Made by 
+        <a href="#">akirachoi01</a>
+      </div>
+      <div id="channelCount"></div>
+      <select id="categoryFilter" onchange="setupChannelList()">
+        <option value="all">All Categories</option>
+      </select>
+      <input class="search-input" type="search" placeholder="Search..." oninput="setupChannelList()" id="searchInput" />
+    </div>
+    <div class="list-container">
+      <ul class="channel-list" id="channelList"></ul>
+    </div>
+  </aside>
+</div>
+
+<!-- Scripts -->
+<script src="channels.js"></script>
+<script src="st.js"></script>
+
+<!-- Inline: Handle popup button -->
+<script>
+  function closePopup() {
+    const popup = document.getElementById('popupOverlay');
+    if (popup) popup.style.display = 'none';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const closeBtn = document.getElementById('closePopupBtn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closePopup);
+    }
+
+    // Typewriter effect
+    const text = "FROM REUSORA TV";
+    const typewriter = document.getElementById('typewriter');
+    let index = 0;
+    function type() {
+      if (index < text.length) {
+        typewriter.textContent += text.charAt(index);
+        index++;
+        setTimeout(type, 100);
+      } else {
+        typewriter.style.borderRight = 'none';
+      }
+    }
+    type();
+  });
+
+  // Force-hide loading screen after 5 seconds
+  setTimeout(() => {
+    const loading = document.getElementById("loadingScreen");
+    if (loading) loading.style.display = "none";
+  }, 5000);
+</script>
+<script>
+  fetch('/api/jwplayer')
+    .then(res => res.json())
+    .then(data => {
+      jwplayer.key = data.key;
+    });
+</script>
+
+</body>
+</html>
