@@ -1,126 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TMDB + VIP Player</title>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maruya Movie Player</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #111;
-      color: white;
-    }
-    .player-layout {
-      display: flex;
-      flex-direction: row;
-      height: 100vh;
-      overflow: hidden;
-    }
-    #main-player {
-      width: 70%;
-      border: none;
-    }
-    .recommendation-grid {
-      width: 30%;
-      background-color: #1a1a1a;
-      overflow-y: auto;
-      padding: 10px;
-    }
-    .recommendation-card {
-      display: flex;
-      background-color: #222;
-      margin-bottom: 10px;
-      padding: 8px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    .recommendation-card:hover {
-      background-color: #333;
-    }
-    .recommendation-card img {
-      width: 80px;
-      border-radius: 4px;
-    }
-    .info {
-      margin-left: 10px;
-    }
-    .info h4 {
-      margin: 0;
-      font-size: 16px;
-    }
-    .info p {
-      margin: 5px 0 0;
-      font-size: 14px;
-      color: #ccc;
-    }
+    body { margin:0; font-family: Arial, sans-serif; background:#121212; color:#fff; }
+    header { display:flex; align-items:center; padding:10px 20px; background:#1f1f1f; }
+    header img { height:40px; margin-right:10px; }
+    header h1 { margin:0; font-size:20px; }
+    header .search { flex-grow:1; margin:0 20px; }
+    header .search input { width:100%; max-width:400px; padding:8px 12px; border-radius:20px; border:none; background:#333; color:#fff; }
+    header nav a { color:#fff; margin-left:15px; text-decoration:none; }
+    nav#categoryTabs { display:flex; overflow-x:auto; background:#1c1c1c; }
+    nav#categoryTabs button { padding:12px 16px; background:none; border:none; color:#fff; cursor:pointer; }
+    nav#categoryTabs button:hover, nav#categoryTabs button.active { background:#333; }
+    .main { display:flex; height:calc(100vh - 100px); overflow:hidden; }
+    #playerContainer { flex:2; background:#000; }
+    #player { width:100%; height:100%; border:none; }
+    #recommendationList { flex:1; overflow-y:auto; background:#181818; padding:16px; }
+    .card { display:flex; margin-bottom:12px; cursor:pointer; position:relative; }
+    .card img { width:120px; height:70px; object-fit:cover; border-radius:4px; }
+    .card .info { margin-left:8px; font-size:14px; }
+    .card .info .title { font-weight:bold; color:#fff; }
+    .card .info .meta { color:#aaa; font-size:12px; }
+    @media (max-width:768px) { .main { flex-direction:column; } #recommendationList { height:200px; } }
   </style>
 </head>
-  <header style="display: flex; align-items: center; justify-content: space-between; background: #1a1a1a; padding: 10px 20px; color: white;">
-  <!-- Left side: Logo and title -->
-  <div style="display: flex; align-items: center; gap: 10px;">
-    <img src="https://i.imgur.com/cmOdVwr.png" alt="Logo" style="height: 40px;">
-    <h1 style="margin: 0; font-size: 20px;">Maruya Movie Player</h1>
-  </div>
-
-  <!-- Center: Search -->
-  <div style="flex-grow: 1; margin: 0 20px;">
-    <input type="text" placeholder="Search movies or shows..." 
-           style="width: 100%; padding: 8px 12px; border-radius: 20px; border: none; background: #333; color: white;">
-  </div>
-
-  <!-- Right: Nav -->
-  <nav>
-    <a href="#" style="color: white; margin-left: 15px; text-decoration: none;">Categories</a>
-  </nav>
-</header>
-
 <body>
-  <div class="player-layout">
-    <iframe id="main-player" src="https://player.videasy.net/movie/872585" allowfullscreen></iframe>
-    <div id="recommendations" class="recommendation-grid"></div>
+  <header>
+    <div style="display:flex; align-items:center;">
+      <img src="https://i.imgur.com/cmOdVwr.png" alt="Logo">
+      <h1>Maruya Movie Player</h1>
+    </div>
+    <div class="search">
+      <input id="searchInput" placeholder="🔍 Search movies or shows…">
+    </div>
+    <nav>
+      <a href="#">Categories</a>
+    </nav>
+  </header>
+
+  <nav id="categoryTabs"></nav>
+
+  <div class="main">
+    <div id="playerContainer"><iframe id="player" src="" allowfullscreen></iframe></div>
+    <aside id="recommendationList"><h2>Recommended</h2></aside>
   </div>
 
   <script>
-    const apiKey = 'ba3885a53bc2c4f3c4b5bdc1237e69a0';
-    const player = document.getElementById('main-player');
-    const container = document.getElementById('recommendations');
+    const API_KEY = 'ba3885a53bc2c4f3c4b5bdc1237e69a0';
+    const IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
+    const categories = [
+      { id: 'trending', label: 'Trending' },
+      { id: 'popular', label: 'Popular' },
+      { id: 'top_rated', label: 'Top Rated' },
+      { id: 'upcoming', label: 'Upcoming' }
+    ];
+    const tabsEl = document.getElementById('categoryTabs');
+    const recList = document.getElementById('recommendationList');
+    const player = document.getElementById('player');
+    const searchInput = document.getElementById('searchInput');
 
-    fetch(`https://api.themoviedb.org/3/trending/all/week?api_key=${apiKey}`)
-      .then(res => res.json())
-      .then(data => renderCards(data.results));
+    categories.forEach((cat, idx) => {
+      const btn = document.createElement('button');
+      btn.textContent = cat.label;
+      btn.onclick = () => loadCategory(cat.id, idx);
+      tabsEl.appendChild(btn);
+    });
 
-    function renderCards(items) {
-      container.innerHTML = '';
+    async function loadCategory(catId, idx) {
+      const path = catId === 'trending' ? 'trending/all/week' : `movie/${catId}`;
+      const res = await fetch(`https://api.themoviedb.org/3/${path}?api_key=${API_KEY}&language=en-US`);
+      const data = await res.json();
+      showRecommendations(data.results);
+      document.querySelectorAll('#categoryTabs button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#categoryTabs button')[idx].classList.add('active');
+    }
 
-      items.forEach(item => {
-        const isMovie = item.media_type === 'movie';
-        const id = item.id;
-        const title = item.title || item.name || 'Untitled';
-        const year = (item.release_date || item.first_air_date || '').split('-')[0];
-        const vote = item.vote_average || 0;
-
+    function showRecommendations(arr) {
+      recList.innerHTML = '<h2>Recommended</h2>';
+      arr.forEach(item => {
+        const isMovie = item.media_type !== 'tv';
         const card = document.createElement('div');
-        card.className = 'recommendation-card';
+        card.className = 'card';
         card.innerHTML = `
-          <img src="https://image.tmdb.org/t/p/w300${item.poster_path}" alt="${title}">
+          <img src="${IMAGE_BASE}${item.backdrop_path||item.poster_path}" alt="">
           <div class="info">
-            <h4>${title}</h4>
-            <p>${year} • ⭐ ${vote}</p>
-          </div>
-        `;
-
+            <div class="title">${item.title||item.name}</div>
+            <div class="meta">⭐ ${item.vote_average.toFixed(1)} • ${(item.release_date||item.first_air_date||'').split('-')[0]}</div>
+          </div>`;
         card.onclick = () => {
           player.src = isMovie
-            ? `https://player.videasy.net/movie/${id}`
-            : `https://player.videasy.net/tv/${id}/1/1?autoplayNextEpisode=true`;
+            ? `https://player.videasy.net/movie/${item.id}`
+            : `https://player.videasy.net/tv/${item.id}/1/1?autoplayNextEpisode=true`;
         };
-
-        container.appendChild(card);
+        recList.appendChild(card);
       });
     }
+
+    searchInput.addEventListener('input', async () => {
+      const q = searchInput.value.trim();
+      if (q.length < 2) return loadCategory('trending', 0);
+      const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(q)}&include_adult=false`);
+      const data = await res.json();
+      showRecommendations(data.results);
+    });
+
+    // Initial load
+    loadCategory('trending', 0);
   </script>
 </body>
 </html>
-
