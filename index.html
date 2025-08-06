@@ -1,216 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TMDB Movie Player</title>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TMDB VIP Player</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #121212;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-    }
-
-    header {
-      background-color: #1f1f1f;
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 20px;
-    }
-
-    #searchInput {
-      background: #333;
-      color: white;
-      border: none;
-      padding: 8px;
-      border-radius: 4px;
-      width: 100%;
-      max-width: 400px;
-    }
-
-    #categoryTabs {
-      background-color: #1c1c1c;
-      display: flex;
-      overflow-x: auto;
-      white-space: nowrap;
-    }
-
-    #categoryTabs button {
-      background: none;
-      border: none;
-      padding: 12px 16px;
-      color: white;
-      cursor: pointer;
-    }
-
-    #categoryTabs button:hover {
-      background: #333;
-    }
-
-    main {
-      display: flex;
-    }
-
-    #movieList {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 16px;
-      padding: 16px;
-      flex: 1;
-    }
-
-    .movieCard {
-      background: #1c1c1c;
-      border-radius: 8px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .movieCard img {
-      width: 100%;
-      display: block;
-    }
-
-    .movieInfo {
-      padding: 10px;
-    }
-
-    .movieInfo h3 {
-      margin: 0;
-      font-size: 16px;
-    }
-
-    .movieInfo small {
-      display: block;
-      color: #aaa;
-      margin-top: 4px;
-    }
-
-    #player {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 200px;
-      background: #000;
-      z-index: 999;
-      display: none;
-    }
-
-    @media screen and (max-width: 768px) {
-      header h1 {
-        font-size: 16px;
-      }
-
-      .movieInfo h3 {
-        font-size: 14px;
-      }
-
-      #player {
-        height: 160px;
-      }
-    }
+    body { margin:0; font-family: Arial, sans-serif; background:#121212; color:#fff; }
+    header{padding:12px 16px; background:#1f1f1f; display:flex; align-items:center; justify-content:space-between;}
+    #searchInput{background:#333;color:#fff;border:none;padding:8px 12px;border-radius:4px;width:100%;max-width:400px;}
+    nav#categoryTabs{background:#1c1c1c; overflow-x:auto; display:flex;}
+    nav#categoryTabs button{padding:12px 16px;background:none;border:none;color:#fff;cursor:pointer;}
+    nav#categoryTabs button:hover, nav#categoryTabs button.active{background:#333;}
+    .main { display:flex; height:calc(100vh - 50px); overflow:hidden; }
+    #playerContainer {flex:2; background:#000; position:relative;}
+    #player {width:100%; height:100%;}
+    #recommendationList {flex:1; overflow-y:auto; background:#181818; padding:16px;}
+    .card {display:flex; margin-bottom:12px; cursor:pointer; position:relative;}
+    .card img{width:120px; height:70px; object-fit:cover; border-radius:4px;}
+    .card .info{margin-left:8px; font-size:14px;}
+    .card .info .title{font-weight:bold;color:#fff;}
+    .card .info .meta{color:#aaa;font-size:12px;}
+    @media (max-width:768px){ .main{flex-direction:column;} #recommendationList{height:200px;} }
   </style>
 </head>
 <body>
   <header>
-    <h1>TMDB PLAYER BY: MARUYA</h1>
-    <input type="text" id="searchInput" placeholder="Search movies...">
+    <h1>TMDB VIP Player</h1>
+    <input id="searchInput" placeholder="🔍 Search movies…">
   </header>
-  <nav id="categoryTabs">
-    <button onclick="loadCategory('trending')">Trending</button>
-    <button onclick="loadCategory('popular')">Popular</button>
-    <button onclick="loadCategory('top_rated')">Top Rated</button>
-    <button onclick="loadCategory('upcoming')">Upcoming</button>
-  </nav>
-  <main>
-    <section id="movieList"></section>
-  </main>
-  <div id="player">
-    <!-- Floating player iframe/video element -->
+  <nav id="categoryTabs"></nav>
+
+  <div class="main">
+    <div id="playerContainer">
+      <iframe id="player" src="" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <aside id="recommendationList">
+      <h2>Recommended</h2>
+      <!-- cards injected here -->
+    </aside>
   </div>
 
   <script>
-    const movieList = document.getElementById('movieList');
-    const searchInput = document.getElementById('searchInput');
-    let currentPage = 1;
-    let isFetching = false;
-
     const API_KEY = 'ba3885a53bc2c4f3c4b5bdc1237e69a0';
-    let currentCategory = 'trending';
+    const IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
+    const categories = [
+      { id: 'trending', label: 'Trending' },
+      { id: 'popular', label: 'Popular' },
+      { id: 'top_rated', label: 'Top Rated' },
+      { id: 'upcoming', label: 'Upcoming' }
+    ];
+    let currentMovieId = null;
 
-    function createMovieCard(movie) {
-      const div = document.createElement('div');
-      div.className = 'movieCard';
-      div.innerHTML = `
-        <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" />
-        <div class="movieInfo">
-          <h3>${movie.title || movie.name}</h3>
-          <small>${movie.release_date?.split('-')[0] || ''} • ⭐ ${movie.vote_average}</small>
-        </div>
-      `;
-      div.onclick = () => openPlayer(movie);
-      return div;
-    }
+    const tabsEl = document.getElementById('categoryTabs');
+    const recList = document.getElementById('recommendationList');
+    const searchInput = document.getElementById('searchInput');
 
-    function openPlayer(movie) {
-      const player = document.getElementById('player');
-      player.innerHTML = `<iframe src="https://player.videasy.net/tmdb/${movie.id}" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>`;
-      player.style.display = 'block';
-    }
-
-    async function fetchMovies(category = 'trending') {
-      if (isFetching) return;
-      isFetching = true;
-      const url = `https://api.themoviedb.org/3/${category === 'trending' ? 'trending/all/week' : 'movie/' + category}?api_key=${API_KEY}&page=${currentPage}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      data.results.forEach(movie => {
-        movieList.appendChild(createMovieCard(movie));
-      });
-      currentPage++;
-      isFetching = false;
-    }
-
-    function loadCategory(category) {
-      currentCategory = category;
-      currentPage = 1;
-      movieList.innerHTML = '';
-      fetchMovies(category);
-    }
-
-    window.addEventListener('scroll', () => {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
-        fetchMovies(currentCategory);
-      }
+    categories.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.textContent = cat.label;
+      btn.onclick = () => loadCategory(cat.id);
+      tabsEl.appendChild(btn);
     });
 
-    searchInput.addEventListener('input', async (e) => {
-      const query = e.target.value.trim();
-      movieList.innerHTML = '';
-      currentPage = 1;
-      if (!query) {
-        fetchMovies(currentCategory);
-        return;
-      }
-      const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`);
+    async function loadCategory(catId) {
+      const res = await fetch(`https://api.themoviedb.org/3/${catId=='trending'?'trending/movie/week':'movie/'+catId}?api_key=${API_KEY}&language=en-US`);
       const data = await res.json();
-      data.results.forEach(movie => {
-        movieList.appendChild(createMovieCard(movie));
+      showRecommendations(data.results);
+    }
+
+    function showRecommendations(arr) {
+      recList.innerHTML = '<h2>Recommended</h2>';
+      arr.forEach(movie => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${IMAGE_BASE}${movie.backdrop_path||movie.poster_path}" alt="">
+          <div class="info">
+            <div class="title">${movie.title||movie.name}</div>
+            <div class="meta">⭐${movie.vote_average.toFixed(1)} • ${(movie.release_date||movie.first_air_date||'').split('-')[0]}</div>
+          </div>`;
+        card.onclick = () => playMovie(movie.id);
+        card.onmouseenter = () => previewHover(movie.id, card);
+        card.onmouseleave = () => removePreview(card);
+        recList.appendChild(card);
       });
+      // mark first tab active
+      document.querySelectorAll('#categoryTabs button').forEach(b=>b.classList.remove('active'));
+      document.querySelector(`#categoryTabs button:nth-child(${categories.findIndex(c=>c.id==arr[0]?1:0)+1})`).classList.add('active');
+    }
+
+    async function playMovie(movieId) {
+      currentMovieId = movieId;
+      // Ideally fetch video stream endpoint
+      document.getElementById('player').src = `https://player.videasy.net/tmdb/${movieId}`;
+    }
+
+    function previewHover(movieId, card) {
+      const prev = document.createElement('video');
+      prev.src = `https://player.videasy.net/preview/${movieId}`; // your preview source
+      prev.muted = true; prev.autoplay = true; prev.loop = true;
+      prev.style.position = 'absolute';
+      prev.style.top = '0'; prev.style.left = '0';
+      prev.style.width = '100%'; prev.style.height = '100%';
+      card.appendChild(prev);
+    }
+
+    function removePreview(card) {
+      const v = card.querySelector('video');
+      if (v) v.remove();
+    }
+
+    searchInput.addEventListener('input', async (e) => {
+      const q = e.target.value.trim();
+      if (q.length < 2) { loadCategory('trending'); return; }
+      const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(q)}&language=en-US`);
+      const data = await res.json();
+      showRecommendations(data.results);
     });
 
     // Initial load
-    fetchMovies();
+    loadCategory('trending');
   </script>
 </body>
 </html>
