@@ -23,6 +23,8 @@
     .card .info .title { font-weight:bold; color:#fff; }
     .card .info .meta { color:#aaa; font-size:12px; }
     #messageArea { padding: 10px; color: #ffa500; font-size: 12px; }
+    .loading-spinner { border: 4px solid rgba(255, 255, 255, 0.1); border-top: 4px solid #fff; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     @media (max-width:768px) {
       .main { flex-direction:column; }
       #recommendationList { height:auto; max-height:250px; }
@@ -80,30 +82,34 @@
     });
 
     async function loadCategory(catId, idx) {
+      recList.innerHTML = '<div class="loading-spinner"></div>';
       const path = catId === 'trending' ? 'trending/all/week' : `movie/${catId}`;
       const res = await fetch(`https://api.themoviedb.org/3/${path}?api_key=${API_KEY}&language=en-US`);
       const data = await res.json();
       showRecommendations(data.results);
       document.querySelectorAll('#categoryTabs button').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('#categoryTabs button')[idx].classList.add('active');
+      if(document.querySelectorAll('#categoryTabs button')[idx]) {
+        document.querySelectorAll('#categoryTabs button')[idx].classList.add('active');
+      }
     }
 
     function showRecommendations(arr) {
       recList.innerHTML = '<h2>Recommended</h2>';
       arr.forEach(item => {
         const isMovie = item.media_type !== 'tv';
+        const posterPath = item.backdrop_path || item.poster_path;
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
-          <img src="${IMAGE_BASE}${item.backdrop_path || item.poster_path}" alt="">
+          <img src="${posterPath ? IMAGE_BASE + posterPath : 'https://via.placeholder.com/120x70.png?text=No+Image'}" alt="${item.title || item.name} poster">
           <div class="info">
             <div class="title">${item.title || item.name}</div>
             <div class="meta">⭐ ${item.vote_average?.toFixed(1) || '0'} • ${(item.release_date || item.first_air_date || '').split('-')[0]}</div>
           </div>`;
         card.onclick = () => {
           player.src = isMovie
-            ? \`https://player.videasy.net/movie/${item.id}\`
-            : \`https://player.videasy.net/tv/${item.id}/1/1?autoplayNextEpisode=true\`;
+            ? `https://player.videasy.net/movie/${item.id}`
+            : `https://player.videasy.net/tv/${item.id}/1/1?autoplayNextEpisode=true`;
         };
         recList.appendChild(card);
       });
@@ -112,7 +118,8 @@
     searchInput.addEventListener('input', async () => {
       const q = searchInput.value.trim();
       if (q.length < 2) return loadCategory('trending', 0);
-      const res = await fetch(\`https://api.themoviedb.org/3/search/multi?api_key=\${API_KEY}&query=\${encodeURIComponent(q)}&include_adult=false\`);
+      recList.innerHTML = '<div class="loading-spinner"></div>';
+      const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(q)}&include_adult=false`);
       const data = await res.json();
       showRecommendations(data.results);
     });
