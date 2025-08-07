@@ -1,64 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Maruya Movie Player</title>
   <style>
     body { margin:0; font-family: Arial, sans-serif; background:#121212; color:#fff; }
-    header { display:flex; align-items:center; padding:10px 20px; background:#1f1f1f; flex-wrap: wrap; }
+    header { display:flex; align-items:center; padding:10px 20px; background:#1f1f1f; }
     header img { height:40px; margin-right:10px; }
     header h1 { margin:0; font-size:20px; }
-    header .search { flex-grow:1; margin:10px 20px; min-width:200px; }
-    header .search input {
-      width:100%; max-width:400px; padding:8px 12px;
-      border-radius:20px; border:none; background:#333; color:#fff;
-    }
+    header .search { flex-grow:1; margin:0 20px; }
+    header .search input { width:100%; max-width:400px; padding:8px 12px; border-radius:20px; border:none; background:#333; color:#fff; }
     header nav a { color:#fff; margin-left:15px; text-decoration:none; }
-
-    nav#categoryTabs {
-      display:flex; overflow-x:auto; background:#1c1c1c;
-      padding: 8px 0;
-    }
-    nav#categoryTabs button {
-      padding:12px 16px; background:none; border:none;
-      color:#fff; cursor:pointer; white-space: nowrap;
-    }
-    nav#categoryTabs button:hover, nav#categoryTabs button.active {
-      background:#333;
-    }
-
-    .main { display:flex; height:calc(100vh - 100px); overflow:hidden; flex-wrap: wrap; }
-    #playerContainer { flex:2; background:#000; min-width:300px; }
-    #player {
-      width:100%; height:100%; border:none;
-    }
-    #recommendationList {
-      flex:1; overflow-y:auto;
-      background:#181818; padding:16px;
-      min-width:280px;
-    }
-    .card {
-      display:flex; margin-bottom:12px;
-      cursor:pointer; position:relative;
-    }
-    .card img {
-      width:120px; height:70px;
-      object-fit:cover; border-radius:4px;
-    }
-    .card .info {
-      margin-left:8px; font-size:14px;
-    }
-    .card .info .title {
-      font-weight:bold; color:#fff;
-    }
-    .card .info .meta {
-      color:#aaa; font-size:12px;
-    }
-    @media (max-width:768px) {
-      .main { flex-direction:column; }
-      #recommendationList { height:auto; max-height:250px; }
-    }
+    nav#categoryTabs { display:flex; overflow-x:auto; background:#1c1c1c; }
+    nav#categoryTabs button { padding:12px 16px; background:none; border:none; color:#fff; cursor:pointer; }
+    nav#categoryTabs button:hover, nav#categoryTabs button.active { background:#333; }
+    .main { display:flex; height:calc(100vh - 100px); overflow:hidden; }
+    #playerContainer { flex:2; background:#000; }
+    #player { width:100%; height:100%; border:none; }
+    #recommendationList { flex:1; overflow-y:auto; background:#181818; padding:16px; }
+    .card { display:flex; margin-bottom:12px; cursor:pointer; position:relative; }
+    .card img { width:120px; height:70px; object-fit:cover; border-radius:4px; }
+    .card .info { margin-left:8px; font-size:14px; }
+    .card .info .title { font-weight:bold; color:#fff; }
+    .card .info .meta { color:#aaa; font-size:12px; }
+    @media (max-width:768px) { .main { flex-direction:column; } #recommendationList { height:200px; } }
   </style>
 </head>
 <body>
@@ -68,22 +33,23 @@
       <h1>Maruya Movie Player</h1>
     </div>
     <div class="search">
-      <input id="searchInput" placeholder="🔍 Search movies or shows…" />
+      <input id="searchInput" placeholder="🔍 Search movies or shows…">
     </div>
-    <div style="display:flex; align-items:center; gap:10px;">
-      <span>Go to TV Player</span>
-      <a href="https://salidaph.online/tv/index.html" target="_blank">
-        <img src="https://i.imgur.com/meqX8zC.png" alt="TV" height="32">
-      </a>
+    <div style="display:flex; align-items:center;">
+      <a>Go to TV Player</a>
+      <img src="https://i.imgur.com/KxZTuB7.png" alt="Logo">
+    <a href="https://salidaph.online/tv/index.html"> <img src="https://i.imgur.com/meqX8zC.png" alt="Logo"></a>
     </div>
+   <!-- <nav>
+       <img src="https://i.imgur.com/cmOdVwr.png" alt="Logo">
+      <a href="https://salidaph.online/tv/index.html"><h1>MaruyaTV</h1></a>
+    </nav>-->
   </header>
 
   <nav id="categoryTabs"></nav>
 
   <div class="main">
-    <div id="playerContainer">
-      <iframe id="player" src="" allowfullscreen></iframe>
-    </div>
+    <div id="playerContainer"><iframe id="player" src="" allowfullscreen></iframe></div>
     <aside id="recommendationList"><h2>Recommended</h2></aside>
   </div>
 
@@ -96,7 +62,6 @@
       { id: 'top_rated', label: 'Top Rated' },
       { id: 'upcoming', label: 'Upcoming' }
     ];
-
     const tabsEl = document.getElementById('categoryTabs');
     const recList = document.getElementById('recommendationList');
     const player = document.getElementById('player');
@@ -125,15 +90,15 @@
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
-          <img src="${IMAGE_BASE}${item.backdrop_path || item.poster_path}" alt="">
+          <img src="${IMAGE_BASE}${item.backdrop_path||item.poster_path}" alt="">
           <div class="info">
-            <div class="title">${item.title || item.name}</div>
-            <div class="meta">⭐ ${item.vote_average?.toFixed(1) || '0'} • ${(item.release_date || item.first_air_date || '').split('-')[0]}</div>
+            <div class="title">${item.title||item.name}</div>
+            <div class="meta">⭐ ${item.vote_average.toFixed(1)} • ${(item.release_date||item.first_air_date||'').split('-')[0]}</div>
           </div>`;
         card.onclick = () => {
           player.src = isMovie
-            ? \`https://player.videasy.net/movie/${item.id}\`
-            : \`https://player.videasy.net/tv/${item.id}/1/1?autoplayNextEpisode=true\`;
+            ? `https://player.videasy.net/movie/${item.id}`
+            : `https://player.videasy.net/tv/${item.id}/1/1?autoplayNextEpisode=true`;
         };
         recList.appendChild(card);
       });
@@ -142,12 +107,22 @@
     searchInput.addEventListener('input', async () => {
       const q = searchInput.value.trim();
       if (q.length < 2) return loadCategory('trending', 0);
-      const res = await fetch(\`https://api.themoviedb.org/3/search/multi?api_key=\${API_KEY}&query=\${encodeURIComponent(q)}&include_adult=false\`);
+      const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(q)}&include_adult=false`);
       const data = await res.json();
       showRecommendations(data.results);
     });
+    }
+      window.addEventListener("message", function (event) {
+  // console.log("event: ", event);
+  console.log("Message received from the player: ", JSON.parse(event.data)); // Message received from player
+  if (typeof event.data === "string") {
+    var messageArea = document.querySelector("#messageArea");
+    messageArea.innerText = event.data;
+  }
+});
+    }
 
-    // Initial Load
+    // Initial load
     loadCategory('trending', 0);
   </script>
 </body>
