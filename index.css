@@ -1,705 +1,140 @@
-/* General Body Styling */
-body {
-    margin: 0;
-    background-color: #121212; /* Dark background */
-    font-family: 'Segoe UI', sans-serif;
-    color: #ffffff; /* Default text color for the dark theme */
-    line-height: 1.6;
-    overflow-x: hidden; /* Prevent horizontal scroll on small devices */
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maruya Movie Player</title>
+  <style>
+    body { margin:0; font-family: Arial, sans-serif; background:#121212; color:#fff; }
+    header { display:flex; align-items:center; padding:10px 20px; background:#1f1f1f; flex-wrap:wrap; gap:10px; }
+    header img { height:40px; margin-right:10px; }
+    header h1 { margin:0; font-size:20px; }
+    header .search { flex-grow:1; margin:10px 20px; min-width:200px; }
+    header .search input { width:100%; max-width:400px; padding:8px 12px; border-radius:20px; border:none; background:#333; color:#fff; }
+    nav#categoryTabs { display:flex; overflow-x:auto; background:#1c1c1c; }
+    nav#categoryTabs button { padding:12px 16px; background:none; border:none; color:#fff; cursor:pointer; }
+    nav#categoryTabs button:hover, nav#categoryTabs button.active { background:#333; }
+    .main { display:flex; height:calc(100vh - 100px); overflow:hidden; flex-wrap:wrap; }
+    #playerContainer { flex:2; background:#000; min-width:300px; }
+    #player { width:100%; height:100%; border:none; }
+    #recommendationList { flex:1; overflow-y:auto; background:#181818; padding:16px; min-width:280px; }
+    .card { display:flex; margin-bottom:12px; cursor:pointer; position:relative; }
+    .card img { width:120px; height:70px; object-fit:cover; border-radius:4px; }
+    .card .info { margin-left:8px; font-size:14px; }
+    .card .info .title { font-weight:bold; color:#fff; }
+    .card .info .meta { color:#aaa; font-size:12px; }
+    #messageArea { padding: 10px; color: #ffa500; font-size: 12px; }
+    .loading-spinner { border: 4px solid rgba(255, 255, 255, 0.1); border-top: 4px solid #fff; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @media (max-width:768px) {
+      .main { flex-direction:column; }
+      #recommendationList { height:auto; max-height:250px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div style="display:flex; align-items:center;">
+      <img src="https://i.imgur.com/cmOdVwr.png" alt="Logo">
+      <h1>Maruya Movie Player</h1>
+    </div>
+    <div class="search">
+      <input id="searchInput" placeholder="🔍 Search movies or shows…" />
+    </div>
+    <div style="display:flex; align-items:center;">
+      <span>Go to TV Player</span>
+      <a href="https://salidaph.online/tv/index.html" target="_blank">
+        <img src="https://i.imgur.com/meqX8zC.png" alt="TV" height="32">
+      </a>
+    </div>
+  </header>
 
-/* Ensure images don't overflow their containers */
-img {
-    max-width: 100%;
-    height: auto; /* Maintain aspect ratio */
-    display: block; /* Removes extra space below images */
-}
+  <nav id="categoryTabs"></nav>
 
-/* --- Header Styling --- */
-#animatedHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 32px;
-    background-color: #1e1e1e; /* Darker header background */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-    position: sticky; /* Stays at the top when scrolling */
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
-    box-sizing: border-box; /* Include padding in element's total width/height */
-}
+  <div class="main">
+    <div id="playerContainer">
+      <iframe id="player" src="" allowfullscreen></iframe>
+    </div>
+    <aside id="recommendationList"><h2>Recommended</h2></aside>
+  </div>
 
-#animatedHeader a img { /* Target the logo image specifically */
-    width: 120px; /* Default size for logo */
-    height: auto; /* Maintain aspect ratio */
-    margin-right: 10px;
-}
+  <div id="messageArea"></div>
 
-.nav-links {
-    display: flex;
-    gap: 24px; /* Space between nav items */
-    align-items: center;
-    flex-wrap: wrap; /* Allow links to wrap on smaller screens */
-    justify-content: flex-end; /* Align links to the right */
-}
+  <script>
+    const API_KEY = 'ba3885a53bc2c4f3c4b5bdc1237e69a0';
+    const IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
+    const categories = [
+      { id: 'trending', label: 'Trending' },
+      { id: 'popular', label: 'Popular' },
+      { id: 'top_rated', label: 'Top Rated' },
+      { id: 'upcoming', label: 'Upcoming' }
+    ];
 
-.nav-links a {
-    color: #ccc;
-    text-decoration: none;
-    font-size: 1rem;
-    transition: color 0.3s;
-    white-space: nowrap; /* Prevent breaking for nav links */
-    padding: 5px 0; /* Add padding for click area */
-}
+    const tabsEl = document.getElementById('categoryTabs');
+    const recList = document.getElementById('recommendationList');
+    const player = document.getElementById('player');
+    const searchInput = document.getElementById('searchInput');
 
-.nav-links a:hover {
-    color: #e91e63; /* Hot pink on hover */
-}
+    categories.forEach((cat, idx) => {
+      const btn = document.createElement('button');
+      btn.textContent = cat.label;
+      btn.onclick = () => loadCategory(cat.id, idx);
+      tabsEl.appendChild(btn);
+    });
 
-/* Scrolling text (marquee) */
-.scrolling-text {
-    overflow: hidden;
-    white-space: nowrap;
-    box-sizing: border-box;
-    background: #6200EE; /* Vibrant blue for marquee */
-    color: white;
-    margin: 10px 20px; /* Adjusted margin for overall layout */
-    border-radius: 8px;
-    padding: 5px 0;
-    text-align: center; /* Center the text within its container */
-    animation: marquee 10s linear infinite; /* Ensure animation is applied */
-}
-@keyframes marquee {
-    0%   { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
-}
-
-/* --- Search Section Styling --- */
-.search-container {
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-    background-color: #1e1e1e; /* Match header background */
-    border-bottom: 1px solid #333;
-    flex-wrap: wrap; /* Allow input and button to wrap */
-    gap: 10px; /* Space between input and button */
-}
-
-.search-container input[type="text"] {
-    padding: 10px 15px;
-    border: 1px solid #444;
-    border-radius: 5px;
-    font-size: 16px;
-    background-color: #333;
-    color: #eee;
-    width: 60%; /* Adjust width as needed */
-    max-width: 500px;
-    box-sizing: border-box; /* Include padding in width */
-}
-
-.search-container input[type="text"]::placeholder {
-    color: #bbb;
-}
-#videoPlayer button:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.search-container button {
-    padding: 10px 20px;
-    background-color: #e91e63; /* Hot pink accent */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    box-sizing: border-box;
-}
-
-.search-container button:hover {
-    background-color: #c2185b; /* Darker pink on hover */
-}
-
-/* --- Main Sections Container --- */
-.sections-container {
-    max-width: 1300px; /* Slightly wider max-width for content */
-    margin: 0 auto;
-    padding: 2rem 1rem; /* Adjust padding for mobile and desktop */
-}
-
-.movie-list-section {
-    margin-bottom: 3rem;
-}
-
-/* Unified Section Titles (Trending, Top Rated, Horror, Comedy, etc.) */
-.section-title, /* New class for all section titles */
-.trending-title,
-.toprated-title,
-.horror-title,
-.movie-list-section h2 {
-    color: #e91e63; /* Hot pink accent */
-    font-size: 2rem;
-    font-weight: bold;
-    margin: 24px 0 24px 1rem; /* Adjusted margin for better mobile alignment */
-    text-shadow: 0 0 8px rgba(233, 30, 99, 0.6);
-    letter-spacing: 1px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* Flame icon for specific titles */
-.trending-title::before,
-.toprated-title::before,
-.horror-title::before {
-    content: "🔥";
-    font-size: 1.5rem;
-    animation: flicker 1.5s infinite alternate;
-}
-
-@keyframes flicker {
-    from { opacity: 1; }
-    to { opacity: 0.6; }
-}
-
-/* --- Movie List (Grid Layout) --- */
-.movie-list-vertical {
-    display: grid;
-    /* Responsive grid: auto-fill columns, min 180px wide, max 1fr */
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1.5rem; /* Space between cards */
-    padding: 0 1rem; /* Padding for the grid itself */
-    justify-content: center; /* Center cards if they don't fill the row */
-}
-
-/* Movie Card Base Styles (applies to both main sections and search results) */
-.movie-card, .search-result-item {
-    background-color: #1c1c1c;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden; /* Ensures content stays within rounded corners */
-    text-align: center;
-    position: relative; /* For play button positioning */
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-}
-
-.movie-card:hover, .search-result-item:hover {
-    transform: scale(1.03); /* Slightly larger scale on hover */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
-}
-
-.movie-card img, .search-result-item img {
-    width: 100%;
-    height: 270px; /* Fixed height for consistency, adjust as needed */
-    object-fit: cover; /* Crop images to fit */
-    border-radius: 4px 4px 0 0; /* Round top corners of image */
-}
-
-/* Movie Card Info Overlay (for existing movie cards in main sections) */
-.movie-card-info {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: rgba(0, 0, 0, 0.75); /* Darker overlay */
-    padding: 8px 10px;
-    box-sizing: border-box;
-    text-align: left;
-    transition: background-color 0.3s ease;
-}
-
-.movie-card-info h3 {
-    margin: 0;
-    font-size: 1.1em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: #ffffff;
-}
-
-.movie-card-info p {
-    margin: 0;
-    font-size: 0.8em;
-    color: #ccc;
-}
-
-/* Search Result Item Text (not an overlay, text is below image) */
-.search-result-item h3 {
-    font-size: 1.1em;
-    margin: 10px 5px 5px;
-    padding: 0 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: #ffffff;
-}
-
-.search-result-item p {
-    font-size: 0.9em;
-    color: #ccc;
-    padding: 0 5px 10px;
-    margin: 0;
-}
-
-/* --- Play Button Styling (applies to both movie cards and search results) --- */
-.movie-card .play-button,
-.search-result-item .play-button {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.7); /* Slightly darker background */
-    border: none;
-    border-radius: 50%;
-    color: #fff;
-    font-size: 28px; /* Slightly larger icon */
-    cursor: pointer;
-    width: 60px; /* Make it a fixed size for easy tapping */
-    height: 60px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0; /* Hidden by default */
-    transition: opacity 0.3s ease, background-color 0.3s ease;
-}
-
-.movie-card .play-button:hover,
-.search-result-item .play-button:hover {
-    background-color: rgba(233, 30, 99, 0.8); /* Hot pink on hover */
-}
-
-.movie-card:hover .play-button,
-.search-result-item:hover .play-button {
-    opacity: 1; /* Show on hover */
-}
-
-/* --- Video Player Styling --- */
-#videoPlayer {
-    display: none; /* Hidden by default */
-    position: fixed; /* Fixed position to overlay everything */
-    top: 50%; /* Center vertically initially */
-    left: 50%; /* Center horizontally initially */
-    transform: translate(-50%, -50%); /* Adjust for true centering */
-    width: 90%; /* Responsive width */
-    max-width: 900px; /* Max width for larger screens */
-    aspect-ratio: 16 / 9; /* Maintain aspect ratio */
-    background-color: #000;
-    border-radius: 12px;
-    overflow: hidden;
-    z-index: 10000;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
-    border: 2px solid #e91e63; /* Accent border */
-}
-
-#videoFrame {
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-#videoPlayer .close-button { /* Use a class for the close button if not already */
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(233, 30, 99, 0.8); /* Hot pink close button */
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    font-size: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    z-index: 10001;
-    transition: background-color 0.3s ease;
-}
-#videoPlayer .close-button:hover {
-    background-color: #c2185b;
-}
-
-/* --- Floating Buttons --- */
-.Telegram, .chat-fab-button {
-    position: fixed;
-    right: 20px; /* Consistent right margin */
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-    z-index: 9999;
-    transition: transform 0.2s ease, background-color 0.2s ease;
-}
-.Telegram:hover, .chat-fab-button:hover {
-    transform: scale(1.1);
-}
-
-.Telegram {
-    bottom: 150px;
-    background-color: #0088cc; /* Telegram blue */
-}
-
-.Telegram img {
-    width: 40px;
-    height: 40px;
-}
-
-.chat-fab-button {
-    bottom: 80px; /* Position above Telegram button */
-    background-color: #007BFF; /* A default blue for chat */
-    color: white;
-    font-size: 24px;
-    border: none;
-}
-.chat-fab-button:hover {
-    background-color: #0056b3;
-}
-
-/* --- Chat Modal --- */
-.chat-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8); /* Darker overlay */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10001;
-}
-
-.chat-modal-content {
-    background: #1c1c1c; /* Match card background */
-    padding: 15px;
-    border-radius: 8px;
-    max-width: 95%; /* Take most of the width on mobile */
-    max-height: 95vh; /* Take most of the viewport height */
-    overflow: hidden; /* Prevent modal content from overflowing itself */
-    display: flex; /* Use flex to control iframe size */
-    flex-direction: column;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
-    border: 1px solid #333;
-}
-
-.chat-modal-content iframe {
-    width: 100%;
-    height: 100%; /* Occupy available space within flex container */
-    min-height: 300px; /* Minimum height to ensure visibility */
-    border: none;
-    border-radius: 4px;
-}
-
-/* --- Footer --- */
-footer {
-    text-align: center;
-    padding: 20px 10px;
-    background: #1e1e1e; /* Match header/search background */
-    color: #eee;
-    margin-top: 30px;
-    font-size: 0.9em;
-    border-top: 1px solid #333;
-}
-
-footer a {
-    color: #e91e63; /* Use hot pink accent for footer links */
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-footer a:hover {
-    color: #c2185b;
-    text-decoration: underline;
-}
-
-
-/* --- Media Queries for Mobile Responsiveness --- */
-
-/* For screens up to 768px wide (typical tablets and large phones) */
-@media (max-width: 768px) {
-    /* Header adjustments */
-    #animatedHeader {
-        padding: 12px 15px;
-        flex-direction: column; /* Stack logo and nav vertically */
-        align-items: flex-start;
-        gap: 10px; /* Space between stacked items */
+    async function loadCategory(catId, idx) {
+      recList.innerHTML = '<div class="loading-spinner"></div>';
+      const path = catId === 'trending' ? 'trending/all/week' : `movie/${catId}`;
+      const res = await fetch(`https://api.themoviedb.org/3/${path}?api_key=${API_KEY}&language=en-US`);
+      const data = await res.json();
+      showRecommendations(data.results);
+      document.querySelectorAll('#categoryTabs button').forEach(b => b.classList.remove('active'));
+      if(document.querySelectorAll('#categoryTabs button')[idx]) {
+        document.querySelectorAll('#categoryTabs button')[idx].classList.add('active');
+      }
     }
 
-    #animatedHeader a img {
-        width: 100px; /* Smaller logo */
-        height: auto;
+    function showRecommendations(arr) {
+      recList.innerHTML = '<h2>Recommended</h2>';
+      arr.forEach(item => {
+        const isMovie = item.media_type !== 'tv';
+        const posterPath = item.backdrop_path || item.poster_path;
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${posterPath ? IMAGE_BASE + posterPath : 'https://via.placeholder.com/120x70.png?text=No+Image'}" alt="${item.title || item.name} poster">
+          <div class="info">
+            <div class="title">${item.title || item.name}</div>
+            <div class="meta">⭐ ${item.vote_average?.toFixed(1) || '0'} • ${(item.release_date || item.first_air_date || '').split('-')[0]}</div>
+          </div>`;
+        card.onclick = () => {
+          player.src = isMovie
+            ? `https://player.videasy.net/movie/${item.id}`
+            : `https://player.videasy.net/tv/${item.id}/1/1?autoplayNextEpisode=true`;
+        };
+        recList.appendChild(card);
+      });
     }
 
-    .nav-links {
-        width: 100%; /* Take full width */
-        flex-direction: column; /* Stack nav links vertically */
-        align-items: flex-start;
-        gap: 8px; /* Closer spacing for stacked links */
-    }
+    searchInput.addEventListener('input', async () => {
+      const q = searchInput.value.trim();
+      if (q.length < 2) return loadCategory('trending', 0);
+      recList.innerHTML = '<div class="loading-spinner"></div>';
+      const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(q)}&include_adult=false`);
+      const data = await res.json();
+      showRecommendations(data.results);
+    });
 
-    .nav-links a {
-        width: 100%; /* Make links take full width */
-        text-align: left;
-        padding: 8px 0; /* Larger touch area */
-        font-size: 0.95rem;
-        border-bottom: 1px solid rgba(255,255,255,0.1); /* Separator */
-    }
-    .nav-links a:last-child {
-        border-bottom: none; /* No separator for the last link */
-    }
+    window.addEventListener("message", function (event) {
+      if (typeof event.data === "string") {
+        const messageArea = document.querySelector("#messageArea");
+        if (messageArea) {
+          messageArea.innerText = event.data;
+        }
+      }
+    });
 
-    .scrolling-text {
-        margin: 10px 10px; /* Smaller horizontal margin for marquee */
-        font-size: 0.9em;
-    }
-
-    /* Search Container adjustments */
-    .search-container {
-        padding: 15px 10px;
-        flex-direction: column; /* Stack input and button */
-        gap: 15px;
-    }
-
-    .search-container input[type="text"] {
-        width: 100%; /* Full width input */
-        max-width: none; /* Remove max-width constraint */
-    }
-
-    .search-container button {
-        width: 100%; /* Full width button */
-    }
-
-    /* Section titles adjustments */
-    .section-title,
-    .trending-title,
-    .toprated-title,
-    .horror-title,
-    .movie-list-section h2 {
-        font-size: 1.6rem; /* Slightly smaller headings */
-        margin: 20px 0 20px 0.5rem; /* Adjust margin */
-    }
-
-    /* Movie list adjustments */
-    .movie-list-vertical {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Smaller min-width for more columns */
-        gap: 1rem;
-        padding: 0 0.5rem; /* Smaller padding */
-    }
-
-    .movie-card img, .search-result-item img {
-        height: 220px; /* Adjust card image height for smaller screens */
-    }
-
-    /* Video Player adjustments */
-    #videoPlayer {
-        width: 95%; /* Wider on mobile */
-        border-radius: 8px;
-    }
-
-    /* Floating buttons adjustments */
-    .Telegram, .chat-fab-button {
-        right: 10px; /* Closer to the edge */
-        width: 55px; /* Slightly smaller */
-        height: 55px;
-    }
-
-    /* Chat modal adjustments */
-    .chat-modal-content {
-        padding: 10px;
-        max-width: 98%;
-        max-height: 98vh;
-    }
-    .chat-modal-content iframe {
-        min-height: 250px; /* Smaller min-height for chat iframe */
-    }
-}
-
-/* For very small screens (typical small phones) */
-@media (max-width: 480px) {
-    .sections-container {
-        padding: 1rem 0.5rem;
-    }
-
-    .movie-list-vertical {
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* Even smaller cards */
-        gap: 0.8rem;
-    }
-
-    .movie-card img, .search-result-item img {
-        height: 180px; /* Adjust card image height for very small screens */
-    }
-
-    .section-title,
-    .trending-title,
-    .toprated-title,
-    .horror-title,
-    .movie-list-section h2 {
-        font-size: 1.4rem;
-        margin: 15px 0 15px 0.5rem;
-        gap: 5px;
-    }
-    .trending-title::before,
-    .toprated-title::before,
-    .horror-title::before {
-        font-size: 1.2rem;
-    }
-
-    /* Full screen video player on very small devices */
-    #videoPlayer {
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        transform: none; /* No translation needed */
-        border-radius: 0; /* No border-radius for full screen */
-        border: none; /* No border for full screen */
-    }
-    #videoPlayer .close-button {
-        top: 5px;
-        right: 5px;
-        width: 25px;
-        height: 25px;
-        font-size: 18px;
-    }
-
-    .Telegram, .chat-fab-button {
-        right: 8px;
-        width: 50px;
-        height: 50px;
-    }
-    .Telegram img {
-        width: 35px;
-        height: 35px;
-    }
-}
-/* Video Confirmation Dialog Styling */
-.video-confirm-dialog-overlay {
-    display: none; /* Hidden by default */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.9); /* Darker overlay */
-    z-index: 10002; /* Higher than video player, lower than chat modal */
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(5px); /* Optional: blur background */
-    -webkit-backdrop-filter: blur(5px); /* For Safari */
-}
-
-.video-confirm-dialog-content {
-    background-color: #1e1e1e; /* Dark theme background */
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
-    text-align: center;
-    max-width: 400px;
-    width: 90%; /* Responsive width */
-    color: #ffffff; /* White text */
-    border: 2px solid #e91e63; /* Accent border */
-}
-
-.video-confirm-dialog-content h3 {
-    margin-top: 0;
-    color: #e91e63; /* Hot pink accent */
-    font-size: 1.8rem;
-}
-
-.video-confirm-dialog-content p {
-    font-size: 1rem;
-    margin-bottom: 25px;
-    color: #ccc;
-}
-
-.dialog-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-}
-
-.dialog-buttons button {
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.play-video-button {
-    background-color: #e91e63; /* Hot pink for play */
-    color: white;
-}
-
-.play-video-button:hover {
-    background-color: #c2185b;
-    transform: translateY(-2px);
-}
-
-.cancel-button {
-    background-color: #444; /* Darker gray for cancel */
-    color: white;
-}
-
-.cancel-button:hover {
-    background-color: #555;
-    transform: translateY(-2px);
-}
-
-/* Media Query for smaller screens on dialog */
-@media (max-width: 480px) {
-    .video-confirm-dialog-content {
-        padding: 20px;
-        border-radius: 8px;
-    }
-    .video-confirm-dialog-content h3 {
-        font-size: 1.5rem;
-    }
-    .dialog-buttons {
-        flex-direction: column; /* Stack buttons on very small screens */
-    }
-    .dialog-buttons button {
-        width: 100%; /* Full width buttons */
-        padding: 10px;
-    }
-}
-
-section {
-  margin: 20px 0;
-}
-h2 {
-  margin-left: 10px;
-}
-.movie-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  padding: 10px;
-}
-.movie-card {
-  width: 150px;
-  cursor: pointer;
-  transition: transform 0.3s;
-}
-.movie-card:hover {
-  transform: scale(1.05);
-}
-.movie-card img {
-  width: 100%;
-  border-radius: 8px;
-}
-.movie-title {
-  margin-top: 5px;
-  font-size: 14px;
-  text-align: center;
-}
+    // Initial Load
+    loadCategory('trending', 0);
+  </script>
+</body>
+</html>
