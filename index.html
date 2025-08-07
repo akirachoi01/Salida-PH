@@ -103,7 +103,7 @@
         recList.appendChild(card);
       });
     }
-
+  
     searchInput.addEventListener('input', async () => {
       const q = searchInput.value.trim();
       if (q.length < 2) return loadCategory('trending', 0);
@@ -111,21 +111,9 @@
       const data = await res.json();
       showRecommendations(data.results);
     });
-    
-      window.addEventListener("message", function (event) {
-  // console.log("event: ", event);
-  console.log("Message received from the player: ", JSON.parse(event.data)); // Message received from player
-  if (typeof event.data === "string") {
-    var messageArea = document.querySelector("#messageArea");
-    messageArea.innerText = event.data;
-  }
-});
-    
 
     // Initial load
     loadCategory('trending', 0);
   </script>
 </body>
 </html>
-
-
