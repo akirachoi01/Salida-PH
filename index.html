@@ -1,48 +1,234 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Maruya Movie Player</title>
   <style>
-    body { margin:0; font-family: Arial, sans-serif; background:#121212; color:#fff; }
-    header { display:flex; align-items:center; padding:10px 20px; background:#1f1f1f; flex-wrap:wrap; gap:10px; }
-    header img { height:40px; margin-right:10px; }
-    header h1 { margin:0; font-size:20px; }
-    header .search { flex-grow:1; margin:10px 20px; min-width:200px; }
-    header .search input { width:100%; max-width:400px; padding:8px 12px; border-radius:20px; border:none; background:#333; color:#fff; }
-    nav#categoryTabs { display:flex; overflow-x:auto; background:#1c1c1c; }
-    nav#categoryTabs button { padding:12px 16px; background:none; border:none; color:#fff; cursor:pointer; }
-    nav#categoryTabs button:hover, nav#categoryTabs button.active { background:#333; }
-    .main { display:flex; height:calc(100vh - 100px); overflow:hidden; flex-wrap:wrap; }
-    #playerContainer { flex:2; background:#000; min-width:300px; }
-    #player { width:100%; height:100%; border:none; }
-    #recommendationList { flex:1; overflow-y:auto; background:#181818; padding:16px; min-width:280px; }
-    .card { display:flex; margin-bottom:12px; cursor:pointer; position:relative; }
-    .card img { width:120px; height:70px; object-fit:cover; border-radius:4px; }
-    .card .info { margin-left:8px; font-size:14px; }
-    .card .info .title { font-weight:bold; color:#fff; }
-    .card .info .meta { color:#aaa; font-size:12px; }
-    #messageArea { padding: 10px; color: #ffa500; font-size: 12px; }
-    .loading-spinner { border: 4px solid rgba(255, 255, 255, 0.1); border-top: 4px solid #fff; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    @media (max-width:768px) {
-      .main { flex-direction:column; }
-      #recommendationList { height:auto; max-height:250px; }
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background: #1f1f1f;
+      gap: 10px;
+    }
+
+    header img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    header .search {
+      flex-grow: 1;
+      min-width: 200px;
+      margin: 10px 20px;
+    }
+
+    header .search input {
+      width: 100%;
+      max-width: 400px;
+      padding: 8px 12px;
+      border-radius: 20px;
+      border: none;
+      background: #333;
+      color: #fff;
+    }
+
+    nav#categoryTabs {
+      display: flex;
+      overflow-x: auto;
+      background: #1c1c1c;
+    }
+
+    nav#categoryTabs button {
+      padding: 12px 16px;
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    nav#categoryTabs button:hover,
+    nav#categoryTabs button.active {
+      background: #333;
+    }
+
+    .main {
+      display: flex;
+      height: calc(100vh - 108px); /* header + nav height */
+      overflow: hidden;
+      flex-wrap: nowrap;
+    }
+
+    #playerContainer {
+      flex: 2;
+      min-width: 300px;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .player-wrapper {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+      height: 0;
+      overflow: hidden;
+    }
+
+    #player {
+      position: absolute;
+      top: 10;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    #recommendationList {
+      flex: 1;
+      min-width: 280px;
+      background: #181818;
+      padding: 16px;
+      overflow-y: auto;
+    }
+
+    .card {
+      display: flex;
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+
+    .card img {
+      width: 120px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    .card .info {
+      margin-left: 8px;
+      font-size: 14px;
+    }
+
+    .card .info .title {
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .card .info .meta {
+      color: #aaa;
+      font-size: 12px;
+    }
+
+    #messageArea {
+      padding: 10px;
+      color: #ffa500;
+      font-size: 12px;
+    }
+
+    .loading-spinner {
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-top: 4px solid #fff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 1024px) {
+      .main {
+        flex-direction: column;
+        height: auto;
+      }
+
+      #recommendationList {
+        max-height: 250px;
+      }
+
+      .player-wrapper {
+        padding-bottom: 56.25%;
+      }
+    }
+
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      header .search {
+        width: 100%;
+        margin: 10px 0;
+      }
+    .matrix-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px auto;
+  height: 50px;
+}
+
+#matrixType {
+  font-family: 'Courier New', monospace !important;
+  color: #00ff00 !important;
+  font-size: 16px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  border-right: 2px solid #00ff00 !important;
+  animation: blink 0.7s steps(1) infinite !important;
+  text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00 !important;
+}
+
+
+
+      header .search input {
+        max-width: 100%;
+      }
     }
   </style>
 </head>
 <body>
   <header>
-    <div style="display:flex; align-items:center;">
+    <div style="display: flex; align-items: center;">
       <img src="https://i.imgur.com/cmOdVwr.png" alt="Logo">
       <h1>Maruya Movie Player</h1>
     </div>
     <div class="search">
       <input id="searchInput" placeholder="🔍 Search movies or shows…" />
     </div>
-    <div style="display:flex; align-items:center;">
+    <div style="display: flex; align-items: center;">
       <span>Go to TV Player</span>
-      <a href="https://salidaph.online/tv/index.html" target="_blank">
+      <a href="tv.html">
         <img src="https://i.imgur.com/meqX8zC.png" alt="TV" height="32">
       </a>
     </div>
@@ -52,22 +238,37 @@
 
   <div class="main">
     <div id="playerContainer">
-      <iframe id="player" src="" allowfullscreen></iframe>
+      <div class="player-wrapper">
+        <iframe id="player" src="" allowfullscreen></iframe>
+      </div>
+    <center><div class="matrix-container">
+  <span id="matrixType">|</span>
+</div></center>
+        <div id="messageArea"></div>
     </div>
     <aside id="recommendationList"><h2>Recommended</h2></aside>
   </div>
 
-  <div id="messageArea"></div>
+
 
   <script>
     const API_KEY = 'ba3885a53bc2c4f3c4b5bdc1237e69a0';
     const IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
-    const categories = [
-      { id: 'trending', label: 'Trending' },
-      { id: 'popular', label: 'Popular' },
-      { id: 'top_rated', label: 'Top Rated' },
-      { id: 'upcoming', label: 'Upcoming' }
-    ];
+   const categories = [
+  { id: 'trending', label: 'Trending' },
+  { id: 'popular', label: 'Popular' },
+  { id: 'top_rated', label: 'Top Rated' },
+  { id: 'upcoming', label: 'Upcoming' },
+  { id: '10770', label: 'TV Movie' },
+  { id: '878', label: 'Science Fiction' },
+  { id: '10749', label: 'Romance' },
+  { id: '10764', label: 'Reality' },
+  { id: '9648', label: 'Mystery' },
+  { id: '99', label: 'Documentary' },
+  { id: '28', label: 'Action' },
+  { id: '16', label: 'Animation' }
+];
+
 
     const tabsEl = document.getElementById('categoryTabs');
     const recList = document.getElementById('recommendationList');
@@ -81,17 +282,28 @@
       tabsEl.appendChild(btn);
     });
 
-    async function loadCategory(catId, idx) {
-      recList.innerHTML = '<div class="loading-spinner"></div>';
-      const path = catId === 'trending' ? 'trending/all/week' : `movie/${catId}`;
-      const res = await fetch(`https://api.themoviedb.org/3/${path}?api_key=${API_KEY}&language=en-US`);
-      const data = await res.json();
-      showRecommendations(data.results);
-      document.querySelectorAll('#categoryTabs button').forEach(b => b.classList.remove('active'));
-      if(document.querySelectorAll('#categoryTabs button')[idx]) {
-        document.querySelectorAll('#categoryTabs button')[idx].classList.add('active');
-      }
-    }
+   async function loadCategory(catId, idx) {
+  recList.innerHTML = '<div class="loading-spinner"></div>';
+
+  let url;
+  if (['trending', 'popular', 'top_rated', 'upcoming'].includes(catId)) {
+    const path = catId === 'trending' ? 'trending/all/week' : `movie/${catId}`;
+    url = `https://api.themoviedb.org/3/${path}?api_key=${API_KEY}&language=en-US`;
+  } else {
+    // Genre-based search
+    url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&language=en-US&with_genres=${catId}`;
+  }
+
+  const res = await fetch(url);
+  const data = await res.json();
+  showRecommendations(data.results);
+
+  document.querySelectorAll('#categoryTabs button').forEach(b => b.classList.remove('active'));
+  if (document.querySelectorAll('#categoryTabs button')[idx]) {
+    document.querySelectorAll('#categoryTabs button')[idx].classList.add('active');
+  }
+}
+
 
     function showRecommendations(arr) {
       recList.innerHTML = '<h2>Recommended</h2>';
@@ -136,5 +348,29 @@
     // Initial Load
     loadCategory('trending', 0);
   </script>
+  <script>
+  const text = "Code by Ricky John Reusora";
+  const target = document.getElementById("matrixType");
+
+  function typeLoop() {
+    let i = 0;
+    target.textContent = "|";
+
+    function type() {
+      if (i <= text.length) {
+        target.textContent = text.slice(0, i) + "|";
+        i++;
+        setTimeout(type, 100);
+      } else {
+        setTimeout(typeLoop, 15000); // Loop after 15 seconds
+      }
+    }
+
+    type();
+  }
+
+  window.addEventListener("load", typeLoop);
+</script>
+
 </body>
 </html>
