@@ -111,7 +111,7 @@
       const data = await res.json();
       showRecommendations(data.results);
     });
-    }
+    
       window.addEventListener("message", function (event) {
   // console.log("event: ", event);
   console.log("Message received from the player: ", JSON.parse(event.data)); // Message received from player
@@ -127,4 +127,5 @@
   </script>
 </body>
 </html>
+
 
