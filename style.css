@@ -1,0 +1,117 @@
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Inter', sans-serif;
+  background: #000;
+  color: #fff;
+  line-height: 1.6;
+}
+
+/* Hero Section */
+.hero {
+  position: relative;
+  height: 100vh;
+  background: url('https://www.salidaph.online/bg1.gif') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.hero .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+  padding: 20px;
+}
+.hero-content h1 {
+  font-size: 3rem;
+  color: #ffcc00;
+}
+.hero-content p {
+  font-size: 1.2rem;
+  margin: 15px 0 30px;
+}
+.btn {
+  display: inline-block;
+  padding: 12px 30px;
+  background: #ffcc00;
+  color: #000;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+.btn:hover {
+  background: #ffaa00;
+}
+
+/* Features Section */
+.features {
+  padding: 60px 20px;
+  text-align: center;
+  background: #111;
+}
+.features h2 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #ffcc00;
+}
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+.feature-card {
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+.feature-card:hover {
+  transform: translateY(-5px);
+}
+.feature-card h3 {
+  margin-bottom: 10px;
+  color: #ffcc00;
+}
+
+/* Call to Action */
+.cta {
+  text-align: center;
+  padding: 60px 20px;
+  background: linear-gradient(to right, #ffcc00, #ffaa00);
+  color: #000;
+}
+.cta h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+.cta .btn {
+  background: #000;
+  color: #ffcc00;
+}
+.cta .btn:hover {
+  background: #222;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 20px;
+  background: #000;
+  color: #777;
+  font-size: 0.9rem;
+  border-top: 1px solid #222;
+}
