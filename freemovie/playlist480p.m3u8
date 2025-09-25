@@ -1,0 +1,14 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-TARGETDURATION:6
+#EXT-X-MEDIA-SEQUENCE:720210
+#EXT-X-ALLOW-CACHE:NO
+
+#EXTINF:6.000,
+https://amg01553-amg01553c2-samsung-ph-7163.playouts.now.amagi.tv/playlist480p_720210.ts
+#EXTINF:6.000,
+https://amg01553-amg01553c2-samsung-ph-7163.playouts.now.amagi.tv/playlist480p_720211.ts
+#EXTINF:6.000,
+https://amg01553-amg01553c2-samsung-ph-7163.playouts.now.amagi.tv/playlist480p_720212.ts
+#EXTINF:6.000,
+https://amg01553-amg01553c2-samsung-ph-7163.playouts.now.amagi.tv/playlist480p_720213.ts
