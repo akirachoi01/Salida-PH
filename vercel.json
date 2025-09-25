@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "public": true,
+  "routes": [
+    { "src": "/freemovie/playlist.m3u8", "dest": "/api/playlist" },
+    { "src": "/api/playlist", "dest": "/api/playlist" },
+    { "src": "/segments/(.*)", "dest": "/segments/$1" }
+  ]
+}
